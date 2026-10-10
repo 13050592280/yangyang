@@ -1,0 +1,81 @@
+
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.tab-nav{
+    position: fixed;
+    bottom: 0;
+    left:0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    width: 100%;
+    border-top: 1px solid #eee;
+}
+.tab-item{
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color:#666
+    
+}
+.tab-item svg{
+    font-size: 24px;
+    margin:5px
+}
+.tab-item.active{
+    color: #ff5a5f;
+}
+.tab-item:hover{
+    color: #ff5a5f;
+}
+.budge-dot{
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: red;
+    border-radius: 50%;
+}
+.budge-num{
+    position: absolute;
+    top: 4px;
+    right:9px;
+    min-width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 10px;
+    padding: 1px 4px;
+    color: #fff;
+    text-align: center;
+    line-height: 20px;
+}
+.budge-border{
+    position: absolute;
+    top: 4px;
+    right: 18px;
+    width: 10px;
+    height: 10px;
+    border: 2px solid black;
+    border-radius: 50%;
+    background-color: red;
+}
+/* 交集选择器 */
+.budge-num.max{
+    font-size: 10px;
+   
+}

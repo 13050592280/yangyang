@@ -1,0 +1,109 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1790749441619') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-saoma:before {
+  content: "\e667";
+}
+
+.icon-wenjian:before {
+  content: "\e668";
+}
+
+.icon-xiazai:before {
+  content: "\e669";
+}
+
+.icon-xingqiu:before {
+  content: "\e66a";
+}
+
+.icon-dingyue:before {
+  content: "\e66b";
+}
+
+.icon-browser:before {
+  content: "\e601";
+}
+
+.icon-list:before {
+  content: "\e602";
+}
+
+.icon-filter:before {
+  content: "\e603";
+}
+
+.icon-close:before {
+  content: "\e604";
+}
+
+.icon-message:before {
+  content: "\e605";
+}
+
+.icon-imgage:before {
+  content: "\e606";
+}
+
+.icon-delete:before {
+  content: "\e607";
+}
+
+.icon-love:before {
+  content: "\e608";
+}
+
+.icon-positioning:before {
+  content: "\e609";
+}
+
+.icon-print:before {
+  content: "\e60a";
+}
+
+.icon-wifi:before {
+  content: "\e60b";
+}
+
+.icon-amount:before {
+  content: "\e60c";
+}
+
+.icon-camera:before {
+  content: "\e60d";
+}
+
+.icon-classification:before {
+  content: "\e60e";
+}
+
+.icon-clean:before {
+  content: "\e60f";
+}
+
+.icon-help:before {
+  content: "\e610";
+}
+
+.icon-video:before {
+  content: "\e611";
+}
+
+.icon-wrench:before {
+  content: "\e612";
+}
+
+.icon-settings:before {
+  content: "\e613";
+}
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>svg图标</title>
+    <script src="./font/iconfont.js"></script>
+    <link rel="stylesheet" href="./svg图标.css">
+</head>
+<body>
+    <h3>svg图标</h3>
+
+    <div class="tab-nav">
+    <div class="tab-item" onclick="changeTab(this)">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-baoxiang"></use>
+        </svg>
+        <span>首页</span>
+        <!-- div.budge-dot回车 -->
+         <!-- 红点 -->
+        <div class="budge-dot" id="budge-home"></div>
+    </div>
+    <div class="tab-item" onclick="changeTab(this)">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-hanbao"></use>
+        </svg>
+        <span>计划</span>
+        <!-- 数字红点 -->
+         <div class="budge-num" id="budge-plan">5</div>
+    </div>
+    <div class="tab-item" onclick="changeTab(this)">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-ditu"></use>
+        </svg>
+        <span>收藏</span>
+        <!-- 边框红点 -->
+         <div class="budge-border" id="budge-collect"></div>
+    </div>
+    <div class="tab-item" onclick="changeTab(this)">
+        <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-quanxinmeishi"></use>
+        </svg>
+        <span>我的</span>
+         <div class="budge-num max" id="budge-my">100+</div>
+    </div>
+</div>
+     <script>
+        // 写一个函数，当我点击当天的item时候，颜色发生变化
+        function changeTab(current) {
+            let tabs = document.querySelectorAll(".tab-item");
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove("active");
+            }
+            current.classList.add("active");
+        }
+    </script>
+</body>
+</html>
