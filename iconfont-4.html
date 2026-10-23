@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>iconfont-4 · SVG symbol · 美食 App 首页</title>
+    <!-- iconfont SVG symbol 方式（脚本必须在任何 <use> 引用之前执行） -->
+    <script src="./font/iconfont.js"></script>
+    <style>
+        :root {
+            --yy-bg: #ffffff;
+            --yy-ink: #1f1f1f;
+            --yy-sub: #8a8a8a;
+            --yy-accent: #ff6b35;
+            --yy-accent-soft: #fff1ec;
+            --yy-line: #f0f0f0;
+            --yy-badge-red: #ff3b30;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--yy-bg);
+            color: var(--yy-ink);
+            font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* iconfont 通用 SVG icon 样式（来自 iconfont.cn 官方示例） */
+        .icon {
+            width: 1em;
+            height: 1em;
+            vertical-align: -0.15em;
+            fill: currentColor;
+            overflow: hidden;
+        }
+
+        /* ── 移动端视窗容器 ── */
+        .yy_container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding-bottom: 96px;
+        }
+
+        /* ── AppBar 搜索栏 ── */
+        .yy_appbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: var(--yy-bg);
+            padding: 12px 16px 10px;
+            border-bottom: 1px solid var(--yy-line);
+        }
+
+        .yy_search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 40px;
+            padding: 0 14px;
+            background: #f5f5f5;
+            border-radius: 20px;
+        }
+
+        .yy_search .icon {
+            width: 16px;
+            height: 16px;
+            color: var(--yy-sub);
+        }
+
+        .yy_search_input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--yy-ink);
+            outline: none;
+        }
+
+        .yy_search_input::placeholder { color: var(--yy-sub); }
+
+        /* ── Banner ── */
+        .yy_banner {
+            margin: 16px;
+            height: 140px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--yy-accent) 0%, #ff9a5a 100%);
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .yy_banner::before {
+            content: "";
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+        }
+
+        .yy_banner::after {
+            content: "";
+            position: absolute;
+            right: 40px;
+            top: -20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .yy_banner_title { font-size: 20px; font-weight: 700; margin: 0 0 6px; }
+        .yy_banner_sub { font-size: 13px; opacity: 0.85; margin: 0; }
+
+        /* ── 横向分类 ── */
+        .yy_cats {
+            display: flex;
+            gap: 18px;
+            padding: 4px 16px 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .yy_cats::-webkit-scrollbar { display: none; }
+
+        .yy_cat {
+            flex-shrink: 0;
+            text-align: center;
+            width: 56px;
+        }
+
+        .yy_cat_icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--yy-accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            color: var(--yy-accent);
+        }
+
+        .yy_cat_icon .icon {
+            width: 22px;
+            height: 22px;
+        }
+
+        .yy_cat_label {
+            font-size: 11px;
+            color: var(--yy-sub);
+        }
+
+        /* ── 区域标题 ── */
+        .yy_section_head {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 24px 16px 10px;
+        }
+
+        .yy_section_head h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .yy_section_head span {
+            font-size: 12px;
+            color: var(--yy-sub);
+        }
+
+        /* ── 美食卡片 ── */
+        .yy_card {
+            display: flex;
+            gap: 14px;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--yy-line);
+        }
+
+        .yy_card_thumb {
+            width: 88px;
+            height: 88px;
+            border-radius: 10px;
+            background: var(--yy-accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: var(--yy-accent);
+        }
+
+        .yy_card_thumb .icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .yy_card_body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        .yy_card_title {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 0 0 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .yy_card_desc {
+            font-size: 12px;
+            color: var(--yy-sub);
+            margin: 0 0 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .yy_card_foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .yy_card_price {
+            color: var(--yy-accent);
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .yy_card_tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: var(--yy-accent-soft);
+            color: var(--yy-accent);
+        }
+
+        /* ── 底部导航 ── */
+        .yy_tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            z-index: 99;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-top: 1px solid var(--yy-line);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .yy_tabbar_inner {
+            display: flex;
+            height: 58px;
+        }
+
+        .yy_tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            color: var(--yy-sub);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+            transition: color 160ms ease;
+            user-select: none;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .yy_tab_icon {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .yy_tab_icon .icon {
+            width: 24px;
+            height: 24px;
+            color: inherit;
+        }
+
+        .yy_tab_label {
+            font-size: 10px;
+            color: inherit;
+        }
+
+        .yy_tab.yy_active { color: var(--yy-accent); }
+
+        .yy_dot {
+            position: absolute;
+            top: -2px;
+            right: -4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--yy-badge-red);
+            box-shadow: 0 0 0 2px var(--yy-bg);
+        }
+
+        .yy_badge {
+            position: absolute;
+            top: -4px;
+            right: -10px;
+            min-width: 18px;
+            height: 16px;
+            border-radius: 8px;
+            background: var(--yy-badge-red);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            line-height: 1;
+            box-shadow: 0 0 0 2px var(--yy-bg);
+        }
+
+        .yy_back {
+            display: block;
+            text-align: center;
+            padding: 16px;
+            color: var(--yy-sub);
+            text-decoration: none;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="yy_container">
+
+        <!-- AppBar -->
+        <header class="yy_appbar">
+            <div class="yy_search">
+                <svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhinanzhen"></use></svg>
+                <input class="yy_search_input" type="text" placeholder="搜索美食、餐厅">
+            </div>
+        </header>
+
+        <!-- Banner -->
+        <section class="yy_banner">
+            <h2 class="yy_banner_title">满 30 减 8 · 新人专享</h2>
+            <p class="yy_banner_sub">汉堡、披萨、果汁全场可用</p>
+        </section>
+
+        <!-- 横向分类 -->
+        <nav class="yy_cats" aria-label="美食分类">
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hanbao"></use></svg></div>
+                <div class="yy_cat_label">汉堡</div>
+            </div>
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-pisa"></use></svg></div>
+                <div class="yy_cat_label">披萨</div>
+            </div>
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-niuyouguo"></use></svg></div>
+                <div class="yy_cat_label">轻食</div>
+            </div>
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mangguozhi"></use></svg></div>
+                <div class="yy_cat_label">果汁</div>
+            </div>
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qitaguozhi"></use></svg></div>
+                <div class="yy_cat_label">饮品</div>
+            </div>
+            <div class="yy_cat">
+                <div class="yy_cat_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-quanxinmeishi"></use></svg></div>
+                <div class="yy_cat_label">新品</div>
+            </div>
+        </nav>
+
+        <!-- 美食卡片流 -->
+        <section aria-label="推荐美食">
+            <div class="yy_section_head">
+                <h2>附近推荐</h2>
+                <span>更多 ›</span>
+            </div>
+
+            <article class="yy_card">
+                <div class="yy_card_thumb"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hanbao"></use></svg></div>
+                <div class="yy_card_body">
+                    <h3 class="yy_card_title">双层芝士牛肉堡</h3>
+                    <p class="yy_card_desc">100% 纯牛肉 · 现烤面包 · 香浓芝士</p>
+                    <div class="yy_card_foot">
+                        <span class="yy_card_price">¥ 26</span>
+                        <span class="yy_card_tag">好评 4.9</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="yy_card">
+                <div class="yy_card_thumb"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-pisa"></use></svg></div>
+                <div class="yy_card_body">
+                    <h3 class="yy_card_title">玛格丽特披萨 9 寸</h3>
+                    <p class="yy_card_desc">手工面饼 · 进口马苏里拉 · 新鲜罗勒</p>
+                    <div class="yy_card_foot">
+                        <span class="yy_card_price">¥ 48</span>
+                        <span class="yy_card_tag">满减</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="yy_card">
+                <div class="yy_card_thumb"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mangguozhi"></use></svg></div>
+                <div class="yy_card_body">
+                    <h3 class="yy_card_title">鲜榨芒果汁</h3>
+                    <p class="yy_card_desc">海南小台农 · 100% 鲜榨 · 不加水</p>
+                    <div class="yy_card_foot">
+                        <span class="yy_card_price">¥ 18</span>
+                        <span class="yy_card_tag">热销</span>
+                    </div>
+                </div>
+            </article>
+
+            <article class="yy_card">
+                <div class="yy_card_thumb"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-niuyouguo"></use></svg></div>
+                <div class="yy_card_body">
+                    <h3 class="yy_card_title">牛油果鸡胸沙拉</h3>
+                    <p class="yy_card_desc">低卡高蛋白 · 配油醋汁 · 健身首选</p>
+                    <div class="yy_card_foot">
+                        <span class="yy_card_price">¥ 32</span>
+                        <span class="yy_card_tag">轻食</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <a class="yy_back" href="./index.html">← 返回课堂目录</a>
+    </div>
+
+    <!-- 底部导航：固定 + 自适应宽度 -->
+    <nav class="yy_tabbar" role="tablist" aria-label="主导航">
+        <div class="yy_tabbar_inner">
+            <!-- 1 首页（active） -->
+            <button class="yy_tab yy_active" data-yy_tab="home" role="tab" aria-selected="true">
+                <span class="yy_tab_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hanbao"></use></svg></span>
+                <span class="yy_tab_label">首页</span>
+            </button>
+            <!-- 2 附近（红点） -->
+            <button class="yy_tab" data-yy_tab="nearby" role="tab" aria-selected="false">
+                <span class="yy_tab_icon">
+                    <svg class="icon" aria-hidden="true"><use xlink:href="#icon-ditu"></use></svg>
+                    <span class="yy_dot" aria-hidden="true"></span>
+                </span>
+                <span class="yy_tab_label">附近</span>
+            </button>
+            <!-- 3 发现 -->
+            <button class="yy_tab" data-yy_tab="discover" role="tab" aria-selected="false">
+                <span class="yy_tab_icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhinanzhen"></use></svg></span>
+                <span class="yy_tab_label">发现</span>
+            </button>
+            <!-- 4 我的（数字徽章 3） -->
+            <button class="yy_tab" data-yy_tab="mine" role="tab" aria-selected="false">
+                <span class="yy_tab_icon">
+                    <svg class="icon" aria-hidden="true"><use xlink:href="#icon-baoxiang"></use></svg>
+                    <span class="yy_badge" aria-label="3 条未读消息">3</span>
+                </span>
+                <span class="yy_tab_label">我的</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // 底部导航 active 切换
+        var yy_tabs = document.querySelectorAll('.yy_tab');
+        yy_tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                yy_tabs.forEach(function (t) {
+                    t.classList.remove('yy_active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                tab.classList.add('yy_active');
+                tab.setAttribute('aria-selected', 'true');
+            });
+        });
+    </script>
+</body>
+</html>

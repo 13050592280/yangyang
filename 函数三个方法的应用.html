@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抓小球游戏|函数的三个方法的应用</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body{
+        background-color: #f0f0f0;
+        height: 100vh;
+        overflow: hidden;
+        font-size: 24px;
+    }
+    #info{
+        padding: 16px;
+        background:#222;
+        color:#fff;
+    }
+    .ball{
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: red;
+    }
+
+</style>
+<body>
+    <div id="info">当前分数: <span id="score">0</span></div>
+    <div class="ball" id="ball"></div>
+    <script>
+        //const 是常量指的是变量的引用不能改变，但是对象的属性是可以改变的
+        const game = {
+            score:0,
+            ball:document.querySelector('.ball'),
+            width:50,
+            height:50,
+        };//需要什么函数：小球移动，小球点击，空白点击，分数更新
+        function moveBall(){
+            //保证小球在屏幕内
+            const maxX = window.innerWidth - game.width;
+            const maxY = window.innerHeight - game.height;
+            //小球随机位置是0-窗口宽度取整
+            const randomxX = Math.floor(Math.random()*manxX);
+            const randomyY = Math.floor(Math.random()*maxY);
+            //小球移动
+            game.ballDom.style.left = randomxX + 'px';
+            game.ballDom.style.top = randomyY + 'px';
+        }
+        //更新分数
+        //普通的函数存在函数提升，函数体在后面，函数的调用在前面，
+        // 有this,arguments,类数组对象，函数调用时候传递过来的实参数字对象
+        function updateScore(a,b){
+            //function updateScore(a,b){}  //函数声明
+            //a=arguments[0]  
+            // b=arguments[1]
+            document.getElementById('score').innerText = game.score;
+        }
+        game.ballDom = addEventListener('click',function(e){
+            //匿名函数有this到当前点击的DOM元素（ball)
+            game.score+=2;
+            updateScore();//函数的调用
+            moveBall();
+            //防止冒泡，避免触发body的miss事件
+            e.stopPropagation();//阻止事件冒泡
+        });
+        document.body.addEventListener('click',function(e){
+          if(e.target !== game.ballDom){
+            game.score-=1;
+            updateScore();
+          }
+        });
+    //   扩展内容：同时出现多个小球，但是不能交叉，小球定时随机换位置
+    </script>
+
+</body>
+</html>

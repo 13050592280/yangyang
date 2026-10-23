@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="yy-page-root-html">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#f6f6f7">
+<title>潮汐 · 日间深度休息</title>
+<!-- 阿里巴巴矢量图标库（iconfont.cn）字体图标 · 通用图标集 -->
+<link rel="stylesheet" href="font/通用图标/iconfont.css">
+<!-- ==========================================================
+     本地图片素材（存放于同级的 images 文件夹，按出现顺序命名）：
+       09-日间深度休息封面.jpg   顶部大图
+       10-参与用户头像1.jpg      封面右下「人在这里」头像组
+       11-参与用户头像2.jpg      同上
+       12-参与用户头像3.jpg      同上
+       13-参与用户头像4.jpg      同上
+       14-冥想导师Song.jpg       冥想导师卡片头像
+     ========================================================== -->
+<style>
+  /* ==========================================================
+     命名约定：所有 CSS 选择器前缀 yy（杨阳 Yang Yang），
+     类名均采用「yy-区块-元素-状态」的有意义结构。
+     ========================================================== */
+
+  /* ---------- 设计变量 ---------- */
+  .yy-app-theme-tokens{
+    /* 页面与卡片 */
+    --yy-color-bg-page:#ffffff;
+    --yy-color-bg-card:#f7f7f8;
+    --yy-color-border-card:#ececee;
+
+    /* 文字 */
+    --yy-color-text-primary:#1a1a1a;
+    --yy-color-text-secondary:#9a9a9e;
+    --yy-color-text-muted:#b5b5b9;
+    --yy-color-text-on-image:#ffffff;
+
+    /* 金色主题（plus 标签 / 主按钮） */
+    --yy-color-gold-start:#dcae55;
+    --yy-color-gold-end:#c9982f;
+    --yy-color-gold-soft:#f3e6c8;
+
+    /* 圆角与安全区 */
+    --yy-radius-sheet:26px;
+    --yy-radius-card:16px;
+    --yy-safe-area-top:env(safe-area-inset-top,0px);
+    --yy-safe-area-bottom:env(safe-area-inset-bottom,0px);
+  }
+
+  /* ---------- iconfont 兜底：即使外部样式未加载也能渲染字形 ---------- */
+  @font-face{
+    font-family:"iconfont";
+    src:url('font/通用图标/iconfont.ttf') format('truetype');
+    font-display:swap;
+  }
+
+  /* ---------- 全局重置 ---------- */
+  .yy-page-reset-all,
+  .yy-page-reset-all *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .yy-page-root-html,
+  .yy-page-root-body{
+    height:100%;
+    width:100%;
+    max-width:100%;
+  }
+
+  .yy-page-root-body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,sans-serif;
+    color:var(--yy-color-text-primary);
+    background:var(--yy-color-bg-page);
+    overflow:hidden;
+  }
+
+  /* ---------- 可滚动内容容器 ---------- */
+  .yy-content-scroll-area{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    /* 底部预留：固定操作栏高度 + 安全区，否则正文末尾会被按钮压住 */
+    padding-bottom:calc(var(--yy-safe-area-bottom) + 150px);
+    scrollbar-width:none;
+  }
+
+  .yy-content-scroll-area::-webkit-scrollbar{
+    display:none;
+  }
+
+  /* ==========================================================
+     一、顶部大图（含返回 / 收藏 / 分享浮层与参与人数）
+     ========================================================== */
+  .yy-hero-media-header{
+    position:relative;
+    width:100%;
+    height:46vh;
+    min-height:330px;
+    overflow:hidden;
+    background:#4c5a44;
+  }
+
+  .yy-hero-cover-image{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* 图下压的暗色渐变：保证白色浮层图标可读 */
+  .yy-hero-shade-layer{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:linear-gradient(180deg,
+      rgba(0,0,0,.22) 0%,
+      rgba(0,0,0,0) 32%,
+      rgba(0,0,0,0) 62%,
+      rgba(0,0,0,.26) 100%);
+  }
+
+  /* 顶部浮层：返回箭头 + 收藏 / 分享 */
+  .yy-hero-toolbar-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:calc(var(--yy-safe-area-top) + 12px) 18px 0;
+  }
+
+  .yy-hero-back-button,
+  .yy-hero-action-button{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:none;
+    border-radius:50%;
+    cursor:pointer;
+    color:var(--yy-color-text-on-image);
+    background:rgba(255,255,255,.18);
+    backdrop-filter:blur(14px) saturate(150%);
+    -webkit-backdrop-filter:blur(14px) saturate(150%);
+    transition:transform .18s ease, background .18s ease;
+  }
+
+  .yy-hero-back-button:active,
+  .yy-hero-action-button:active{
+    transform:scale(.9);
+    background:rgba(255,255,255,.32);
+  }
+
+  .yy-hero-back-button .yy-hero-icon-svg{
+    width:20px;
+    height:20px;
+    display:block;
+  }
+
+  .yy-hero-action-group{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .yy-hero-action-button .yy-hero-icon-svg{
+    width:20px;
+    height:20px;
+    display:block;
+  }
+
+  /* 收藏用 iconfont 字形 */
+  .yy-hero-action-button .yy-hero-icon-glyph{
+    font-size:19px;
+    line-height:1;
+    display:block;
+  }
+
+  /* 封面底部：参与人数 + 头像组 */
+  .yy-hero-attendee-row{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:14px;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .yy-hero-attendee-count-text{
+    font-size:16px;
+    font-weight:500;
+    letter-spacing:.4px;
+    color:var(--yy-color-text-on-image);
+    text-shadow:0 1px 10px rgba(0,0,0,.36);
+  }
+
+  .yy-hero-attendee-avatar-stack{
+    display:flex;
+    align-items:center;
+    flex-shrink:0;
+  }
+
+  /* 头像重叠排布：每张左侧压住前一张 */
+  .yy-hero-attendee-avatar-image{
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    object-fit:cover;
+    display:block;
+    border:1.5px solid rgba(255,255,255,.85);
+    background:#7b8b72;
+  }
+
+  .yy-hero-attendee-avatar-image + .yy-hero-attendee-avatar-image{
+    margin-left:-9px;
+  }
+
+  /* ==========================================================
+     二、白色圆角面板（上边缘压住大图）
+     ========================================================== */
+  .yy-detail-sheet-panel{
+    position:relative;
+    z-index:2;
+    margin-top:-14px;
+    padding:20px 18px 0;
+    background:var(--yy-color-bg-page);
+    border-radius:var(--yy-radius-sheet) var(--yy-radius-sheet) 0 0;
+  }
+
+  /* ---------- 标签胶囊：plus / 放松 / 睡眠 ---------- */
+  .yy-tag-chip-row{
+    display:flex;
+    align-items:center;
+    gap:9px;
+  }
+
+  .yy-tag-chip-button{
+    height:33px;
+    padding:0 17px;
+    border:none;
+    border-radius:9px;
+    background:var(--yy-color-bg-card);
+    color:var(--yy-color-text-secondary);
+    font-family:inherit;
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:.4px;
+    cursor:pointer;
+    transition:transform .16s ease, background .2s ease;
+  }
+
+  .yy-tag-chip-button:active{
+    transform:scale(.95);
+  }
+
+  /* plus 标签：金底白字 */
+  .yy-tag-chip-button.yy-is-plus{
+    background:linear-gradient(135deg, var(--yy-color-gold-start) 0%, var(--yy-color-gold-end) 100%);
+    color:#ffffff;
+    font-family:Georgia,"Times New Roman",serif;
+    font-style:italic;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+
+  /* ---------- 标题与副信息 ---------- */
+  .yy-detail-title-text{
+    margin-top:16px;
+    font-size:29px;
+    font-weight:800;
+    line-height:1.25;
+    letter-spacing:.6px;
+    color:var(--yy-color-text-primary);
+  }
+
+  .yy-detail-meta-text{
+    margin-top:10px;
+    font-size:16px;
+    font-weight:400;
+    letter-spacing:.4px;
+    color:var(--yy-color-text-muted);
+  }
+
+  /* ---------- 导师卡 / 时长卡 ---------- */
+  .yy-info-card-row{
+    display:flex;
+    align-items:stretch;
+    gap:12px;
+    margin-top:18px;
+  }
+
+  .yy-info-card-item{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px 15px;
+    border-radius:var(--yy-radius-card);
+    background:var(--yy-color-bg-card);
+    border:1px solid var(--yy-color-border-card);
+    cursor:pointer;
+    transition:transform .18s ease;
+  }
+
+  .yy-info-card-item:active{
+    transform:scale(.98);
+  }
+
+  /* 导师卡占剩余宽度，时长卡按内容宽度 */
+  .yy-info-card-item.yy-is-teacher{
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .yy-info-card-item.yy-is-duration{
+    flex:0 0 33%;
+    flex-direction:column;
+    align-items:flex-start;
+    justify-content:center;
+    gap:7px;
+  }
+
+  .yy-info-card-label-text{
+    font-size:13px;
+    font-weight:400;
+    letter-spacing:.4px;
+    color:var(--yy-color-text-muted);
+  }
+
+  .yy-info-card-teacher-avatar-image{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    display:block;
+    background:#e6e6e8;
+  }
+
+  .yy-info-card-teacher-body{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:4px;
+    flex:1 1 auto;
+    min-width:0;
+  }
+
+  .yy-info-card-name-text{
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:.3px;
+    color:var(--yy-color-text-primary);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .yy-info-card-value-text{
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:.3px;
+    color:var(--yy-color-text-primary);
+  }
+
+  .yy-info-card-arrow-svg{
+    width:17px;
+    height:17px;
+    flex-shrink:0;
+    display:block;
+    color:#c9c9cd;
+  }
+
+  /* ---------- 正文说明 ---------- */
+  .yy-description-paragraph-flow{
+    margin-top:22px;
+  }
+
+  .yy-description-paragraph-text{
+    font-size:17.5px;
+    font-weight:400;
+    line-height:1.85;
+    letter-spacing:.5px;
+    color:#5c5c60;
+  }
+
+  .yy-description-paragraph-text + .yy-description-paragraph-text{
+    margin-top:17px;
+  }
+
+  /* ==========================================================
+     三、底部固定操作栏
+     ========================================================== */
+  .yy-bottom-action-bar{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:10;
+    padding:0 18px calc(var(--yy-safe-area-bottom) + 12px);
+    background:transparent;
+    pointer-events:none;
+  }
+
+  /* 白色渐隐遮罩：正文滚到底部前被柔化，模拟原页面的续费露出效果 */
+  .yy-bottom-action-scrim{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:170px;
+    background:linear-gradient(180deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,.86) 42%,
+      #ffffff 74%);
+    pointer-events:none;
+  }
+
+  .yy-start-practice-button{
+    position:relative;
+    z-index:1;
+    width:100%;
+    height:56px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    pointer-events:auto;
+    background:linear-gradient(135deg, var(--yy-color-gold-start) 0%, var(--yy-color-gold-end) 100%);
+    box-shadow:0 8px 20px rgba(201,152,47,.28);
+    color:var(--yy-color-text-on-image);
+    font-family:inherit;
+    font-size:19px;
+    font-weight:600;
+    letter-spacing:1px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+
+  .yy-start-practice-button:active{
+    transform:scale(.975);
+    box-shadow:0 5px 14px rgba(201,152,47,.24);
+  }
+
+  .yy-start-practice-button .yy-start-practice-icon-svg{
+    width:19px;
+    height:19px;
+    display:block;
+  }
+
+  .yy-membership-hint-text{
+    position:relative;
+    z-index:1;
+    margin-top:11px;
+    text-align:center;
+    font-size:13px;
+    letter-spacing:.4px;
+    color:var(--yy-color-text-muted);
+  }
+
+  /* ---------- 小屏适配（≤360px） ---------- */
+  @media (max-width:360px){
+    .yy-detail-title-text{font-size:26px;}
+    .yy-detail-meta-text{font-size:15px;}
+    .yy-info-card-item{padding:11px 13px;}
+    .yy-info-card-name-text,
+    .yy-info-card-value-text{font-size:16px;}
+    .yy-description-paragraph-text{font-size:16.5px;line-height:1.8;}
+    .yy-start-practice-button{height:52px;font-size:17.5px;}
+    .yy-tag-chip-button{height:31px;padding:0 15px;font-size:14px;}
+  }
+</style>
+</head>
+
+<body class="yy-page-root-body yy-page-reset-all yy-app-theme-tokens">
+<div class="yy-content-scroll-area">
+
+    <!-- ========== 顶部大图 ========== -->
+    <header class="yy-hero-media-header">
+
+      <img class="yy-hero-cover-image"
+           src="images/09-日间深度休息封面.jpg"
+           alt="公园长椅与湖水" onerror="this.style.display='none'">
+      <div class="yy-hero-shade-layer"></div>
+
+      <!-- 浮层：返回 -->
+      <div class="yy-hero-toolbar-bar">
+        <button class="yy-hero-back-button" aria-label="返回">
+          <!-- 箭头：图标库无 chevron 字形，用内联 SVG 描边 -->
+          <svg class="yy-hero-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.6 5.6 8.2 12l6.4 6.4"/>
+          </svg>
+        </button>
+
+        <div class="yy-hero-action-group">
+          <button class="yy-hero-action-button" aria-label="收藏">
+            <i class="iconfont icon-love yy-hero-icon-glyph"></i>
+          </button>
+
+          <button class="yy-hero-action-button" aria-label="分享">
+            <!-- 分享：方框 + 向上箭头 -->
+            <svg class="yy-hero-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 15.2V4.4"/>
+              <path d="M8.4 7.8 12 4.2l3.6 3.6"/>
+              <path d="M5.4 12.6v5.6a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2v-5.6"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 封面底部：参与人数 + 头像组 -->
+      <div class="yy-hero-attendee-row">
+        <span class="yy-hero-attendee-count-text">1190 人在这里</span>
+
+        <div class="yy-hero-attendee-avatar-stack">
+          <img class="yy-hero-attendee-avatar-image" src="images/10-参与用户头像1.jpg" alt="参与者头像" onerror="this.style.display='none'">
+          <img class="yy-hero-attendee-avatar-image" src="images/11-参与用户头像2.jpg" alt="参与者头像" onerror="this.style.display='none'">
+          <img class="yy-hero-attendee-avatar-image" src="images/12-参与用户头像3.jpg" alt="参与者头像" onerror="this.style.display='none'">
+          <img class="yy-hero-attendee-avatar-image" src="images/13-参与用户头像4.jpg" alt="参与者头像" onerror="this.style.display='none'">
+        </div>
+      </div>
+
+    </header>
+
+    <!-- ========== 白色圆角面板 ========== -->
+    <section class="yy-detail-sheet-panel">
+
+      <!-- 标签 -->
+      <div class="yy-tag-chip-row">
+        <button class="yy-tag-chip-button yy-is-plus">plus</button>
+        <button class="yy-tag-chip-button">放松</button>
+        <button class="yy-tag-chip-button">睡眠</button>
+      </div>
+
+      <h1 class="yy-detail-title-text">日间深度休息</h1>
+      <p class="yy-detail-meta-text">20 分钟 · 时刻</p>
+
+      <!-- 导师卡 + 时长卡 -->
+      <div class="yy-info-card-row">
+
+        <div class="yy-info-card-item yy-is-teacher">
+          <img class="yy-info-card-teacher-avatar-image"
+               src="images/14-冥想导师Song.jpg"
+               alt="冥想导师 Song" onerror="this.style.display='none'">
+
+          <span class="yy-info-card-teacher-body">
+            <span class="yy-info-card-label-text">冥想导师</span>
+            <span class="yy-info-card-name-text">Song</span>
+          </span>
+
+          <svg class="yy-info-card-arrow-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9.4 5.6 15.8 12l-6.4 6.4"/>
+          </svg>
+        </div>
+
+        <div class="yy-info-card-item yy-is-duration">
+          <span class="yy-info-card-label-text">时长</span>
+          <span class="yy-info-card-value-text">20 分钟</span>
+        </div>
+
+      </div>
+
+      <!-- 正文说明 -->
+      <div class="yy-description-paragraph-flow">
+        <p class="yy-description-paragraph-text">
+          我们常常在不知不觉间累积了许多压力与疲惫，想要休息一下，却很难找到真正放松的感觉。
+        </p>
+        <p class="yy-description-paragraph-text">
+          这个练习将帮助你在有限的时间里获得深度、高质量的休息，快速恢复身心能量，以更清晰的头脑回到接下来的事情里。
+        </p>
+      </div>
+
+    </section>
+
+</div>
+
+<!-- ========== 底部固定操作栏 ========== -->
+<div class="yy-bottom-action-bar">
+  <div class="yy-bottom-action-scrim"></div>
+
+  <button class="yy-start-practice-button">
+    <!-- 锁：图标库无此形状，用内联 SVG 描边 -->
+    <svg class="yy-start-practice-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4.6" y="10.4" width="14.8" height="9.6" rx="2.6"/>
+      <path d="M8.4 10.4V8.2a3.6 3.6 0 0 1 7.2 0v2.2"/>
+    </svg>
+    开始练习
+  </button>
+
+  <p class="yy-membership-hint-text">已到期 · 续费立享所有精品内容</p>
+</div>
+
+</body>
+</html>

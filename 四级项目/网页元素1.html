@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#383f43">
+<title>潮汐 · 下午好</title>
+<!-- 阿里巴巴矢量图标库（iconfont.cn）字体图标 · 通用图标集 -->
+<link rel="stylesheet" href="font/通用图标/iconfont.css">
+<style>
+  /* ==========================================================
+     命名约定：所有 CSS 选择器前缀 yy（杨阳 Yang Yang），
+     类名均采用「yy-区块-元素-状态」的有意义结构。
+     ========================================================== */
+
+  /* ---------- 设计变量 ---------- */
+  .yy-app-theme-tokens{
+    /* 背景：深板岩灰（还原原图的夜间灰绿调） */
+    --yy-color-bg-page:#383f43;
+    --yy-color-bg-nav:#2f363a;
+
+    /* 玻璃卡片 */
+    --yy-color-glass:rgba(255,255,255,.075);
+    --yy-color-glass-strong:rgba(255,255,255,.13);
+    --yy-color-glass-border:rgba(255,255,255,.09);
+
+    /* 文字 */
+    --yy-color-text-primary:#ffffff;
+    --yy-color-text-secondary:rgba(255,255,255,.62);
+    --yy-color-text-muted:rgba(255,255,255,.42);
+
+    /* 圆角与安全区 */
+    --yy-radius-card:24px;
+    --yy-radius-sound:20px;
+    --yy-safe-area-top:env(safe-area-inset-top,0px);
+    --yy-safe-area-bottom:env(safe-area-inset-bottom,0px);
+  }
+
+  /* ---------- iconfont 兜底：即使外部样式未加载也能渲染字形 ---------- */
+  @font-face{
+    font-family:"iconfont";
+    src:url('font/通用图标/iconfont.ttf') format('truetype');
+    font-display:swap;
+  }
+
+  /* ---------- 全局重置 ---------- */
+  .yy-page-reset-all,
+  .yy-page-reset-all *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .yy-page-root-html,
+  .yy-page-root-body{
+    height:100%;
+    width:100%;
+    max-width:100%;
+  }
+
+  .yy-page-root-body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,sans-serif;
+    color:var(--yy-color-text-primary);
+    background:var(--yy-color-bg-page);
+    overflow:hidden;
+  }
+
+  /* ---------- 可滚动内容容器 ---------- */
+  .yy-content-scroll-area{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    /* 底部预留：固定标签栏高度 + 安全区 */
+    padding:calc(var(--yy-safe-area-top) + 14px) 0
+            calc(var(--yy-safe-area-bottom) + 104px);
+    scrollbar-width:none;
+  }
+
+  .yy-content-scroll-area::-webkit-scrollbar{
+    display:none;
+  }
+
+  /* ---------- 顶部问候栏 ---------- */
+  .yy-header-greeting-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 24px 0;
+  }
+
+  .yy-header-greeting-text{
+    font-size:38px;
+    font-weight:700;
+    letter-spacing:.5px;
+    line-height:1.15;
+    white-space:nowrap;
+  }
+
+  .yy-header-action-group{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-shrink:0;
+  }
+
+  /* 静音 + 九宫格：合并为一个玻璃胶囊 */
+  .yy-header-toolbar-pill{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    height:50px;
+    padding:0 10px;
+    border-radius:999px;
+    background:var(--yy-color-glass);
+    border:1px solid var(--yy-color-glass-border);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+  }
+
+  .yy-header-icon-button{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:none;
+    border:none;
+    cursor:pointer;
+    transition:background .18s ease, transform .18s ease;
+  }
+
+  .yy-header-icon-button:active{
+    background:rgba(255,255,255,.12);
+    transform:scale(.93);
+  }
+
+  .yy-header-icon-svg{
+    width:25px;
+    height:25px;
+    display:block;
+    color:var(--yy-color-text-primary);
+  }
+
+  .yy-header-icon-button .yy-header-icon-glyph{
+    font-size:23px;
+    line-height:1;
+    color:var(--yy-color-text-primary);
+    display:block;
+  }
+
+  .yy-header-user-avatar{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    border:1px solid rgba(255,255,255,.16);
+    background:#4a5356;
+  }
+
+  /* ---------- 星期导航条（左对齐，今日高亮） ---------- */
+  .yy-weekday-strip-nav{
+    display:flex;
+    align-items:center;
+    padding:16px 24px 0;
+  }
+
+  .yy-weekday-strip-day-item{
+    font-size:15px;
+    font-weight:600;
+    color:var(--yy-color-text-muted);
+    width:30px;
+    text-align:center;
+    letter-spacing:.5px;
+  }
+
+  /* 今日：白色高亮 */
+  .yy-weekday-strip-day-item.yy-is-today{
+    color:var(--yy-color-text-primary);
+    font-weight:700;
+  }
+
+  /* ---------- 核心功能横向卡片 ---------- */
+  .yy-feature-card-rail-scroll{
+    display:flex;
+    gap:13px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:22px 24px 4px;
+    scrollbar-width:none;
+  }
+
+  .yy-feature-card-rail-scroll::-webkit-scrollbar{
+    display:none;
+  }
+
+  .yy-feature-card-item{
+    scroll-snap-align:start;
+    flex:0 0 168px;
+    height:118px;
+    border-radius:var(--yy-radius-card);
+    background:var(--yy-color-glass);
+    border:1px solid var(--yy-color-glass-border);
+    backdrop-filter:blur(20px) saturate(140%);
+    -webkit-backdrop-filter:blur(20px) saturate(140%);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:18px 18px 16px;
+    cursor:pointer;
+    transition:transform .2s ease, background .2s ease;
+  }
+
+  .yy-feature-card-item:active{
+    transform:scale(.97);
+    background:var(--yy-color-glass-strong);
+  }
+
+  .yy-feature-card-icon-svg{
+    width:30px;
+    height:30px;
+    display:block;
+    color:var(--yy-color-text-primary);
+  }
+
+  .yy-feature-card-title-text{
+    font-size:17px;
+    font-weight:400;
+    color:rgba(255,255,255,.9);
+    letter-spacing:.5px;
+  }
+
+  /* ---------- 每日语录区 ---------- */
+  .yy-quote-daily-block{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    padding:40px 24px 0;
+  }
+
+  .yy-quote-daily-body{
+    flex:1;
+    min-width:0;
+  }
+
+  .yy-quote-daily-date-text{
+    font-size:16px;
+    color:var(--yy-color-text-muted);
+    letter-spacing:.3px;
+    margin-bottom:16px;
+  }
+
+  .yy-quote-daily-sentence-text{
+    font-size:21px;
+    line-height:1.55;
+    color:rgba(255,255,255,.95);
+    letter-spacing:.4px;
+    font-weight:400;
+  }
+
+  .yy-quote-daily-author-text{
+    margin-top:18px;
+    font-size:16px;
+    color:var(--yy-color-text-muted);
+    letter-spacing:.3px;
+  }
+
+  .yy-quote-daily-thumb-image{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    background:#2f3a3d;
+    border:1px solid rgba(255,255,255,.1);
+  }
+
+  /* ---------- 快捷功能胶囊（两行，横向可滚动） ---------- */
+  .yy-shortcut-chip-rail-scroll{
+    display:flex;
+    gap:13px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:30px 24px 0;
+    scrollbar-width:none;
+  }
+
+  .yy-shortcut-chip-rail-scroll::-webkit-scrollbar{
+    display:none;
+  }
+
+  /* 每列两枚胶囊，保证「先左右、后上下」的阅读顺序 */
+  .yy-shortcut-chip-column-group{
+    display:flex;
+    flex-direction:column;
+    gap:13px;
+    flex:0 0 auto;
+  }
+
+  .yy-shortcut-chip-button{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    width:152px;
+    height:52px;
+    padding:0 16px;
+    border-radius:999px;
+    background:var(--yy-color-glass);
+    border:1px solid var(--yy-color-glass-border);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    cursor:pointer;
+    transition:transform .18s ease, background .18s ease;
+    overflow:hidden;
+  }
+
+  .yy-shortcut-chip-button:active{
+    transform:scale(.95);
+    background:var(--yy-color-glass-strong);
+  }
+
+  .yy-shortcut-chip-button .yy-shortcut-chip-icon-glyph{
+    font-size:20px;
+    line-height:1;
+    color:var(--yy-color-text-primary);
+    display:block;
+    flex-shrink:0;
+  }
+
+  .yy-shortcut-chip-label-text{
+    font-size:15px;
+    color:rgba(255,255,255,.93);
+    letter-spacing:.3px;
+    white-space:nowrap;
+  }
+
+  /* ---------- 精选声音 ---------- */
+  .yy-sound-section-block{
+    padding-top:38px;
+  }
+
+  .yy-sound-section-header-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 24px;
+  }
+
+  .yy-sound-section-heading-text{
+    font-size:23px;
+    font-weight:700;
+    letter-spacing:.5px;
+  }
+
+  .yy-sound-section-more-button{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:none;
+    border:none;
+    cursor:pointer;
+    transition:transform .18s ease, opacity .18s ease;
+  }
+
+  .yy-sound-section-more-button:active{
+    transform:scale(.88);
+    opacity:.6;
+  }
+
+  .yy-sound-section-more-button .yy-sound-section-icon-svg{
+    width:22px;
+    height:22px;
+    display:block;
+    color:var(--yy-color-text-primary);
+  }
+
+  /* 声音卡片横向滚动 */
+  .yy-sound-card-rail-scroll{
+    display:flex;
+    gap:13px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:16px 24px 4px;
+    scrollbar-width:none;
+  }
+
+  .yy-sound-card-rail-scroll::-webkit-scrollbar{
+    display:none;
+  }
+
+  .yy-sound-card-item{
+    position:relative;
+    scroll-snap-align:start;
+    flex:0 0 168px;
+    height:168px;
+    border-radius:var(--yy-radius-sound);
+    overflow:hidden;
+    cursor:pointer;
+    background:#4d5a5e;
+    transition:transform .2s ease;
+  }
+
+  .yy-sound-card-item:active{
+    transform:scale(.97);
+  }
+
+  .yy-sound-card-cover-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* 「免费」角标 */
+  .yy-sound-card-badge{
+    position:absolute;
+    top:10px;
+    right:10px;
+    padding:3px 9px;
+    border-radius:8px;
+    font-size:12px;
+    color:#ffffff;
+    letter-spacing:.3px;
+    background:rgba(255,255,255,.26);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+
+  /* ---------- 底部固定标签栏 ---------- */
+  .yy-tabbar-bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:10;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-around;
+    padding:12px 12px calc(var(--yy-safe-area-bottom) + 10px);
+    background:var(--yy-color-bg-nav);
+    border-top:1px solid rgba(255,255,255,.05);
+  }
+
+  .yy-tabbar-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    padding:2px 0;
+    background:none;
+    border:none;
+    cursor:pointer;
+    transition:transform .18s ease, opacity .18s ease;
+  }
+
+  .yy-tabbar-item:active{
+    transform:scale(.9);
+    opacity:.7;
+  }
+
+  .yy-tabbar-item .yy-tabbar-icon-svg{
+    width:25px;
+    height:25px;
+    display:block;
+    color:var(--yy-color-text-muted);
+    transition:color .18s ease;
+  }
+
+  .yy-tabbar-label-text{
+    font-size:13px;
+    color:var(--yy-color-text-muted);
+    letter-spacing:.3px;
+    transition:color .18s ease;
+  }
+
+  /* 选中态：图标与文字同时点亮 */
+  .yy-tabbar-item.yy-is-active .yy-tabbar-icon-svg,
+  .yy-tabbar-item.yy-is-active .yy-tabbar-label-text{
+    color:var(--yy-color-text-primary);
+  }
+
+  /* ---------- 小屏适配（≤360px） ---------- */
+  @media (max-width:360px){
+    .yy-header-greeting-text{font-size:33px;}
+    .yy-feature-card-item{flex:0 0 148px;height:108px;}
+    .yy-sound-card-item{flex:0 0 148px;height:148px;}
+    .yy-shortcut-chip-button{width:136px;}
+    .yy-shortcut-chip-label-text{font-size:13.5px;}
+    .yy-quote-daily-sentence-text{font-size:18.5px;}
+    .yy-sound-section-heading-text{font-size:20px;}
+  }
+</style>
+</head>
+
+<body class="yy-page-root-body yy-page-reset-all yy-app-theme-tokens">
+<div class="yy-content-scroll-area">
+
+    <!-- ========== 顶部问候栏 ========== -->
+    <header class="yy-header-greeting-bar">
+      <h1 class="yy-header-greeting-text">下午好</h1>
+
+      <div class="yy-header-action-group">
+        <div class="yy-header-toolbar-pill">
+          <button class="yy-header-icon-button" aria-label="静音">
+            <!-- 静音喇叭（几何描边，图标库无此形状） -->
+            <svg class="yy-header-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11.2 4.6 6.6 8.4H3.2v7.2h3.4l4.6 3.8V4.6Z"/>
+              <path d="M15.4 9.4 21 15"/>
+            </svg>
+          </button>
+
+          <button class="yy-header-icon-button" aria-label="全部应用">
+            <!-- 九宫格：iconfont / classification -->
+            <i class="iconfont icon-classification yy-header-icon-glyph"></i>
+          </button>
+        </div>
+
+        <img class="yy-header-user-avatar"
+             src="images/08-用户头像.jpg"
+             alt="用户头像"
+             onerror="this.style.display='none'">
+      </div>
+    </header>
+
+    <!-- ========== 星期导航条 ========== -->
+    <nav class="yy-weekday-strip-nav">
+      <span class="yy-weekday-strip-day-item">一</span>
+      <span class="yy-weekday-strip-day-item">二</span>
+      <span class="yy-weekday-strip-day-item yy-is-today">今</span>
+      <span class="yy-weekday-strip-day-item">四</span>
+      <span class="yy-weekday-strip-day-item">五</span>
+      <span class="yy-weekday-strip-day-item">六</span>
+      <span class="yy-weekday-strip-day-item">日</span>
+    </nav>
+
+    <!-- ========== 核心功能横向卡片 ========== -->
+    <div class="yy-feature-card-rail-scroll">
+
+      <div class="yy-feature-card-item">
+        <span class="yy-feature-card-icon-wrap">
+          <!-- 心流专注：圆环 + 中心圆点 -->
+          <svg class="yy-feature-card-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <circle cx="12" cy="12" r="8.4"/>
+            <circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+        <span class="yy-feature-card-title-text">心流专注</span>
+      </div>
+
+      <div class="yy-feature-card-item">
+        <span class="yy-feature-card-icon-wrap">
+          <!-- 睡眠监测：圆环 + 内部弧线 -->
+          <svg class="yy-feature-card-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="12" cy="12" r="8.4"/>
+            <path d="M7.4 14.2c1.5-2.9 3.3-4.3 5.3-4.3 1.5 0 2.8.8 4 2.4"/>
+          </svg>
+        </span>
+        <span class="yy-feature-card-title-text">睡眠监测</span>
+      </div>
+
+      <div class="yy-feature-card-item">
+        <span class="yy-feature-card-icon-wrap">
+          <!-- 小憩：圆环 + 中央横线 -->
+          <svg class="yy-feature-card-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <circle cx="12" cy="12" r="8.4"/>
+            <path d="M7.6 12h8.8"/>
+          </svg>
+        </span>
+        <span class="yy-feature-card-title-text">小憩</span>
+      </div>
+
+    </div>
+
+    <!-- ========== 每日语录 ========== -->
+    <section class="yy-quote-daily-block">
+      <div class="yy-quote-daily-body">
+        <div class="yy-quote-daily-date-text">Oct 14</div>
+        <p class="yy-quote-daily-sentence-text">所有人都像孩子一样，需要有玩耍的时间。</p>
+        <div class="yy-quote-daily-author-text">伯特兰·罗素</div>
+      </div>
+
+      <img class="yy-quote-daily-thumb-image"
+           src="images/08-用户头像.jpg"
+           alt="语录配图"
+           onerror="this.style.background='#2f3a3d'">
+    </section>
+
+    <!-- ========== 快捷功能胶囊（两行三列，可横向滚动） ========== -->
+    <div class="yy-shortcut-chip-rail-scroll">
+
+      <div class="yy-shortcut-chip-column-group">
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-btn_play yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">每日冥想</span>
+        </button>
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-wenjian yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">伊萨卡来信</span>
+        </button>
+      </div>
+
+      <div class="yy-shortcut-chip-column-group">
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-message yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">睡眠故事</span>
+        </button>
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-clean yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">高效休息</span>
+        </button>
+      </div>
+
+      <div class="yy-shortcut-chip-column-group">
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-filter yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">松心呼吸</span>
+        </button>
+        <button class="yy-shortcut-chip-button">
+          <i class="iconfont icon-help yy-shortcut-chip-icon-glyph"></i>
+          <span class="yy-shortcut-chip-label-text">情绪SOS</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ========== 精选声音 ========== -->
+    <section class="yy-sound-section-block">
+
+      <div class="yy-sound-section-header-row">
+        <h2 class="yy-sound-section-heading-text">精选声音</h2>
+        <button class="yy-sound-section-more-button" aria-label="查看全部">
+          <svg class="yy-sound-section-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 4l8 8-8 8"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="yy-sound-card-rail-scroll">
+
+        <div class="yy-sound-card-item">
+          <img class="yy-sound-card-cover-image"
+               src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=400&fit=crop&q=80"
+               alt="雨林"
+               onerror="this.style.background='#3f5a4a'">
+          <span class="yy-sound-card-badge">免费</span>
+        </div>
+
+        <div class="yy-sound-card-item">
+          <img class="yy-sound-card-cover-image"
+               src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=400&h=400&fit=crop&q=80"
+               alt="木屋炉火"
+               onerror="this.style.background='#6b5a4a'">
+          <span class="yy-sound-card-badge">免费</span>
+        </div>
+
+        <div class="yy-sound-card-item">
+          <img class="yy-sound-card-cover-image"
+               src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400&h=400&fit=crop&q=80"
+               alt="海浪"
+               onerror="this.style.background='#3d5a6b'">
+          <span class="yy-sound-card-badge">免费</span>
+        </div>
+
+      </div>
+
+    </section>
+
+</div>
+
+<!-- ========== 底部固定标签栏 ========== -->
+<nav class="yy-tabbar-bottom-nav">
+
+  <button class="yy-tabbar-item yy-is-active">
+    <!-- 此刻：圆角方框 + 闪电 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="4.6"/>
+      <path d="M12.9 8.6 10.1 12.7h2.3l-.6 2.9 2.7-4.2h-2.2z" fill="currentColor" stroke="none"/>
+    </svg>
+    <span class="yy-tabbar-label-text">此刻</span>
+  </button>
+
+  <button class="yy-tabbar-item">
+    <!-- 睡眠：月牙 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.4 14.6A8.8 8.8 0 0 1 9.4 3.6a8.8 8.8 0 1 0 11 11Z"/>
+    </svg>
+    <span class="yy-tabbar-label-text">睡眠</span>
+  </button>
+
+  <button class="yy-tabbar-item">
+    <!-- 冥想：圆角三角 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+      <path d="M12 5.6 20 18.4H4Z"/>
+    </svg>
+    <span class="yy-tabbar-label-text">冥想</span>
+  </button>
+
+  <button class="yy-tabbar-item">
+    <!-- 声音：实心圆 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="12" r="7.4"/>
+    </svg>
+    <span class="yy-tabbar-label-text">声音</span>
+  </button>
+
+</nav>
+</body>
+</html>

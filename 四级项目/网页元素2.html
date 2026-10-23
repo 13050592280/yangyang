@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="yy-page-root-html">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#141821">
+<title>潮汐 · 睡眠</title>
+<!-- 阿里巴巴矢量图标库（iconfont.cn）字体图标 · 通用图标集 -->
+<link rel="stylesheet" href="font/通用图标/iconfont.css">
+<!-- ==========================================================
+     本地图片素材（存放于同级的 images 文件夹，按出现顺序命名）：
+       01-熬夜对身体的影响.jpg    轮播第 1 屏
+       02-深度睡眠的秘密.jpg      轮播第 2 屏
+       03-睡前放下手机.jpg        轮播第 3 屏
+       04-一夜好眠的方法.jpg      轮播第 4 屏
+       05-YogaNidra睡眠冥想.jpg   合集第 1 组封面
+       06-睡眠与大脑.jpg          合集第 2 组封面
+       07-478呼吸法.jpg           合集第 3 组封面
+       08-用户头像.jpg            右上角头像
+     ========================================================== -->
+<style>
+  /* ==========================================================
+     命名约定：所有 CSS 选择器前缀 yy（杨阳 Yang Yang），
+     类名均采用「yy-区块-元素-状态」的有意义结构。
+     ========================================================== */
+
+  /* ---------- 设计变量 ---------- */
+  .yy-app-theme-tokens{
+    /* 底色：白色面板 + 深色图上文字 */
+    --yy-color-bg-page:#ffffff;
+    --yy-color-chip-bg:#f2f3f5;
+    --yy-color-chip-active-bg:#111111;
+
+    /* 文字 */
+    --yy-color-text-primary:#111111;
+    --yy-color-text-secondary:#6f7379;
+    --yy-color-text-muted:#a8adb5;
+    --yy-color-text-on-image:#ffffff;
+
+    /* 底部标签栏 */
+    --yy-color-tabbar-bg:#ffffff;
+    --yy-color-tabbar-idle:#c3c7ce;
+    --yy-color-tabbar-active:#6b62e8;
+
+    /* 圆角与安全区 */
+    --yy-radius-sheet:30px;
+    --yy-radius-card:20px;
+    --yy-safe-area-top:env(safe-area-inset-top,0px);
+    --yy-safe-area-bottom:env(safe-area-inset-bottom,0px);
+  }
+
+  /* ---------- iconfont 兜底：即使外部样式未加载也能渲染字形 ---------- */
+  @font-face{
+    font-family:"iconfont";
+    src:url('font/通用图标/iconfont.ttf') format('truetype');
+    font-display:swap;
+  }
+
+  /* ---------- 全局重置 ---------- */
+  .yy-page-reset-all,
+  .yy-page-reset-all *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .yy-page-root-html,
+  .yy-page-root-body{
+    height:100%;
+    width:100%;
+    max-width:100%;
+  }
+
+  .yy-page-root-body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Helvetica,sans-serif;
+    color:var(--yy-color-text-primary);
+    background:var(--yy-color-bg-page);
+    overflow:hidden;
+  }
+
+  /* ---------- 可滚动内容容器 ---------- */
+  .yy-content-scroll-area{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    overflow-y:auto;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    /* 底部预留：固定标签栏高度 + 安全区 */
+    padding:0 0 calc(var(--yy-safe-area-bottom) + 92px);
+    scrollbar-width:none;
+  }
+
+  .yy-content-scroll-area::-webkit-scrollbar{
+    display:none;
+  }
+
+  /* ==========================================================
+     一、顶部轮播 Hero（4 张图，自动播放 + 圆点切换 + 手势滑动）
+     ========================================================== */
+  .yy-hero-carousel-block{
+    position:relative;
+    width:100%;
+    height:58vh;
+    min-height:430px;
+    overflow:hidden;
+    background:#141821;
+  }
+
+  /* 轨道：横向 4 屏，靠 translateX 位移实现轮播 */
+  .yy-hero-slide-track{
+    display:flex;
+    width:100%;
+    height:100%;
+    transform:translateX(0);
+    transition:transform .55s cubic-bezier(.33,.72,.28,1);
+    will-change:transform;
+  }
+
+  /* 单张幻灯片：占满一屏 */
+  .yy-hero-slide-item{
+    position:relative;
+    flex:0 0 100%;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:linear-gradient(170deg, #2a3550 0%, #1a2130 55%, #12171f 100%);
+  }
+
+  .yy-hero-slide-cover-image{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* 图下压的暗色渐变：保证白色标题在任意图片上都可读 */
+  .yy-hero-slide-shade-layer{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    background:linear-gradient(180deg,
+      rgba(10,14,22,.34) 0%,
+      rgba(10,14,22,.06) 26%,
+      rgba(10,14,22,.34) 58%,
+      rgba(10,14,22,.78) 100%);
+  }
+
+  /* 幻灯片内的文案（左下角）
+     bottom 需大于面板压边高度（30px）+ 圆点占位，否则会被白色面板盖住 */
+  .yy-hero-slide-caption-wrap{
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:74px;
+    z-index:2;
+  }
+
+  .yy-hero-slide-title-text{
+    font-size:31px;
+    font-weight:800;
+    line-height:1.28;
+    letter-spacing:.6px;
+    color:var(--yy-color-text-on-image);
+    text-shadow:0 2px 14px rgba(0,0,0,.32);
+  }
+
+  .yy-hero-slide-subtitle-text{
+    margin-top:10px;
+    font-size:16.5px;
+    font-weight:400;
+    line-height:1.5;
+    letter-spacing:.4px;
+    color:rgba(255,255,255,.76);
+    text-shadow:0 1px 10px rgba(0,0,0,.28);
+  }
+
+  /* 顶部浮层导航：标题 + 搜索 + 头像 */
+  .yy-hero-navbar-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    z-index:4;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:calc(var(--yy-safe-area-top) + 18px) 24px 0;
+  }
+
+  .yy-hero-page-title-text{
+    font-size:34px;
+    font-weight:800;
+    letter-spacing:1.5px;
+    line-height:1.2;
+    color:var(--yy-color-text-on-image);
+    text-shadow:0 2px 12px rgba(0,0,0,.3);
+    white-space:nowrap;
+  }
+
+  .yy-hero-action-group{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-shrink:0;
+  }
+
+  /* 搜索按钮：半透明毛玻璃圆钮 */
+  .yy-hero-search-button{
+    width:46px;
+    height:46px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    color:var(--yy-color-text-on-image);
+    background:rgba(255,255,255,.20);
+    backdrop-filter:blur(14px) saturate(150%);
+    -webkit-backdrop-filter:blur(14px) saturate(150%);
+    transition:transform .18s ease, background .18s ease;
+  }
+
+  .yy-hero-search-button:active{
+    transform:scale(.9);
+    background:rgba(255,255,255,.32);
+  }
+
+  .yy-hero-search-button .yy-hero-icon-svg{
+    width:23px;
+    height:23px;
+    display:block;
+  }
+
+  .yy-hero-user-avatar{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    object-fit:cover;
+    flex-shrink:0;
+    border:1.5px solid rgba(255,255,255,.72);
+    background:#3a4350;
+  }
+
+  /* 轮播圆点指示器：当前项拉长为胶囊 */
+  .yy-hero-dot-indicator-row{
+    position:absolute;
+    left:24px;
+    bottom:46px;
+    z-index:4;
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+
+  .yy-hero-dot-item{
+    width:6px;
+    height:6px;
+    padding:0;
+    border:none;
+    border-radius:999px;
+    cursor:pointer;
+    background:rgba(255,255,255,.45);
+    transition:width .3s ease, background .3s ease;
+  }
+
+  .yy-hero-dot-item.yy-is-active{
+    width:20px;
+    background:var(--yy-color-text-on-image);
+  }
+
+  /* ==========================================================
+     二、白色圆角面板（上边缘压住 Hero）
+     ========================================================== */
+  .yy-panel-sheet-board{
+    position:relative;
+    z-index:3;
+    margin-top:-30px;
+    min-height:calc(42vh + 30px);
+    padding-top:22px;
+    background:var(--yy-color-bg-page);
+    border-radius:var(--yy-radius-sheet) var(--yy-radius-sheet) 0 0;
+  }
+
+  /* ---------- 分类筛选胶囊（横向滚动） ---------- */
+  .yy-filter-chip-rail-scroll{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding:2px 24px 0;
+    scrollbar-width:none;
+  }
+
+  .yy-filter-chip-rail-scroll::-webkit-scrollbar{
+    display:none;
+  }
+
+  .yy-filter-chip-button{
+    flex:0 0 auto;
+    height:44px;
+    padding:0 22px;
+    border:none;
+    border-radius:999px;
+    background:var(--yy-color-chip-bg);
+    color:var(--yy-color-text-primary);
+    font-family:inherit;
+    font-size:16px;
+    font-weight:500;
+    letter-spacing:.4px;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:background .22s ease, color .22s ease, transform .16s ease;
+  }
+
+  .yy-filter-chip-button:active{
+    transform:scale(.95);
+  }
+
+  /* 选中态：黑底白字 */
+  .yy-filter-chip-button.yy-is-selected{
+    background:var(--yy-color-chip-active-bg);
+    color:#ffffff;
+    font-weight:600;
+  }
+
+  /* ---------- 睡眠合集（横向滚动，右侧露出下一组） ---------- */
+  .yy-collection-rail-scroll{
+    display:flex;
+    gap:18px;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    /* scroll-snap 会把首项吸附到滚动口起点，必须配 scroll-padding
+       把左内边距让出来，否则第一列文字会被裁掉 */
+    scroll-padding:0 24px;
+    -webkit-overflow-scrolling:touch;
+    padding:28px 24px 10px;
+    scrollbar-width:none;
+  }
+
+  .yy-collection-rail-scroll::-webkit-scrollbar{
+    display:none;
+  }
+
+  .yy-collection-item-block{
+    flex:0 0 76%;
+    scroll-snap-align:start;
+    display:flex;
+    flex-direction:column;
+    cursor:pointer;
+  }
+
+  .yy-collection-eyebrow-label{
+    font-size:14px;
+    color:var(--yy-color-text-muted);
+    letter-spacing:.5px;
+  }
+
+  .yy-collection-title-text{
+    margin-top:9px;
+    font-size:25px;
+    font-weight:800;
+    line-height:1.28;
+    letter-spacing:.4px;
+    color:var(--yy-color-text-primary);
+  }
+
+  .yy-collection-cover-card{
+    position:relative;
+    margin-top:16px;
+    width:100%;
+    aspect-ratio:16 / 11;
+    border-radius:var(--yy-radius-card);
+    overflow:hidden;
+    background:#1c1f24;
+    transition:transform .2s ease;
+  }
+
+  .yy-collection-item-block:active .yy-collection-cover-card{
+    transform:scale(.975);
+  }
+
+  .yy-collection-cover-image{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  /* ==========================================================
+     三、底部固定标签栏
+     ========================================================== */
+  .yy-tabbar-bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:20;
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-around;
+    padding:12px 12px calc(var(--yy-safe-area-bottom) + 10px);
+    background:var(--yy-color-tabbar-bg);
+    border-top:1px solid rgba(0,0,0,.05);
+  }
+
+  .yy-tabbar-item{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:7px;
+    padding:2px 0;
+    background:none;
+    border:none;
+    cursor:pointer;
+    transition:transform .18s ease, opacity .18s ease;
+  }
+
+  .yy-tabbar-item:active{
+    transform:scale(.9);
+    opacity:.7;
+  }
+
+  .yy-tabbar-item .yy-tabbar-icon-svg{
+    width:25px;
+    height:25px;
+    display:block;
+    color:var(--yy-color-tabbar-idle);
+    transition:color .18s ease;
+  }
+
+  .yy-tabbar-label-text{
+    font-size:13px;
+    color:var(--yy-color-tabbar-idle);
+    letter-spacing:.3px;
+    transition:color .18s ease;
+  }
+
+  /* 选中态：图标与文字同时点亮（睡眠页主色为蓝紫） */
+  .yy-tabbar-item.yy-is-active .yy-tabbar-icon-svg,
+  .yy-tabbar-item.yy-is-active .yy-tabbar-label-text{
+    color:var(--yy-color-tabbar-active);
+  }
+
+  /* ---------- 小屏适配（≤360px） ---------- */
+  @media (max-width:360px){
+    .yy-hero-slide-title-text{font-size:27px;}
+    .yy-hero-slide-subtitle-text{font-size:15px;}
+    .yy-hero-page-title-text{font-size:30px;}
+    .yy-hero-search-button,
+    .yy-hero-user-avatar{width:42px;height:42px;}
+    .yy-collection-item-block{flex:0 0 80%;}
+    .yy-collection-title-text{font-size:22px;}
+    .yy-filter-chip-button{height:41px;font-size:15px;padding:0 19px;}
+  }
+
+  /* 用户系统偏好减少动效时，取消轮播位移过渡 */
+  @media (prefers-reduced-motion:reduce){
+    .yy-hero-slide-track{transition:none;}
+  }
+</style>
+</head>
+
+<body class="yy-page-root-body yy-page-reset-all yy-app-theme-tokens">
+<div class="yy-content-scroll-area">
+
+    <!-- ========== 顶部轮播 Hero ========== -->
+    <section class="yy-hero-carousel-block" aria-label="睡眠精选轮播">
+
+      <div class="yy-hero-slide-track" id="yyHeroSlideTrack">
+
+        <!-- 第 1 屏 -->
+        <article class="yy-hero-slide-item">
+          <img class="yy-hero-slide-cover-image"
+               src="images/01-熬夜对身体的影响.jpg"
+               alt="夜空与云" onerror="this.style.display='none'">
+          <div class="yy-hero-slide-shade-layer"></div>
+          <div class="yy-hero-slide-caption-wrap">
+            <h2 class="yy-hero-slide-title-text">熬夜对身体的影响</h2>
+            <p class="yy-hero-slide-subtitle-text">熬夜后，身体会发生什么变化</p>
+          </div>
+        </article>
+
+        <!-- 第 2 屏 -->
+        <article class="yy-hero-slide-item">
+          <img class="yy-hero-slide-cover-image"
+               src="images/02-深度睡眠的秘密.jpg"
+               alt="星空" onerror="this.style.display='none'">
+          <div class="yy-hero-slide-shade-layer"></div>
+          <div class="yy-hero-slide-caption-wrap">
+            <h2 class="yy-hero-slide-title-text">深度睡眠的秘密</h2>
+            <p class="yy-hero-slide-subtitle-text">为什么睡满 8 小时还是觉得累</p>
+          </div>
+        </article>
+
+        <!-- 第 3 屏 -->
+        <article class="yy-hero-slide-item">
+          <img class="yy-hero-slide-cover-image"
+               src="images/03-睡前放下手机.jpg"
+               alt="夜雾山林" onerror="this.style.display='none'">
+          <div class="yy-hero-slide-shade-layer"></div>
+          <div class="yy-hero-slide-caption-wrap">
+            <h2 class="yy-hero-slide-title-text">睡前放下手机</h2>
+            <p class="yy-hero-slide-subtitle-text">蓝光是如何推迟你的入睡时间</p>
+          </div>
+        </article>
+
+        <!-- 第 4 屏 -->
+        <article class="yy-hero-slide-item">
+          <img class="yy-hero-slide-cover-image"
+               src="images/04-一夜好眠的方法.jpg"
+               alt="雪山夜空" onerror="this.style.display='none'">
+          <div class="yy-hero-slide-shade-layer"></div>
+          <div class="yy-hero-slide-caption-wrap">
+            <h2 class="yy-hero-slide-title-text">一夜好眠的方法</h2>
+            <p class="yy-hero-slide-subtitle-text">让身体自然回到昼夜节律</p>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- 顶部浮层：标题 + 搜索 + 头像 -->
+      <header class="yy-hero-navbar-bar">
+        <h1 class="yy-hero-page-title-text">睡眠</h1>
+
+        <div class="yy-hero-action-group">
+          <button class="yy-hero-search-button" aria-label="搜索">
+            <!-- 放大镜：图标库无此形状，用内联 SVG 描边 -->
+            <svg class="yy-hero-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="10.8" cy="10.8" r="6.6"/>
+              <path d="M15.6 15.6 20.4 20.4"/>
+            </svg>
+          </button>
+
+          <img class="yy-hero-user-avatar"
+               src="images/08-用户头像.jpg"
+               alt="用户头像"
+               onerror="this.removeAttribute('src')">
+        </div>
+      </header>
+
+      <!-- 轮播圆点 -->
+      <div class="yy-hero-dot-indicator-row" role="tablist" aria-label="轮播切换">
+        <button class="yy-hero-dot-item yy-is-active" role="tab" aria-label="第 1 张"></button>
+        <button class="yy-hero-dot-item" role="tab" aria-label="第 2 张"></button>
+        <button class="yy-hero-dot-item" role="tab" aria-label="第 3 张"></button>
+        <button class="yy-hero-dot-item" role="tab" aria-label="第 4 张"></button>
+      </div>
+
+    </section>
+
+    <!-- ========== 白色圆角面板 ========== -->
+    <section class="yy-panel-sheet-board">
+
+      <!-- 分类筛选胶囊 -->
+      <div class="yy-filter-chip-rail-scroll">
+        <button class="yy-filter-chip-button yy-is-selected">推荐</button>
+        <button class="yy-filter-chip-button">助眠冥想</button>
+        <button class="yy-filter-chip-button">睡眠故事</button>
+        <button class="yy-filter-chip-button">睡眠声音</button>
+        <button class="yy-filter-chip-button">白噪音</button>
+        <button class="yy-filter-chip-button">睡眠科普</button>
+      </div>
+
+      <!-- 睡眠合集横向轨道 -->
+      <div class="yy-collection-rail-scroll">
+
+        <div class="yy-collection-item-block">
+          <span class="yy-collection-eyebrow-label">最受欢迎</span>
+          <h3 class="yy-collection-title-text">YogaNidra睡眠冥想</h3>
+          <div class="yy-collection-cover-card">
+            <img class="yy-collection-cover-image"
+                 src="images/05-YogaNidra睡眠冥想.jpg"
+                 alt="YogaNidra睡眠冥想"
+                 onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="yy-collection-item-block">
+          <span class="yy-collection-eyebrow-label">从科学角度</span>
+          <h3 class="yy-collection-title-text">睡眠与大脑</h3>
+          <div class="yy-collection-cover-card">
+            <img class="yy-collection-cover-image"
+                 src="images/06-睡眠与大脑.jpg"
+                 alt="睡眠与大脑"
+                 onerror="this.style.display='none'">
+          </div>
+        </div>
+
+        <div class="yy-collection-item-block">
+          <span class="yy-collection-eyebrow-label">今晚试试</span>
+          <h3 class="yy-collection-title-text">4-7-8 呼吸法</h3>
+          <div class="yy-collection-cover-card">
+            <img class="yy-collection-cover-image"
+                 src="images/07-478呼吸法.jpg"
+                 alt="4-7-8 呼吸法"
+                 onerror="this.style.display='none'">
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+</div>
+
+<!-- ========== 底部固定标签栏 ========== -->
+<nav class="yy-tabbar-bottom-nav">
+
+  <button class="yy-tabbar-item">
+    <!-- 此刻：圆角方框 + 闪电 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="4.6"/>
+      <path d="M12.9 8.6 10.1 12.7h2.3l-.6 2.9 2.7-4.2h-2.2z" fill="currentColor" stroke="none"/>
+    </svg>
+    <span class="yy-tabbar-label-text">此刻</span>
+  </button>
+
+  <button class="yy-tabbar-item yy-is-active">
+    <!-- 睡眠：月牙（当前页） -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M20.4 14.6A8.8 8.8 0 0 1 9.4 3.6a8.8 8.8 0 1 0 11 11Z"/>
+    </svg>
+    <span class="yy-tabbar-label-text">睡眠</span>
+  </button>
+
+  <button class="yy-tabbar-item">
+    <!-- 冥想：圆角三角 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+      <path d="M12 5.6 20 18.4H4Z"/>
+    </svg>
+    <span class="yy-tabbar-label-text">冥想</span>
+  </button>
+
+  <button class="yy-tabbar-item">
+    <!-- 声音：实心圆 -->
+    <svg class="yy-tabbar-icon-svg" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="12" cy="12" r="7.4"/>
+    </svg>
+    <span class="yy-tabbar-label-text">声音</span>
+  </button>
+
+</nav>
+
+<script>
+  /* ---------- 轮播图：自动播放 + 圆点切换 + 手势滑动 ---------- */
+  (function () {
+    var track = document.getElementById('yyHeroSlideTrack');
+    if (!track) return;
+
+    var slides = track.children;
+    var dots = document.querySelectorAll('.yy-hero-dot-item');
+    var total = slides.length;
+    var index = 0;
+    var timer = null;
+    var DURATION = 5000;
+
+    /* 位移一整屏；同步圆点状态 */
+    function render() {
+      track.style.transform = 'translateX(' + (-index * 100) + '%)';
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.toggle('yy-is-active', i === index);
+      }
+      for (var j = 0; j < total; j++) {
+        slides[j].setAttribute('aria-hidden', j === index ? 'false' : 'true');
+      }
+    }
+
+    function goTo(i) {
+      index = (i + total) % total;
+      render();
+    }
+
+    function start() {
+      stop();
+      timer = setInterval(function () { goTo(index + 1); }, DURATION);
+    }
+
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    /* 点击圆点切换，并重置计时 */
+    for (var k = 0; k < dots.length; k++) {
+      (function (n) {
+        dots[n].addEventListener('click', function () { goTo(n); start(); });
+      })(k);
+    }
+
+    /* 触摸滑动：横向位移超过 50px 判定为翻页 */
+    var startX = 0;
+    var moveX = 0;
+    var dragging = false;
+
+    track.addEventListener('touchstart', function (e) {
+      dragging = true;
+      startX = e.touches[0].clientX;
+      moveX = 0;
+      stop();
+    }, { passive: true });
+
+    track.addEventListener('touchmove', function (e) {
+      if (!dragging) return;
+      moveX = e.touches[0].clientX - startX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', function () {
+      if (!dragging) return;
+      dragging = false;
+      if (Math.abs(moveX) > 50) { goTo(index + (moveX < 0 ? 1 : -1)); }
+      start();
+    });
+
+    /* 鼠标悬停暂停，离开继续 */
+    track.addEventListener('mouseenter', stop);
+    track.addEventListener('mouseleave', start);
+
+    render();
+    start();
+  })();
+</script>
+</body>
+</html>
