@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iconography 02 · Lucide · 当代艺术出版社</title>
+    <style>
+        :root {
+            --yy-paper: #f7f3ec;
+            --yy-ink: #1c1a16;
+            --yy-brown: #4a3f35;
+            --yy-ochre: #c47b3a;
+            --yy-line: #d7cfc2;
+            --yy-muted: #8a7f74;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: var(--yy-ink);
+            background: var(--yy-paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: inherit; }
+
+        /* ── 页面版心 ── */
+        .yy_page {
+            width: min(1040px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        /* ── Header · 发丝线 ── */
+        .yy_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 0 22px;
+            border-bottom: 1px solid var(--yy-line);
+            font-size: 14px;
+            letter-spacing: 0.14em;
+        }
+
+        .yy_header_mark {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: 15px;
+            color: var(--yy-ink);
+        }
+
+        .yy_header_mark span { color: var(--yy-ochre); }
+
+        .yy_header_home {
+            text-decoration: none;
+            color: var(--yy-muted);
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            transition: color 160ms ease;
+        }
+
+        .yy_header_home:hover { color: var(--yy-ochre); }
+
+        /* ── Hero ── */
+        .yy_hero {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 48px;
+            align-items: center;
+            padding: 64px 0 56px;
+        }
+
+        .yy_hero_icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            border: 1px solid var(--yy-line);
+            border-radius: 50%;
+            color: var(--yy-ink);
+        }
+
+        .yy_hero_icon svg { width: 72px; height: 72px; stroke-width: 1.5; }
+
+        .yy_hero_meta {
+            border-left: 2px solid var(--yy-ochre);
+            padding-left: 24px;
+        }
+
+        .yy_hero_num {
+            color: var(--yy-ochre);
+            font-family: Georgia, serif;
+            font-size: 15px;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .yy_hero_title {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: clamp(34px, 5vw, 52px);
+            font-weight: 400;
+            line-height: 1.15;
+            margin: 0 0 14px;
+            color: var(--yy-ink);
+        }
+
+        .yy_hero_sub {
+            color: var(--yy-muted);
+            font-size: 15px;
+            margin: 0;
+            max-width: 480px;
+        }
+
+        /* ── 分组通用 ── */
+        .yy_section { padding: 40px 0 0; }
+
+        .yy_section_head {
+            display: flex;
+            align-items: baseline;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .yy_section_num {
+            color: var(--yy-ochre);
+            font-family: Georgia, serif;
+            font-size: 14px;
+            letter-spacing: 0.08em;
+        }
+
+        .yy_section_title {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--yy-ink);
+            margin: 0;
+        }
+
+        .yy_section_divider {
+            border-top: 1px solid var(--yy-line);
+            margin: 54px 0 0;
+        }
+
+        /* ── 图标网格 ── */
+        .yy_grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+        }
+
+        .yy_grid_item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 26px 14px;
+            border: 1px solid transparent;
+            cursor: default;
+            color: var(--yy-ink);
+            transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+        }
+
+        .yy_grid_item:hover {
+            border-color: var(--yy-ochre);
+            background: rgba(196, 123, 58, 0.04);
+            color: var(--yy-ochre);
+        }
+
+        .yy_grid_item i { display: inline-block; }
+
+        .yy_grid_item svg {
+            width: 28px;
+            height: 28px;
+            transition: transform 200ms ease;
+        }
+
+        .yy_grid_item:hover svg { transform: scale(1.08); }
+
+        .yy_grid_item span {
+            font-size: 12px;
+            color: var(--yy-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .yy_grid_item:hover span { color: var(--yy-ochre); }
+
+        /* ── Footer ── */
+        .yy_footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 36px 0 48px;
+            border-top: 1px solid var(--yy-line);
+            margin-top: 64px;
+            color: var(--yy-muted);
+            font-size: 13px;
+        }
+
+        .yy_footer_home {
+            text-decoration: none;
+            color: var(--yy-brown);
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            transition: color 160ms ease;
+        }
+
+        .yy_footer_home:hover { color: var(--yy-ochre); }
+
+        /* ── 响应式 ── */
+        @media (max-width: 760px) {
+            .yy_hero {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                text-align: center;
+            }
+            .yy_hero_meta { border-left: none; padding-left: 0; }
+            .yy_section_head { justify-content: center; }
+            .yy_grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 420px) {
+            .yy_grid { grid-template-columns: repeat(2, 1fr); }
+            .yy_page { width: min(100% - 28px, 560px); }
+            .yy_footer { flex-direction: column; gap: 14px; text-align: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .yy_grid_item svg { transition: none; }
+            .yy_grid_item:hover svg { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="yy_page yy_header">
+        <div class="yy_header_mark">ICONOGRAPHY · <span>02</span></div>
+        <a class="yy_header_home" href="./index.html">↖ 返回目录</a>
+    </header>
+
+    <main id="yy_main">
+        <!-- Hero -->
+        <section class="yy_page yy_hero" aria-labelledby="yy_hero_title">
+            <div class="yy_hero_icon" aria-hidden="true">
+                <i id="yy_hero_icon" data-lucide="book-open"></i>
+            </div>
+            <div class="yy_hero_meta">
+                <div class="yy_hero_num">02 / LUCIDE · VECTOR SVG</div>
+                <h1 id="yy_hero_title">Lucide<br>SVG 图标手册</h1>
+                <p class="yy_hero_sub">基于 Lucide 0.544.0 的 stroke 风格图标库。运行时由 UMD 脚本替换为内联 SVG，每个图标是可直接操控的矢量图形。</p>
+            </div>
+        </section>
+
+        <!-- 导航组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp01">
+            <div class="yy_section_head">
+                <span class="yy_section_num">02</span>
+                <h2 id="yy_grp01" class="yy_section_title">导航 Navigation</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i data-lucide="home"></i><span>home</span></div>
+                <div class="yy_grid_item"><i data-lucide="compass"></i><span>compass</span></div>
+                <div class="yy_grid_item"><i data-lucide="search"></i><span>search</span></div>
+                <div class="yy_grid_item"><i data-lucide="menu"></i><span>menu</span></div>
+                <div class="yy_grid_item"><i data-lucide="book-open"></i><span>book-open</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 社交组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp02">
+            <div class="yy_section_head">
+                <span class="yy_section_num">03</span>
+                <h2 id="yy_grp02" class="yy_section_title">社交 Social</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i data-lucide="twitter"></i><span>twitter</span></div>
+                <div class="yy_grid_item"><i data-lucide="instagram"></i><span>instagram</span></div>
+                <div class="yy_grid_item"><i data-lucide="github"></i><span>github</span></div>
+                <div class="yy_grid_item"><i data-lucide="linkedin"></i><span>linkedin</span></div>
+                <div class="yy_grid_item"><i data-lucide="message-circle"></i><span>message-circle</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 操作组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp03">
+            <div class="yy_section_head">
+                <span class="yy_section_num">04</span>
+                <h2 id="yy_grp03" class="yy_section_title">操作 Actions</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i data-lucide="pen"></i><span>pen</span></div>
+                <div class="yy_grid_item"><i data-lucide="trash-2"></i><span>trash-2</span></div>
+                <div class="yy_grid_item"><i data-lucide="folder-plus"></i><span>folder-plus</span></div>
+                <div class="yy_grid_item"><i data-lucide="share-2"></i><span>share-2</span></div>
+                <div class="yy_grid_item"><i data-lucide="download"></i><span>download</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 状态组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp04">
+            <div class="yy_section_head">
+                <span class="yy_section_num">05</span>
+                <h2 id="yy_grp04" class="yy_section_title">状态 Status</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i data-lucide="check-circle"></i><span>check-circle</span></div>
+                <div class="yy_grid_item"><i data-lucide="x-circle"></i><span>x-circle</span></div>
+                <div class="yy_grid_item"><i data-lucide="heart"></i><span>heart</span></div>
+                <div class="yy_grid_item"><i data-lucide="eye"></i><span>eye</span></div>
+                <div class="yy_grid_item"><i data-lucide="star"></i><span>star</span></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="yy_page yy_footer">
+        <div>当代艺术出版社 · Lucide SVG 图标</div>
+        <a class="yy_footer_home" href="./index.html">返回目录</a>
+    </footer>
+
+    <!-- Lucide UMD · 运行时 SVG 替换 -->
+    <script src="./cdn/lucide/lucide.min.js"></script>
+    <script>
+        const yy_iconsAnchors = document.querySelectorAll('[data-lucide]');
+        lucide.createIcons({
+            attrs: {
+                "aria-hidden": "true"
+            }
+        });
+        // Hero 图标单独放大
+        const yy_heroEl = document.getElementById('yy_hero_icon');
+        if (yy_heroEl && yy_heroEl.parentElement) {
+            const svg = yy_heroEl.parentElement.querySelector('svg');
+            if (svg) { svg.style.width = '72px'; svg.style.height = '72px'; svg.style.strokeWidth = '1.5'; }
+        }
+    </script>
+</body>
+</html>

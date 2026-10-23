@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iconography 01 · Font Awesome · 当代艺术出版社</title>
+    <!-- Font Awesome Free 6.6.0 · 字体图标方式 -->
+    <link rel="stylesheet" href="./cdn/font-awesome/all.min.css">
+    <style>
+        :root {
+            --yy-paper: #f7f3ec;
+            --yy-ink: #1c1a16;
+            --yy-brown: #4a3f35;
+            --yy-ochre: #c47b3a;
+            --yy-line: #d7cfc2;
+            --yy-muted: #8a7f74;
+        }
+
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: var(--yy-ink);
+            background: var(--yy-paper);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: inherit; }
+
+        /* ── 页面版心 ── */
+        .yy_page {
+            width: min(1040px, calc(100% - 48px));
+            margin: 0 auto;
+        }
+
+        /* ── Header · 发丝线 ── */
+        .yy_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 0 22px;
+            border-bottom: 1px solid var(--yy-line);
+            font-size: 14px;
+            letter-spacing: 0.14em;
+        }
+
+        .yy_header_mark {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: 15px;
+            color: var(--yy-ink);
+        }
+
+        .yy_header_mark span {
+            color: var(--yy-ochre);
+        }
+
+        .yy_header_home {
+            text-decoration: none;
+            color: var(--yy-muted);
+            font-size: 13px;
+            letter-spacing: 0.08em;
+            transition: color 160ms ease;
+        }
+
+        .yy_header_home:hover { color: var(--yy-ochre); }
+
+        /* ── Hero ── */
+        .yy_hero {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 48px;
+            align-items: center;
+            padding: 64px 0 56px;
+        }
+
+        .yy_hero_icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto;
+            border: 1px solid var(--yy-line);
+            border-radius: 50%;
+            background: transparent;
+            color: var(--yy-ink);
+            font-size: 72px;
+        }
+
+        .yy_hero_icon i { font-weight: 900; }
+
+        .yy_hero_meta {
+            border-left: 2px solid var(--yy-ochre);
+            padding-left: 24px;
+        }
+
+        .yy_hero_num {
+            color: var(--yy-ochre);
+            font-family: Georgia, serif;
+            font-size: 15px;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .yy_hero_title {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: clamp(34px, 5vw, 52px);
+            font-weight: 400;
+            line-height: 1.15;
+            margin: 0 0 14px;
+            color: var(--yy-ink);
+        }
+
+        .yy_hero_sub {
+            color: var(--yy-muted);
+            font-size: 15px;
+            margin: 0;
+            max-width: 480px;
+        }
+
+        /* ── 分组通用 ── */
+        .yy_section {
+            padding: 40px 0 0;
+        }
+
+        .yy_section_head {
+            display: flex;
+            align-items: baseline;
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .yy_section_num {
+            color: var(--yy-ochre);
+            font-family: Georgia, serif;
+            font-size: 14px;
+            letter-spacing: 0.08em;
+        }
+
+        .yy_section_title {
+            font-family: Georgia, "Songti SC", serif;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--yy-ink);
+            margin: 0;
+        }
+
+        .yy_section_divider {
+            border-top: 1px solid var(--yy-line);
+            margin: 54px 0 0;
+        }
+
+        /* ── 图标网格 ── */
+        .yy_grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2px;
+        }
+
+        .yy_grid_item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 26px 14px;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: default;
+            transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+        }
+
+        .yy_grid_item:hover {
+            border-color: var(--yy-ochre);
+            background: rgba(196, 123, 58, 0.04);
+            color: var(--yy-ochre);
+        }
+
+        .yy_grid_item i {
+            font-size: 28px;
+            color: inherit;
+            transition: transform 200ms ease;
+        }
+
+        .yy_grid_item:hover i { transform: scale(1.08); }
+
+        .yy_grid_item span {
+            font-size: 12px;
+            color: var(--yy-muted);
+            letter-spacing: 0.05em;
+        }
+
+        .yy_grid_item:hover span { color: var(--yy-ochre); }
+
+        /* ── Footer ── */
+        .yy_footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 36px 0 48px;
+            border-top: 1px solid var(--yy-line);
+            margin-top: 64px;
+            color: var(--yy-muted);
+            font-size: 13px;
+        }
+
+        .yy_footer_home {
+            text-decoration: none;
+            color: var(--yy-brown);
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            transition: color 160ms ease;
+        }
+
+        .yy_footer_home:hover { color: var(--yy-ochre); }
+
+        /* ── 响应式 ── */
+        @media (max-width: 760px) {
+            .yy_hero {
+                grid-template-columns: 1fr;
+                gap: 32px;
+                text-align: center;
+            }
+            .yy_hero_meta { border-left: none; padding-left: 0; }
+            .yy_section_head { justify-content: center; }
+            .yy_grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 420px) {
+            .yy_grid { grid-template-columns: repeat(2, 1fr); }
+            .yy_page { width: min(100% - 28px, 560px); }
+            .yy_footer { flex-direction: column; gap: 14px; text-align: center; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .yy_grid_item i { transition: none; }
+            .yy_grid_item:hover i { transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <header class="yy_page yy_header">
+        <div class="yy_header_mark">ICONOGRAPHY · <span>01</span></div>
+        <a class="yy_header_home" href="./index.html">↖ 返回目录</a>
+    </header>
+
+    <main id="yy_main">
+        <!-- Hero -->
+        <section class="yy_page yy_hero" aria-labelledby="yy_hero_title">
+            <div class="yy_hero_icon" aria-hidden="true">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="yy_hero_meta">
+                <div class="yy_hero_num">01 / FONT AWESOME · FREE</div>
+                <h1 id="yy_hero_title">Font Awesome<br>字体图标手册</h1>
+                <p class="yy_hero_sub">基于 Font Awesome 6.6.0 Free 版的 solid 字重。采用 Web Font 渲染方式，每个图标是字体 glyph，可像文字一样改变大小、颜色与粗细。</p>
+            </div>
+        </section>
+
+        <!-- 导航组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp01">
+            <div class="yy_section_head">
+                <span class="yy_section_num">02</span>
+                <h2 id="yy_grp01" class="yy_section_title">导航 Navigation</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i class="fa-solid fa-house"></i><span>fa-house</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-compass"></i><span>fa-compass</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-magnifying-glass"></i><span>fa-magnifying-glass</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-bars"></i><span>fa-bars</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-book-open"></i><span>fa-book-open</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 社交组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp02">
+            <div class="yy_section_head">
+                <span class="yy_section_num">03</span>
+                <h2 id="yy_grp02" class="yy_section_title">社交 Social</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i class="fa-brands fa-twitter"></i><span>fa-twitter</span></div>
+                <div class="yy_grid_item"><i class="fa-brands fa-instagram"></i><span>fa-instagram</span></div>
+                <div class="yy_grid_item"><i class="fa-brands fa-github"></i><span>fa-github</span></div>
+                <div class="yy_grid_item"><i class="fa-brands fa-linkedin-in"></i><span>fa-linkedin-in</span></div>
+                <div class="yy_grid_item"><i class="fa-brands fa-weixin"></i><span>fa-weixin</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 操作组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp03">
+            <div class="yy_section_head">
+                <span class="yy_section_num">04</span>
+                <h2 id="yy_grp03" class="yy_section_title">操作 Actions</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i class="fa-solid fa-pen"></i><span>fa-pen</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-trash"></i><span>fa-trash</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-folder-plus"></i><span>fa-folder-plus</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-share-nodes"></i><span>fa-share-nodes</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-download"></i><span>fa-download</span></div>
+            </div>
+        </section>
+
+        <hr class="yy_page yy_section_divider">
+
+        <!-- 状态组 -->
+        <section class="yy_page yy_section" aria-labelledby="yy_grp04">
+            <div class="yy_section_head">
+                <span class="yy_section_num">05</span>
+                <h2 id="yy_grp04" class="yy_section_title">状态 Status</h2>
+            </div>
+            <div class="yy_grid">
+                <div class="yy_grid_item"><i class="fa-solid fa-circle-check"></i><span>fa-circle-check</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-circle-xmark"></i><span>fa-circle-xmark</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-heart"></i><span>fa-heart</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-eye"></i><span>fa-eye</span></div>
+                <div class="yy_grid_item"><i class="fa-solid fa-star"></i><span>fa-star</span></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="yy_page yy_footer">
+        <div>当代艺术出版社 · Font Awesome 字体图标</div>
+        <a class="yy_footer_home" href="./index.html">返回目录</a>
+    </footer>
+</body>
+</html>
