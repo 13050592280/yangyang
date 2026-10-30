@@ -104,6 +104,7 @@ After a successful push:
 | Failure | Action |
 |---------|--------|
 | `ssh -T git@github.com` → Permission denied | SSH key not configured for this GitHub account; stop and ask the user |
+| Port 22 refused, or `Connection closed by 127.0.0.1 port 443` (local accelerator intercepts github.com) | Switch to SSH over 443: set remote URL to `git@ssh.github.com:13050592280/yangyang.git` and run `git config core.sshCommand "ssh -p 443 -o StrictHostKeyChecking=accept-new"` (repo-local, no secrets). Verify with `ssh -T -p 443 git@ssh.github.com` |
 | PowerShell script execution policy blocks `.ps1` | Use `git.exe` / `ssh.exe` directly, never wrapper scripts |
 | `git commit` fails due to staged-vs-working confusion | Re-run `git status`, confirm staging with `git diff --cached` |
 | `non-fast-forward` on push | Pull-rebase from `github` first after user confirmation; never force-push unless explicitly approved |
