@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="yy-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#3b4346">
+<!-- 作者：杨阳（姓名缩写 yy） · 潮汐 App 首页复刻 · 字体图标 + SVG 图标 -->
+<title>潮汐 · 下午好</title>
+<link rel="stylesheet" href="./font/font_5246471_oervrmywuem/iconfont.css">
+<style>
+  /* ==========================================================
+     一、yy 全局样式（作者：杨阳 · 姓名缩写 yy）
+     · 采用 CSS 变量统一色板与尺寸，便于整体换肤
+     · 统一 box-sizing 与默认间距重置
+     · 全部选择器以 yy- 前缀命名（姓名缩写），不使用 id 选择器
+     ========================================================== */
+  html.yy-root{
+    --yy-bg-top:#3f484c;
+    --yy-bg-page:#3a4245;
+    --yy-bg-bottom:#394144;
+    --yy-bg-nav:rgba(41,48,51,.95);
+    --yy-glass:rgba(255,255,255,.075);
+    --yy-glass-strong:rgba(255,255,255,.115);
+    --yy-stroke:rgba(255,255,255,.075);
+    --yy-text-1:#ffffff;
+    --yy-text-2:rgba(255,255,255,.6);
+    --yy-text-3:rgba(255,255,255,.4);
+    --yy-pad:24px;
+    --yy-nav-h:76px;
+    --yy-radius-card:20px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+
+  body.yy-body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--yy-bg-page);
+    color:var(--yy-text-1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* 字体图标基类：图标字形来自 iconfont 字体文件，
+     具体显示哪个图形由 .icon-xxx 的 content 码位决定 */
+  .yy-iconfont{
+    font-family:"iconfont-new";
+    font-style:normal;
+    font-weight:400;
+    line-height:1;
+    display:inline-block;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .yy-app{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+    background:linear-gradient(180deg,var(--yy-bg-top) 0%,var(--yy-bg-page) 46%,var(--yy-bg-bottom) 100%);
+    overflow:hidden;
+  }
+
+  .yy-scroll{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:0 0 calc(var(--yy-nav-h) + 24px);
+    scrollbar-width:none;
+  }
+  .yy-scroll::-webkit-scrollbar{display:none;}
+
+  .yy-page{
+    padding:0 var(--yy-pad);
+  }
+
+  /* ---------- 二、顶部问候栏 ---------- */
+  .yy-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:26px 0 2px;
+  }
+  .yy-header__greeting{
+    font-size:34px;
+    font-weight:600;
+    letter-spacing:.5px;
+    line-height:1.18;
+  }
+  .yy-header__actions{display:flex;align-items:center;gap:10px;}
+  .yy-header__pill{
+    display:flex;
+    align-items:center;
+    gap:2px;
+    height:40px;
+    padding:0 5px;
+    border-radius:999px;
+    background:var(--yy-glass-strong);
+    border:1px solid var(--yy-stroke);
+  }
+  .yy-header__icon-btn{
+    width:36px;height:36px;
+    display:grid;place-items:center;
+    border:0;background:none;color:#eef2f3;cursor:pointer;
+    border-radius:50%;
+  }
+  .yy-header__icon-btn svg{width:20px;height:20px;}
+  .yy-header__avatar{
+    width:42px;height:42px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#4c5a5f;
+    flex:none;
+  }
+
+  /* ---------- 三、星期导航条 ---------- */
+  .yy-weekday{
+    display:flex;
+    justify-content:space-between;
+    padding:18px 2px 16px;
+    font-size:13px;
+    color:var(--yy-text-3);
+  }
+  .yy-weekday__item{width:18px;text-align:center;}
+  .yy-weekday__item--today{color:var(--yy-text-1);font-weight:500;}
+
+  /* ---------- 四、核心功能卡片 ---------- */
+  .yy-feature-rail{
+    display:flex;
+    gap:11px;
+    overflow-x:auto;
+    margin:0 calc(var(--yy-pad) * -1);
+    padding:0 var(--yy-pad) 2px;
+    scrollbar-width:none;
+  }
+  .yy-feature-rail::-webkit-scrollbar{display:none;}
+  .yy-feature-card{
+    flex:none;
+    width:139px;
+    height:74px;
+    padding:12px 14px;
+    border-radius:20px;
+    background:var(--yy-glass);
+    border:1px solid var(--yy-stroke);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    color:#e7ecec;
+  }
+  .yy-feature-card svg{width:21px;height:21px;display:block;}
+  .yy-feature-card__label{font-size:12.5px;color:var(--yy-text-2);letter-spacing:.3px;}
+
+  /* ---------- 五、每日诗句 ---------- */
+  .yy-quote{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:14px;
+    padding:34px 0 2px;
+  }
+  .yy-quote__date{font-size:12px;color:var(--yy-text-3);letter-spacing:.4px;margin-bottom:10px;}
+  .yy-quote__text{
+    font-size:23px;
+    line-height:1.62;
+    letter-spacing:.8px;
+    font-weight:400;
+    max-width:10.6em;
+  }
+  .yy-quote__author{font-size:12.5px;color:var(--yy-text-3);margin-top:8px;letter-spacing:.5px;}
+  .yy-quote__thumb{
+    width:68px;height:68px;
+    border-radius:50%;
+    object-fit:cover;
+    flex:none;
+    margin-top:20px;
+    background:#5d4a35;
+  }
+
+  /* ---------- 六、快捷功能胶囊 ---------- */
+  .yy-chips{
+    display:grid;
+    grid-template-columns:repeat(3,max-content);
+    gap:9px;
+    margin:0 calc(var(--yy-pad) * -1);
+    padding:30px var(--yy-pad) 2px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .yy-chips::-webkit-scrollbar{display:none;}
+  .yy-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    height:36px;
+    padding:0 13px;
+    border-radius:999px;
+    background:var(--yy-glass);
+    border:1px solid var(--yy-stroke);
+    color:#e9eeee;
+    font-size:12.5px;
+    letter-spacing:.3px;
+    white-space:nowrap;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .yy-chip svg{width:15px;height:15px;display:block;flex:none;}
+
+  /* ---------- 七、精选声音 ---------- */
+  .yy-sound{padding-top:38px;}
+  .yy-sound__head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .yy-sound__title{font-size:20px;font-weight:500;letter-spacing:.5px;}
+  .yy-sound__more{
+    border:0;background:none;color:var(--yy-text-2);
+    width:26px;height:26px;display:grid;place-items:center;cursor:pointer;
+  }
+  .yy-sound__more svg{width:16px;height:16px;}
+
+  .yy-sound__rail{
+    display:flex;
+    gap:10px;
+    margin:0 calc(var(--yy-pad) * -1);
+    padding:0 var(--yy-pad) 4px;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .yy-sound__rail::-webkit-scrollbar{display:none;}
+  .yy-sound-card{
+    position:relative;
+    flex:none;
+    width:148px;
+    height:120px;
+    border-radius:15px;
+    overflow:hidden;
+    background:#46545a;
+  }
+  .yy-sound-card img{
+    width:100%;height:100%;
+    object-fit:cover;
+    filter:blur(1.4px) saturate(.9) brightness(.95);
+    transform:scale(1.08);
+  }
+  .yy-sound-card__badge{
+    position:absolute;
+    top:8px;right:8px;
+    padding:2px 8px;
+    border-radius:8px;
+    background:rgba(255,255,255,.86);
+    color:#3d4548;
+    font-size:10.5px;
+    letter-spacing:.3px;
+  }
+
+  /* ---------- 八、底部标签栏（字体图标） ---------- */
+  .yy-tabbar{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:calc(var(--yy-nav-h) + env(safe-area-inset-bottom,0px));
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    display:flex;
+    align-items:center;
+    background:var(--yy-bg-nav);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-top:1px solid rgba(255,255,255,.06);
+    z-index:10;
+  }
+  .yy-tabbar__item{
+    flex:1;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border:0;
+    background:none;
+    color:rgba(255,255,255,.52);
+    cursor:pointer;
+    font-family:inherit;
+    transition:color .2s ease;
+  }
+  .yy-tabbar__icon{
+    width:26px;
+    height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:visible;
+  }
+  .yy-tabbar__icon .yy-iconfont{
+    font-size:22px;
+    line-height:1;
+    display:block;
+  }
+  /* 三角字形墨迹只有其它三个的六成，单独放大到视觉等大 */
+  .yy-tabbar__icon--scale .yy-iconfont{
+    font-size:35px;
+    transform:translateY(-.5px);
+  }
+  .yy-tabbar__label{font-size:11px;letter-spacing:.5px;}
+  .yy-tabbar__item--active{color:#fff;}
+  .yy-tabbar__item:active{opacity:.72;}
+  /* 桌面/平板：去掉手机外框，内容铺满窗口，栅格自动分列 */
+  @media (min-width:600px){
+    body.yy-body{background:var(--yy-bg-page);overflow-x:hidden;}
+    .yy-app{
+      width:100%;
+      max-width:100%;
+      height:100dvh;
+      border-radius:0;
+      box-shadow:none;
+      transform:none;
+    }
+
+    .yy-page{
+      max-width:none;
+      margin:0 auto;
+      padding:0 clamp(24px,3.2vw,88px);
+    }
+
+    .yy-weekday{max-width:780px;}
+
+    .yy-header{padding:clamp(30px,4vh,56px) 0 4px;}
+
+    .yy-feature-rail{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      overflow:visible;
+      margin:0;
+      padding:0 0 2px;
+    }
+    .yy-feature-card{width:auto;height:clamp(96px,13vh,140px);}
+
+    .yy-quote{
+      padding:clamp(34px,5vh,72px) 0 2px;
+      justify-content:flex-start;
+      gap:34px;
+      max-width:780px;
+    }
+    .yy-quote__text{max-width:none;font-size:26px;line-height:1.55;}
+    .yy-quote__thumb{width:88px;height:88px;margin-top:10px;}
+
+    .yy-chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 12px;
+      margin:0;
+      padding:clamp(26px,4vh,56px) 0 2px;
+      overflow:visible;
+    }
+    .yy-chip{flex:0 0 auto;}
+
+    .yy-sound__rail{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px;
+      overflow:visible;
+      margin:0;
+      padding:0;
+    }
+    .yy-sound-card{width:auto;height:clamp(150px,22vh,250px);}
+    .yy-sound{padding-top:clamp(30px,4.5vh,60px);}
+
+    .yy-tabbar{justify-content:center;gap:6px;}
+    .yy-tabbar__item{flex:0 0 132px;}
+  }
+
+  /* 小屏手机：收窄留白与字号 */
+  @media (max-width:360px){
+    html.yy-root{--yy-pad:18px;}
+    .yy-header__greeting{font-size:30px;}
+    .yy-quote__text{font-size:21px;max-width:10.8em;}
+    .yy-quote__thumb{width:60px;height:60px;}
+    .yy-feature-card{width:128px;height:70px;}
+  }
+
+</style>
+</head>
+<body class="yy-body">
+<div class="yy-app">
+
+  <div class="yy-scroll">
+    <div class="yy-page">
+
+    <header class="yy-header">
+      <h1 class="yy-header__greeting">下午好</h1>
+      <div class="yy-header__actions">
+        <div class="yy-header__pill">
+          <button class="yy-header__icon-btn" type="button" aria-label="静音">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11.4 4.6 6.9 8.3H3.4v7.4h3.5l4.5 3.7V4.6Z"/>
+              <path d="M15.6 9.5 21 14.9M21 9.5 15.6 14.9"/>
+            </svg>
+          </button>
+          <button class="yy-header__icon-btn" type="button" aria-label="全部应用">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round">
+              <rect x="3.4" y="3.4" width="7.4" height="7.4" rx="1.5"/>
+              <rect x="13.2" y="3.4" width="7.4" height="7.4" rx="1.5"/>
+              <rect x="3.4" y="13.2" width="7.4" height="7.4" rx="1.5"/>
+              <rect x="13.2" y="13.2" width="7.4" height="7.4" rx="1.5"/>
+            </svg>
+          </button>
+        </div>
+        <img class="yy-header__avatar" src="./四级项目/images/08-用户头像.jpg" alt="用户头像">
+      </div>
+    </header>
+
+    <nav class="yy-weekday" aria-label="本周">
+      <span class="yy-weekday__item">一</span>
+      <span class="yy-weekday__item">二</span>
+      <span class="yy-weekday__item">三</span>
+      <span class="yy-weekday__item">四</span>
+      <span class="yy-weekday__item yy-weekday__item--today">今</span>
+      <span class="yy-weekday__item">六</span>
+      <span class="yy-weekday__item">日</span>
+    </nav>
+
+    <div class="yy-feature-rail">
+      <div class="yy-feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="8.6"/>
+          <circle cx="12" cy="12" r="2.7" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="yy-feature-card__label">心流专注</span>
+      </div>
+      <div class="yy-feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="12" cy="12" r="8.6"/>
+          <path d="M7.2 14.4c1.6-3.1 3.5-4.6 5.6-4.6 1.6 0 3 .9 4.2 2.6"/>
+        </svg>
+        <span class="yy-feature-card__label">睡眠监测</span>
+      </div>
+      <div class="yy-feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="12" cy="12" r="8.6"/>
+          <path d="M7.4 12h9.2"/>
+        </svg>
+        <span class="yy-feature-card__label">小憩</span>
+      </div>
+      <div class="yy-feature-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="12" cy="12" r="8.6"/>
+          <path d="M12 7.6v8.8"/>
+        </svg>
+        <span class="yy-feature-card__label">专注计时</span>
+      </div>
+    </div>
+
+    <section class="yy-quote">
+      <div>
+        <div class="yy-quote__date">Oct 23</div>
+        <p class="yy-quote__text">霜降碧天静，秋事促西风。</p>
+        <div class="yy-quote__author">叶梦得</div>
+      </div>
+      <img class="yy-quote__thumb" src="./四级项目/images/05-YogaNidra睡眠冥想.jpg" alt="今日配图">
+    </section>
+
+    <div class="yy-chips">
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24" fill="#F6C453"><path d="M11.6 2.6l1.9 5.3 5.3 1.9-5.3 1.9-1.9 5.3-1.9-5.3L4.4 9.8l5.3-1.9z"/><path d="M18.4 15.4l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" opacity=".7"/></svg>
+        每日冥想
+      </button>
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24" fill="#DDE3E4"><path d="M5 4.8h5.4c.8 0 1.4.6 1.4 1.4v12.6c0-.9-.7-1.6-1.6-1.6H5z"/><path d="M19 4.8h-5.4c-.8 0-1.4.6-1.4 1.4v12.6c0-.9.7-1.6 1.6-1.6H19z" opacity=".82"/></svg>
+        睡眠故事
+      </button>
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8FD8F2" stroke-width="1.7" stroke-linecap="round">
+          <path d="M12 3.4v17.2M4.5 7.7l15 8.6M19.5 7.7 4.5 16.3"/>
+        </svg>
+        松心呼吸
+      </button>
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#B4CBE6" stroke-width="1.6" stroke-linejoin="round">
+          <rect x="3" y="5.8" width="18" height="12.8" rx="2.6"/>
+          <path d="M3.9 7.7 12 13.3l8.1-5.6"/>
+        </svg>
+        伊萨卡来信
+      </button>
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24"><path d="M20.2 3.8c.6 6.8-3.3 12-8.9 12.8-2.5.4-4.6-.4-5.8-2.1C6.6 9.6 12.4 4.6 20.2 3.8z" fill="#8CC96B" opacity=".92"/><path d="M4.2 20.8c1.1-4.2 3.8-7.6 7.6-10.2" stroke="#8CC96B" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+        高效休息
+      </button>
+      <button class="yy-chip" type="button">
+        <svg viewBox="0 0 24 24"><path d="M9.3 3.4c2.1 0 3.3 1.6 3.3 3.5 0 2.3-1.6 3.3-3.3 3.3S6 9.2 6 6.9c0-1.9 1.2-3.5 3.3-3.5z" fill="#E8784B"/><path d="M6.5 10.5c-.6 3.3.6 5.8 2.9 8 1.9 1.7 4.5 1.9 6.2.6 1.6-1.2 2-3.1 1.2-4.9-.9-1.9-2.8-3.3-5.2-4.2-1.8-.7-3.4-.5-5.1.5z" fill="#E8784B" opacity=".9"/></svg>
+        情绪SOS
+      </button>
+    </div>
+
+    <section class="yy-sound">
+      <div class="yy-sound__head">
+        <h2 class="yy-sound__title">精选声音</h2>
+        <button class="yy-sound__more" type="button" aria-label="查看全部">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 4.5 16.5 12 9 19.5"/>
+          </svg>
+        </button>
+      </div>
+      <div class="yy-sound__rail">
+        <div class="yy-sound-card">
+          <img src="./四级项目/images/07-478呼吸法.jpg" alt="林间晨雾">
+          <span class="yy-sound-card__badge">免费</span>
+        </div>
+        <div class="yy-sound-card">
+          <img src="./四级项目/images/09-日间深度休息封面.jpg" alt="溪谷暮色">
+          <span class="yy-sound-card__badge">免费</span>
+        </div>
+        <div class="yy-sound-card">
+          <img src="./四级项目/images/04-一夜好眠的方法.jpg" alt="雪岭星河">
+          <span class="yy-sound-card__badge">免费</span>
+        </div>
+        <div class="yy-sound-card">
+          <img src="./四级项目/images/02-深度睡眠的秘密.jpg" alt="深夜星云">
+          <span class="yy-sound-card__badge">免费</span>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </div>
+
+  <!-- 底部导航：使用 iconfont 下载的四个图标 -->
+  <nav class="yy-tabbar" aria-label="主导航">
+    <button class="yy-tabbar__item yy-tabbar__item--active" type="button">
+      <span class="yy-tabbar__icon"><i class="yy-iconfont icon-a-503265153" aria-hidden="true"></i></span>
+      <span class="yy-tabbar__label">此刻</span>
+    </button>
+    <button class="yy-tabbar__item" type="button">
+      <span class="yy-tabbar__icon"><i class="yy-iconfont icon-yueliang" aria-hidden="true"></i></span>
+      <span class="yy-tabbar__label">睡眠</span>
+    </button>
+    <button class="yy-tabbar__item" type="button">
+      <span class="yy-tabbar__icon yy-tabbar__icon--scale"><i class="yy-iconfont icon-dengbiansanjiaoxing" aria-hidden="true"></i></span>
+      <span class="yy-tabbar__label">冥想</span>
+    </button>
+    <button class="yy-tabbar__item" type="button">
+      <span class="yy-tabbar__icon"><i class="yy-iconfont icon-circle" aria-hidden="true"></i></span>
+      <span class="yy-tabbar__label">声音</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+  /* 底部导航切换 */
+  var tabs = document.querySelectorAll('.yy-tabbar__item');
+  tabs.forEach(function (item) {
+    item.addEventListener('click', function () {
+      tabs.forEach(function (el) { el.classList.remove('yy-tabbar__item--active'); });
+      item.classList.add('yy-tabbar__item--active');
+    });
+  });
+
+</script>
+</body>
+</html>

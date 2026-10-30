@@ -71,3 +71,13 @@
 ```
 根据font目录中的iconfont图标完成移动端的固定的自适应宽度的下导航，导航项目包括4个，完成html网页的设计，网页名称iconfont-3.html和iconfont-4.html分别使用字体图标和svg，包括右上角的数字徽章和红点。
 ```
+
+## 2026-10-30 14:36:16
+- 模型： Kimi-K3
+- 提示词： 创建技能skill：提交到github，将本项目提交commit并push到`https://github.com/13050592280/yangyang`，使用已设置公钥。
+
+
+## 2026-10-30 14:39:29
+- 模型： Kimi-K3
+- 提示词： 提交到 GitHub / push 到 yangyang 仓库
+
