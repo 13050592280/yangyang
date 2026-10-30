@@ -98,3 +98,13 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 好的，执行整合与推送
 
+
+## 2026-10-30 15:26:10
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 帮我验证 web-project 是否已正确忽略
+
+
+## 2026-10-30 15:28:13
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 好的，提交并推送 yy_prompt.md
+
