@@ -81,3 +81,15 @@
 - 模型： Kimi-K3
 - 提示词： 提交到 GitHub / push 到 yangyang 仓库
 
+
+## 2026-10-30 15:21:01
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： git submodule deinit -f web-project
+  git rm --cached web-project
+  rm -rf .git/modules/web-project
+
+
+## 2026-10-30 15:22:20
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 好的，创建 .gitignore 并提交推送
+
