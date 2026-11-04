@@ -31,9 +31,20 @@
         }
 
         .yy_music__head {
+            position: relative;
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
+        }
+
+        .yy_music__head::after {
+            position: absolute;
+            right: 0;
+            bottom: -1px;
+            left: 0;
+            height: 1px;
+            background: url("./img/bg20.gif") repeat-x 0 -23px;
+            content: "";
         }
 
         .yy_music__title {
@@ -47,18 +58,7 @@
         }
 
         .yy_music__tabs {
-            position: relative;
             display: flex;
-        }
-
-        .yy_music__tabs::after {
-            position: absolute;
-            right: 0;
-            bottom: -1px;
-            left: 0;
-            height: 1px;
-            background: url("./img/bg20.gif") repeat-x 0 -23px;
-            content: "";
         }
 
         .yy_music .yy_tabs__tab {
