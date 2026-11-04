@@ -1,131 +1,67 @@
-# Spec · Iconfont 移动端底部导航
+# Spec · 新闻 Tab 选项卡练习页
 
 ## 1. 项目概述
 
-基于 `./font/` 目录的本地 iconfont 美食主题图标，制作两个移动端页面，带固定底部导航栏。
+新建一个独立的静态练习页，用原生 HTML/CSS/JS 实现可复用的 Tab 选项卡组件，选项卡为四个新闻频道。
 
 | 项目 | 内容 |
 |---|---|
-| 页面 A | `iconfont-3.html` — 字体图标方式（`.iconfont.icon-xxx`） |
-| 页面 B | `iconfont-4.html` — SVG symbol 方式（`<svg><use xlink:href="#icon-xxx">`） |
-| 导航 | 固定底部 · 4 项 · 自适应宽度 · 带数字徽章和红点 |
-| 资源引用 | 直接引用 `./font/iconfont.css` + `./font/iconfont.js`，**不复制**到 cdn/ |
-| index.html | 追加 2 张新卡入口（替换原 09/SOON 或追加为 10/11） |
-| 命名规则 | 自定义类 / id / JS 变量加 `yy_` 前缀；iconfont 原生类 `.iconfont`、`.icon`、`.icon-hanbao` 不改 |
+| 页面文件 | `tab选项卡.html`（项目根目录） |
+| 脚本文件 | `js/tab选项卡.js`（新建 `js/` 目录，外部 `<script src>` 引用） |
+| 样式 | 写在页面内 `<style>` 中，CSS 类统一 `yy_` 前缀 |
+| 首页入口 | `index.html` 追加一张 `.module-card` 入口卡片，并同步更新可见数量 |
 
----
+## 2. 功能需求
 
-## 2. 设计方案（现代美食 App）
+### 2.1 选项卡结构
 
-Subject matter：**美食外卖 App** 的首页 mockup，带底部 tab bar。视觉参考美团/饿了么风格但做克制化处理，避免过度 SaaS 卡片感。
-
-### 2.1 色彩（6 色，全新 tokens，不复用上一轮）
-
-| Token | HEX | 用途 |
+| 序号 | 选项卡文案 | 默认状态 |
 |---|---|---|
-| `--yy-bg` | `#ffffff` | 页面背景，纯白而非上一轮米纸色 |
-| `--yy-ink` | `#1f1f1f` | 主文字 |
-| `--yy-sub` | `#8a8a8a` | 次要文字 |
-| `--yy-accent` | `#ff6b35` | 主强调色（橙红，美食色），用于 active tab、CTA |
-| `--yy-accent-soft` | `#fff1ec` | 强调色浅底，用于卡片 tag |
-| `--yy-line` | `#f0f0f0` | 细边线 / 分隔 |
+| 1 | 国内新闻 | **选中（默认）** |
+| 2 | 省内新闻 | 未选中 |
+| 3 | 国际新闻 | 未选中 |
+| 4 | 最热新闻 | 未选中 |
 
-### 2.2 字体
+### 2.2 内容面板
 
-- **标题 / 卡片标题**：系统无衬线 `PingFang SC / Microsoft YaHei`，16-18px
-- **正文 / 标签**：12-14px
-- **数字徽章**：10-12px，加粗
+- 四个选项卡各对应一个内容面板，每个面板内放 2 条示例新闻（标题 + 摘要 + 日期 + 来源标签）。
+- 同一时刻只显示当前选中选项卡对应的面板，其余面板隐藏。
+- 页面初始渲染时即显示「国内新闻」面板，不依赖 JS 才可见（避免脚本加载前空白）。
 
-### 2.3 页面结构（两页相同，仅图标渲染方式不同）
+### 2.3 复用要求（核心）
 
-```
-┌──────────────────────────────┐
-│  [搜索栏 · 圆角 · 浅灰底]   │ ← 顶部 AppBar
-├──────────────────────────────┤
-│                              │
-│  [Banner 轮播占位]           │ ← 橙红渐变圆角卡片
-│                              │
-│  [美食分类横滑 6 项]         │ ← 横向滚动分类
-│                              │
-│  ┌────────────────────────┐  │
-│  │ 美食卡片 1              │  │ ← 左图右文案 / 上图下文
-│  │ 图片 + 名称 + 价格      │  │
-│  └────────────────────────┘  │
-│  ┌────────────────────────┐  │
-│  │ 美食卡片 2              │  │
-│  └────────────────────────┘  │
-│  ...                         │
-│                              │
-│  ↓↓ 内容区预留 padding-bottom │ ← 为底部导航让位
-├──────────────────────────────┤
-│  🏠  📍  🧭  🎁            │ ← 固定底部导航（fixed）
-│  首页 附近 发现  我的       │
-│                    •  3     │ ← 红点在「附近」，数字徽章在「我的」
-└──────────────────────────────┘
-```
+组件必须能在同一页面内实例化多次，且不依赖固定 id：
 
-### 2.4 底部导航栏细节
+- 页面结构：容器 `.yy_tabs` 内含 `.yy_tabs__nav`（选项卡按钮组）与 `.yy_tabs__panels`（面板组）。
+- 选项卡按钮使用 `data-yy_tab="news-cn"` 绑定目标面板 id，面板使用 `data-yy_tab-panel="news-cn"`。
+- JS 读取容器上的 `data-yy_tabs` 配置（可选默认索引），对 `document.querySelectorAll('.yy_tabs')` 逐个初始化，多个容器互不干扰。
 
-- **固定定位**：`position: fixed; bottom: 0; left: 0; right: 0`，但内容区 `max-width: 480px` 居中
-- **宽度自适应**：导航栏全宽，内部 4 项 flex 均分；内容主体 `max-width: 480px; margin: 0 auto`
-- **导航项**：
-  | 位置 | 图标类名 | 标签 | 徽章 |
-  |---|---|---|---|
-  | 1 | `.iconfont.icon-hanbao` / `#icon-hanbao` | 首页 | 无（当前 active） |
-  | 2 | `.iconfont.icon-ditu` / `#icon-ditu` | 附近 | **红点**（纯圆点，无数字） |
-  | 3 | `.iconfont.icon-zhinanzhen` / `#icon-zhinanzhen` | 发现 | 无 |
-  | 4 | `.iconfont.icon-baoxiang` / `#icon-baoxiang` | 我的 | **数字徽章 3**（显示 "3"） |
+### 2.4 交互逻辑（明确要求）
 
-- **徽章规格**：
-  - 红点：`position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; border-radius: 50%; background: #ff3b30`
-  - 数字徽章：`min-width: 16px; height: 16px; border-radius: 8px; background: #ff3b30; color: white; font-size: 10px; display: flex; align-items: center; justify-content: center; padding: 0 4px`
-  - 两者都相对图标容器 `position: relative` 绝对定位
+单个容器的行为：
 
-- **active 状态**：当前选中「首页」时，图标 + 标签颜色变为 `--yy-accent`，其他为 `--yy-sub`
+1. 用 `addEventListener` 在选项卡按钮组上做**事件委托**，监听 `click`（不逐个按钮 `onclick`）。
+2. 命中按钮后，**先清除该容器内所有选项卡的选中状态**（移除 `yy_is-active` 类、同步 `aria-selected="false"`）。
+3. **再设置当前被点击元素的选中状态**（添加 `yy_is-active`、`aria-selected="true"`）。
+4. 面板同样按「先全部隐藏、再显示当前」的顺序处理，保证状态唯一。
+5. 点击当前已选中的选项卡不产生重复处理（直接返回）。
 
-### 2.5 图标渲染方式差异
+### 2.5 注释规范（按 AGENTS.md）
 
-| 方式 | iconfont-3.html | iconfont-4.html |
-|---|---|---|
-| 引入 | `<link rel="stylesheet" href="./font/iconfont.css">` | `<script src="./font/iconfont.js"></script>` + 通用 `.icon` CSS |
-| 使用 | `<span class="iconfont icon-hanbao"></span>` | `<svg class="icon" aria-hidden="true"><use xlink:href="#icon-hanbao"></use></svg>` |
-| 渲染 | 字体 glyph（和上一轮 FA 同原理） | 内联 SVG symbol（运行时已由 iconfont.js 注入 DOM） |
+- HTML 文件头注释：作者 杨阳、建立时间、使用大模型、功能名称。
+- `js/tab选项卡.js` 中每个函数前加一行中文注释说明主要实现功能。
 
-**注意**：iconfont.js 不需要调用任何 `createIcons()` 函数，引入即自动注册 SVG symbol，可以直接引用。
+## 3. 视觉方向
 
-### 2.6 自适应宽度方案
+- 简洁新闻门户风格：白色卡片 + 顶部细分割线，选中项用主色下划线 + 加粗文字，未选中为灰色文字。
+- 不使用大面积渐变、圆角卡片堆叠等模板化 AI 风格；字号层级克制，正文可读性优先。
+- 移动端窄屏下选项卡均分一行，文字不换行。
 
-- **整体**：`body` 全宽背景白；`.yy_container { max-width: 480px; margin: 0 auto; padding-bottom: 80px }` 作为主内容容器
-- **底部导航**：全宽 fixed，但导航内部也 `.yy_container` 480px 居中——这样窄屏时导航和内容同宽，宽屏时导航两侧留白
-- **搜索栏 / 卡片**：宽度 = 容器宽度的 100%
-- **美食卡片**：单列，100% 宽，`padding: 0 16px` 外边距
-- **横向分类**：`overflow-x: auto; white-space: nowrap; scrollbar-width: none`
+## 4. 验收标准
 
----
-
-## 3. 验收标准
-
-| # | 验收项 | 方式 |
-|---|---|---|
-| 1 | 两个页面本地双击打开，iconfont 图标正常显示（字体方式 vs SVG 方式） | 无 404 + 视觉检查 |
-| 2 | F12 检查 DOM | iconfont-3: `<span class="iconfont icon-hanbao"></span>` 渲染字体 glyph；iconfont-4: `<svg><use xlink:href="#icon-hanbao">` 渲染内联 SVG |
-| 3 | 底部导航 4 项 | 汉堡/地图/指南针/宝箱 + 中文标签「首页/附近/发现/我的」 |
-| 4 | 徽章显示正确 | 「附近」右上角红点（8px 红圆点）；「我的」右上角数字徽章（红色圆角胶囊，显示 3） |
-| 5 | 固定定位 | 滚动内容时导航始终贴底 |
-| 6 | 自适应宽度 | 360px 宽度下导航 4 项均分不挤；宽屏时内容居中（max-width 480px） |
-| 7 | Active 状态 | 「首页」为橙红色 active，其余为灰色；点击其他项时切换（简单 JS） |
-| 8 | index.html 有入口 | 两张新卡（10 / iconfont-3 / 字体图标） + （11 / iconfont-4 / SVG symbol） |
-| 9 | yy_ 前缀覆盖 | 自定义类/id/JS 变量 grep 检查通过（`.iconfont`、`.icon`、`.icon-xxx` 不改） |
-| 10 | 视觉风格 | 白底 + 橙红强调 + 圆角卡片，**没有**上一轮的米纸感/发丝线/衬线标题 |
-
----
-
-## 4. 任务清单（阶段 2 产出前等待 spec 确认）
-
-1. 确认 spec.md → 进入阶段 2
-2. 阶段 2 输出任务清单（预计 3 任务：iconfont-3 + iconfont-4 并行 → index.html）
-3. 阶段 3-6：TDD → Code Review → 人工验证 → Git 收尾
-
----
-
-*等待用户确认 spec.md 后继续。*
+1. 用浏览器打开 `tab选项卡.html`，默认显示「国内新闻」选项卡为选中态，且对应面板可见，另外三个面板不可见。
+2. 依次点击其余三个选项卡，被点击项变为选中态、其他项恢复未选中态，面板内容同步切换，且页面上任何时刻只有一个选中项、一个可见面板。
+3. 再次点击已选中的选项卡，页面状态保持不变（无闪烁、无重复切换）。
+4. 浏览器控制台无报错，`js/tab选项卡.js` 通过外链成功加载（无 404）。
+5. 在页面中额外复制一段 `.yy_tabs` 结构并改 id，两处选项卡互不影响（证明组件可复用）。
+6. `index.html` 中出现指向 `tab选项卡.html` 的入口卡片，链接可正常跳转。

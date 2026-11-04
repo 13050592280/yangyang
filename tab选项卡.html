@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  建立时间：2026-11-04
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：新闻 Tab 选项卡
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="杨阳的《高级网页设计》练习：可复用新闻 Tab 选项卡">
+    <title>新闻 Tab 选项卡 | 高级网页设计练习</title>
+    <style>
+        :root {
+            --yy_bg: #f6f6f3;
+            --yy_surface: #ffffff;
+            --yy_ink: #1b1b1b;
+            --yy_muted: #7c7c76;
+            --yy_line: #e2e2dc;
+            --yy_accent: #b3392c;
+            --yy_accent-soft: #f7ece9;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: var(--yy_ink);
+            background: var(--yy_bg);
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            line-height: 1.6;
+        }
+
+        .yy_page {
+            width: min(920px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 48px 0 64px;
+        }
+
+        .yy_page__head {
+            margin-bottom: 28px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--yy_line);
+        }
+
+        .yy_page__eyebrow {
+            margin: 0 0 8px;
+            color: var(--yy_accent);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+        }
+
+        .yy_page__title {
+            margin: 0;
+            font-family: Georgia, "Songti SC", serif;
+            font-size: 34px;
+            font-weight: 400;
+        }
+
+        .yy_page__desc {
+            margin: 10px 0 0;
+            color: var(--yy_muted);
+            font-size: 14px;
+        }
+
+        .yy_page__desc code {
+            padding: 1px 5px;
+            background: var(--yy_accent-soft);
+            color: var(--yy_accent);
+            font-size: 13px;
+        }
+
+        .yy_tabs {
+            border: 1px solid var(--yy_line);
+            background: var(--yy_surface);
+        }
+
+        .yy_tabs + .yy_tabs {
+            margin-top: 26px;
+        }
+
+        .yy_tabs__label {
+            margin: 0;
+            padding: 14px 26px 0;
+            color: var(--yy_muted);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+        }
+
+        .yy_tabs__nav {
+            display: flex;
+            border-bottom: 1px solid var(--yy_line);
+        }
+
+        .yy_tabs__tab {
+            flex: 1 1 0;
+            margin-bottom: -1px;
+            padding: 15px 8px;
+            border: 0;
+            border-bottom: 2px solid transparent;
+            background: none;
+            color: var(--yy_muted);
+            font-family: inherit;
+            font-size: 15px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: color 150ms ease, border-color 150ms ease;
+        }
+
+        .yy_tabs__tab:hover {
+            color: var(--yy_ink);
+        }
+
+        .yy_tabs__tab:focus-visible {
+            outline: 2px solid var(--yy_accent);
+            outline-offset: -4px;
+        }
+
+        .yy_tabs__tab.yy_is-active {
+            border-bottom-color: var(--yy_accent);
+            color: var(--yy_accent);
+            font-weight: 700;
+        }
+
+        .yy_tabs__panel {
+            padding: 6px 26px;
+        }
+
+        .yy_tabs__panel[hidden] {
+            display: none;
+        }
+
+        .yy_news {
+            padding: 20px 0;
+            border-bottom: 1px dashed var(--yy_line);
+        }
+
+        .yy_news:last-child {
+            border-bottom: 0;
+        }
+
+        .yy_news__title {
+            margin: 0 0 8px;
+            font-size: 18px;
+            line-height: 1.45;
+        }
+
+        .yy_news__summary {
+            margin: 0 0 10px;
+            color: var(--yy_muted);
+            font-size: 14px;
+        }
+
+        .yy_news__meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--yy_muted);
+            font-size: 12px;
+        }
+
+        .yy_news__tag {
+            padding: 2px 8px;
+            background: var(--yy_accent-soft);
+            color: var(--yy_accent);
+        }
+
+        @media (max-width: 600px) {
+            .yy_page {
+                padding: 34px 0 48px;
+            }
+
+            .yy_page__title {
+                font-size: 26px;
+            }
+
+            .yy_tabs__tab {
+                padding: 13px 4px;
+                font-size: 14px;
+            }
+
+            .yy_tabs__panel {
+                padding: 4px 18px;
+            }
+
+            .yy_tabs__label {
+                padding: 12px 18px 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="yy_page">
+        <header class="yy_page__head">
+            <p class="yy_page__eyebrow">NEWS CHANNELS · TAB 组件练习</p>
+            <h1 class="yy_page__title">新闻频道</h1>
+            <p class="yy_page__desc">
+                四个频道选项卡，默认显示国内新闻。切换逻辑抽离到 <code>js/tab选项卡.js</code>，
+                页面内任意 <code>.yy_tabs</code> 容器都会被自动初始化，可重复复用。
+            </p>
+        </header>
+
+        <section class="yy_tabs" data-yy_tabs="0" aria-label="新闻频道">
+            <div class="yy_tabs__nav" role="tablist" aria-busy="true">
+                <button class="yy_tabs__tab yy_is-active" type="button" role="tab"
+                    aria-selected="true" tabindex="0" data-yy_tab="cn">国内新闻</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="province">省内新闻</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="world">国际新闻</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="hot">最热新闻</button>
+            </div>
+
+            <div class="yy_tabs__panels">
+                <div class="yy_tabs__panel yy_is-active" role="tabpanel" data-yy_tab-panel="cn">
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">多地推进城市更新试点，老旧小区改造进入施工阶段</h2>
+                        <p class="yy_news__summary">首批试点片区已完成方案公示，重点围绕管网更换、加装电梯与公共空间补短板展开，预计年内完成主体施工。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">国内新闻</span><span>2026-11-04</span><span>来源：综合报道</span></p>
+                    </article>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">秋粮收购进度过半，主产区仓储与物流调度同步加密</h2>
+                        <p class="yy_news__summary">各地粮库启用预约收储与错峰入库，减少农户排队时间，同时加强烘干设备调配以应对阴雨天气。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">国内新闻</span><span>2026-11-03</span><span>来源：综合报道</span></p>
+                    </article>
+                </div>
+
+                <div class="yy_tabs__panel" role="tabpanel" data-yy_tab-panel="province" hidden>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">省内高速公路服务区完成充电设施扩容</h2>
+                        <p class="yy_news__summary">沿线服务区新增快充车位，节假日高峰时段启用移动补电车，缓解长途出行充电排队问题。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">省内新闻</span><span>2026-11-04</span><span>来源：省级交通部门</span></p>
+                    </article>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">本地高校开放实验室资源，面向中学生开设周末实践课</h2>
+                        <p class="yy_news__summary">首批课程覆盖物理、化学与人工智能基础，采取小班预约方式，由在校研究生担任实践指导教师。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">省内新闻</span><span>2026-11-02</span><span>来源：省内教育动态</span></p>
+                    </article>
+                </div>
+
+                <div class="yy_tabs__panel" role="tabpanel" data-yy_tab-panel="world" hidden>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">多国气象机构联合发布冬季极端天气研判报告</h2>
+                        <p class="yy_news__summary">报告提示部分区域降水异常概率上升，建议农业与交通部门提前完善应急预案与物资储备。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">国际新闻</span><span>2026-11-04</span><span>来源：国际通讯社</span></p>
+                    </article>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">国际航运组织调整部分航线运价参考区间</h2>
+                        <p class="yy_news__summary">受港口周转效率变化影响，多条航线运价参考区间小幅上调，货主开始重新评估发货节奏。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">国际新闻</span><span>2026-11-03</span><span>来源：国际通讯社</span></p>
+                    </article>
+                </div>
+
+                <div class="yy_tabs__panel" role="tabpanel" data-yy_tab-panel="hot" hidden>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">城市夜跑路线热度上升，社区共享照明方案受关注</h2>
+                        <p class="yy_news__summary">多个社区尝试在夜间开放操场并加装低功耗照明，跑者与居民对开放时段安排提出了细化建议。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">最热新闻</span><span>2026-11-04</span><span>热度：高</span></p>
+                    </article>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">轻量露营装备交易活跃，二手平台加强品质核验</h2>
+                        <p class="yy_news__summary">露营季结束后装备回流二手市场，平台上线成色分级与配件清单核验，减少交易纠纷。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">最热新闻</span><span>2026-11-02</span><span>热度：中高</span></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="yy_tabs" data-yy_tabs="1" aria-label="复用演示">
+            <p class="yy_tabs__label">复用演示 · 同一组件的第二个实例（默认选中第 2 项）</p>
+            <div class="yy_tabs__nav" role="tablist" aria-busy="true">
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="demo-today">今日头条</button>
+                <button class="yy_tabs__tab yy_is-active" type="button" role="tab"
+                    aria-selected="true" tabindex="0" data-yy_tab="demo-tech">科技前沿</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="demo-sport">体育速览</button>
+            </div>
+
+            <div class="yy_tabs__panels">
+                <div class="yy_tabs__panel" role="tabpanel" data-yy_tab-panel="demo-today" hidden>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">社区食堂推出预约点餐，减少高峰排队</h2>
+                        <p class="yy_news__summary">居民可提前一天选择套餐，食堂按预约量备餐，厨余剩余量明显下降。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">今日头条</span><span>2026-11-04</span></p>
+                    </article>
+                </div>
+
+                <div class="yy_tabs__panel yy_is-active" role="tabpanel" data-yy_tab-panel="demo-tech">
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">开源前端组件库更新，无障碍属性成为默认配置</h2>
+                        <p class="yy_news__summary">新版本为选项卡、弹窗等组件补充默认 aria 属性与键盘操作支持，降低接入成本。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">科技前沿</span><span>2026-11-04</span></p>
+                    </article>
+                </div>
+
+                <div class="yy_tabs__panel" role="tabpanel" data-yy_tab-panel="demo-sport" hidden>
+                    <article class="yy_news">
+                        <h2 class="yy_news__title">冬季耐力训练营报名开启，分阶段适应低温强度</h2>
+                        <p class="yy_news__summary">训练营按周递增跑量并安排恢复日，教练提醒优先关注心率变化与保暖装备。</p>
+                        <p class="yy_news__meta"><span class="yy_news__tag">体育速览</span><span>2026-11-03</span></p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="./js/tab选项卡.js"></script>
+</body>
+
+</html>

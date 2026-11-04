@@ -1,64 +1,45 @@
-# Writing Plans · iconfont 移动端底部导航（阶段 2）
+# Plans · 新闻 Tab 选项卡练习页
 
-## 依赖关系
+依据 [spec.md](./spec.md) 拆分任务，按顺序执行，每项均给出可验收的完成标准。
 
-```
-Task 1 (iconfont-3.html) ──┐
-Task 2 (iconfont-4.html) ──┤──→ Task 3 (index.html)
-```
+## 任务 1 · 可复用 Tab 组件脚本 `js/tab选项卡.js`
 
-Task 1 和 Task 2 可并行（无依赖）。Task 3 必须等两个 HTML 存在。
+- 新建 `js/` 目录与 `js/tab选项卡.js`。
+- 初始化函数遍历 `document.querySelectorAll('.yy_tabs')`，同一页面多个容器各自独立绑定。
+- 每个容器在 `.yy_tabs__nav` 上用 `addEventListener('click')` 事件委托监听；点击后先调用清除函数移除全部选项卡 `yy_is-active`、`aria-selected="false"` 并隐藏全部面板，再对当前元素设置选中态并显示对应面板。
+- 默认项由容器属性 `data-yy_tabs`（索引，缺省 0）决定。
+- 重复点击已选中项直接返回；导航容器加 `data-yy_tabs-bound` 防重复绑定。
+- 每个函数前加一行中文注释说明主要功能。
 
----
+**验收**：脚本可被外链加载无报错；页内任意 `.yy_tabs` 容器均能独立工作。
 
-## Task 1 · iconfont-3.html（字体图标方式）
+## 任务 2 · 页面 `tab选项卡.html`
 
-### 要点
-- `<link rel="stylesheet" href="./font/iconfont.css">`
-- 图标使用：`<span class="iconfont icon-hanbao"></span>`
-- 页面结构：AppBar 搜索栏 + Banner + 横向分类 + 美食卡片流 + 固定底部导航
-- 底部导航 4 项：汉堡/地图(红点)/指南针/宝箱(数字3)
-- Active 切换：点击 JS 切换 `yy_active` 类
-- 全部自定义类/id/JS 变量加 `yy_` 前缀（`.iconfont`、`.icon-hanbao` 不改）
+- 文件头注释：作者 杨阳、建立时间 2026-11-04、使用大模型 DeepSeek-V4.1-Flash、功能名称 新闻 Tab 选项卡。
+- 选项卡：国内新闻（默认选中）/ 省内新闻 / 国际新闻 / 最热新闻，使用 `data-yy_tab` 关联面板。
+- 四个面板各 2 条示例新闻（标题 + 摘要 + 日期 + 频道标签），仅当前面板可见；首屏为国内新闻。
+- 追加第二个 `.yy_tabs` 实例演示复用，与第一个互不影响。
+- 样式写在页面 `<style>`，类名全部 `yy_` 前缀；新闻门户风格，窄屏选项卡等分不换行。
+- 通过 `<script src="./js/tab选项卡.js">` 外链引入。
 
-### 验收标准
-- [ ] 双击打开无 404，4 个 tab bar 图标正常显示
-- [ ] DOM 检查图标是字体 glyph
-- [ ] 红点在「附近」右上角，数字徽章「3」在「我的」右上角
-- [ ] 滚动时导航固定贴底
-- [ ] max-width 480px 居中，360px 下导航 4 项均分不挤
-- [ ] Active（首页）橙红，其他灰色；点击切换生效
-- [ ] yy_ 前缀 grep 通过
+**验收**：默认态、切换态、重复点击态均符合 spec 第 4 节 1-3 条。
 
----
+## 任务 3 · `index.html` 入口
 
-## Task 2 · iconfont-4.html（SVG symbol 方式）
+- 在 `.module-grid` 追加第 12 张卡片，指向 `./tab选项卡.html`，编号 `12 / TAB`。
+- 目录标题旁的可见数量由 `11 个实践入口` 更新为 `12 个实践入口`。
 
-### 要点
-- `<script src="./font/iconfont.js"></script>`（iconfont.js 自动注入 symbol，**无需调用**任何 init 函数）
-- 图标使用：`<svg class="icon" aria-hidden="true"><use xlink:href="#icon-hanbao"></use></svg>`
-- 需要额外加一段通用 CSS：`.icon { width:1em; height:1em; vertical-align:-0.15em; fill:currentColor }`
-- 页面结构 / 底部导航 / 徽章 / active / 自适应 — **和 Task 1 完全相同**，仅图标渲染方式不同
+**验收**：卡片显示正常、点击可跳转，数量文字为 12。
 
-### 验收标准
-- [ ] 双击打开无 404，4 个图标正常显示
-- [ ] DOM 检查图标是 `<svg><use>` 内联 SVG
-- [ ] 同 Task 1 的徽章、固定定位、自适应、active、yy_ 前缀
+## 任务 4 · 浏览器人工验收
 
----
+按 spec 第 4 节 6 条逐项在浏览器手动测试并记录结果，通过后进入代码评审与提交。
 
-## Task 3 · index.html 入口更新
-
-### 要点
-- 替换当前最后一张 `is-planned` 卡（原来是 09/SOON，如果上一轮的 SOON 被替换成了 08/09 iconfont 卡，那就新增 10/11 两张）
-- 计数数字 +2
-- 两张卡用原有的 `.module-card` / `.module-number` / `.module-link` 类（不加 `yy_`）
-
-### 验收标准
-- [ ] 点击新卡跳转 iconfont-3.html / iconfont-4.html 正确
-- [ ] 原目录计数更新
-- [ ] 原有入口不受影响
-
----
-
-*等待用户确认后，进入阶段 3（TDD + 编码）。*
+| # | 验收项 | 结果 |
+|---|---|---|
+| 1 | 默认选中「国内新闻」，其余三项未选中、对应面板隐藏 | 通过 |
+| 2 | 依次点击其余三项，选中态与面板同步切换，全页唯一选中/唯一可见 | 通过 |
+| 3 | 重复点击当前项无变化 | 通过 |
+| 4 | 控制台无报错，`js/tab选项卡.js` 无 404 | 通过 |
+| 5 | 第二个 `.yy_tabs` 实例与第一个互不影响 | 通过 |
+| 6 | `index.html` 第 12 张卡片可跳转，数量显示 12 | 通过 |

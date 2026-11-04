@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  建立时间：2026-11-04
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：音乐手机 Tab 选项卡
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="杨阳的《高级网页设计》练习：音乐手机 Tab 选项卡还原">
+    <title>音乐手机 | Tab 选项卡</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            color: #333333;
+            background: #ffffff;
+            font-family: "宋体", SimSun, serif;
+        }
+
+        .yy_music {
+            width: 386px;
+            margin: 18px auto 40px;
+            padding: 4px 0 10px;
+        }
+
+        .yy_music__head {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .yy_music__title {
+            margin: 0;
+            padding: 0 0 5px 28px;
+            color: #000000;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .yy_music__tabs {
+            position: relative;
+            display: flex;
+        }
+
+        .yy_music__tabs::after {
+            position: absolute;
+            right: 0;
+            bottom: -1px;
+            left: 0;
+            height: 1px;
+            background: url("./img/bg20.gif") repeat-x 0 -23px;
+            content: "";
+        }
+
+        .yy_music .yy_tabs__tab {
+            position: relative;
+            width: 58px;
+            height: 28px;
+            margin: 0;
+            padding: 0;
+            border: 1px solid #dcdcdc;
+            border-left: 0;
+            border-radius: 0;
+            background: url("./img/bg21.gif") repeat-x left top;
+            color: #333333;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 26px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .yy_music .yy_tabs__tab:first-child {
+            border-left: 1px solid #dcdcdc;
+        }
+
+        .yy_music .yy_tabs__tab:hover {
+            color: #2a6db2;
+        }
+
+        .yy_music .yy_tabs__tab.yy_is-active {
+            border-color: #9ec8ee;
+            background: url("./img/bg22.gif") repeat-x left top;
+            color: #2a6db2;
+            font-weight: 700;
+        }
+
+        .yy_music .yy_tabs__tab.yy_is-active::after {
+            position: absolute;
+            right: -1px;
+            bottom: -1px;
+            left: -1px;
+            height: 1px;
+            background: url("./img/bg20.gif") repeat-x 0 -23px;
+            content: "";
+        }
+
+        .yy_music__list {
+            margin: 10px 0 0;
+            padding: 0 0 0 14px;
+            list-style: none;
+        }
+
+        .yy_music__list[hidden] {
+            display: none;
+        }
+
+        .yy_music__item {
+            height: 28px;
+            padding-left: 16px;
+            background: url("./img/dot.gif") no-repeat 0 0;
+            line-height: 28px;
+            white-space: nowrap;
+        }
+
+        .yy_music__link {
+            color: #2a6db2;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .yy_music__link:hover {
+            color: #cc0000;
+            text-decoration: underline;
+        }
+
+        .yy_music__date {
+            float: right;
+            padding-right: 4px;
+            color: #999999;
+            font-family: "Times New Roman", Times, serif;
+            font-size: 11px;
+            font-weight: 400;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_tabs yy_music" data-yy_tabs="0">
+        <div class="yy_music__head">
+            <h1 class="yy_music__title">音乐手机</h1>
+            <div class="yy_tabs__nav yy_music__tabs" role="tablist" aria-busy="true">
+                <button class="yy_tabs__tab yy_is-active" type="button" role="tab"
+                    aria-selected="true" tabindex="0" data-yy_tab="quote">行情</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="guide">导购</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="new">新品</button>
+                <button class="yy_tabs__tab" type="button" role="tab"
+                    aria-selected="false" tabindex="-1" data-yy_tab="review">评测</button>
+            </div>
+        </div>
+
+        <ul class="yy_tabs__panel yy_music__list yy_is-active" role="tabpanel" data-yy_tab-panel="quote">
+            <li class="yy_music__item"><a class="yy_music__link" href="#">音乐强机苹果iPhone 5s价格稳定</a><span class="yy_music__date">(12/19)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">高性能双四核音乐机 魅族MX3低价热卖</a><span class="yy_music__date">(12/19)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">音乐品质最出色 vivo X3促销2199</a><span class="yy_music__date">(12/12)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">时尚音乐手机 vivo Xplay济南2798元</a><span class="yy_music__date">(11/27)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">好音乐好拍照 OPPO Find5今报价2580元</a><span class="yy_music__date">(08/27)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">1.5GHz四核1080p OPPO Find 5降价热卖</a><span class="yy_music__date">(07/30)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">彩色呼吸带双核机 索尼M35h促销2299</a><span class="yy_music__date">(06/08)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">1.7GHz四核1080p屏 vivo Xplay热卖中</a><span class="yy_music__date">(06/07)</span></li>
+        </ul>
+
+        <ul class="yy_tabs__panel yy_music__list" role="tabpanel" data-yy_tab-panel="guide" hidden>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">优秀音效漂亮外观 市售音乐手机盘点</a><span class="yy_music__date">(09/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">不要虐待耳朵 8款独特音效的音乐手机荐</a><span class="yy_music__date">(09/06)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">最低只要799 9款高性能音乐手机推荐</a><span class="yy_music__date">(07/22)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">长假主导后高考时代 奖励孩子的智能手机全攻略</a><span class="yy_music__date">(06/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">降价不限时 端午后值得关注降价四核机推荐</a><span class="yy_music__date">(06/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">高考之后尽情狂欢！学生超强手机推荐</a><span class="yy_music__date">(06/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">上半年看这里 最热1080P四核旗舰手机</a><span class="yy_music__date">(06/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">最厚不过7.99毫米 热门超薄强机大搜罗</a><span class="yy_music__date">(06/08)</span></li>
+        </ul>
+
+        <ul class="yy_tabs__panel yy_music__list" role="tabpanel" data-yy_tab-panel="new" hidden>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">无限接近完美！vivo Xplay3S现场体验</a><span class="yy_music__date">(12/19)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">入门音乐机 诺基亚Lumia 525现身工信部</a><span class="yy_music__date">(11/05)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">传诺基亚下月将推首款WP音乐手机Glee</a><span class="yy_music__date">(09/29)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">软硬兼施 vivo Xtudio Hi-Fi音乐圈讲解</a><span class="yy_music__date">(08/23)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">没有中国 谷歌All Access音乐服务登陆欧洲</a><span class="yy_music__date">(08/09)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">Hi-Fi录音棚 vivo X3创Xtudio音乐系统</a><span class="yy_music__date">(08/07)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">Hi-Fi不够vivo又玩录音棚 X3音乐处理方案曝光</a><span class="yy_music__date">(08/06)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">小伙伴都惊呆了 薄至6mm以下vivo X3终露面</a><span class="yy_music__date">(07/31)</span></li>
+        </ul>
+
+        <ul class="yy_tabs__panel yy_music__list" role="tabpanel" data-yy_tab-panel="review" hidden>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">音乐历久弥新 TD版魅族MX3评测</a><span class="yy_music__date">(12/19)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">极致影音完美音质 步步高vivo Xplay移动版图赏</a><span class="yy_music__date">(07/24)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">都是大屏何不同？三星S4/Mega静态评测</a><span class="yy_music__date">(06/20)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">超值四核智能机 HTC Desire 608t评测</a><span class="yy_music__date">(06/20)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">完美融合微博 魅族MX2 Flyme 2.2.5体验</a><span class="yy_music__date">(06/18)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">1080p屏Hi-Fi旗舰 vivo Xplay娱乐体验</a><span class="yy_music__date">(06/13)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">5.7英寸高清巨屏 酷派9070+XO影音体验</a><span class="yy_music__date">(06/06)</span></li>
+            <li class="yy_music__item"><a class="yy_music__link" href="#">悬浮窗口播放 vivo Xplay视频功能体验</a><span class="yy_music__date">(06/06)</span></li>
+        </ul>
+    </div>
+
+    <script src="./js/tabs.js"></script>
+</body>
+
+</html>
