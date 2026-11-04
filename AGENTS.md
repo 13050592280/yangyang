@@ -8,7 +8,7 @@
 ## Layout and gotchas
 
 - Root repo: branch `main`, remote `gitee.com/neusoft_wangyao_jsj/yy-web-project`. Its local `origin` URL embeds a Gitee OAuth token; never print `git remote -v`, copy `.git/config`, or commit the token.
-- `web-project/` is a separate nested git repo tracked by the root only as a gitlink (there is no `.gitmodules`). Root git commands do not see changes inside it. Use `git -C "D:\yy-wbe-project\web-project"`; that repo uses branch `master` and remote `gitee.com/neusoft_wangyao_jsj/web-project`.
+- `web-project/` is a separate nested git repo (branch `master`). The root no longer tracks it as a gitlink and `.gitignore` ignores `web-project/`; root git commands do not see changes inside it. Use `git -C "D:\yy-wbe-project\web-project"`; that repo uses remote `gitee.com/neusoft_wangyao_jsj/web-project`.
 - The nested `web-project` skill mentions `D:\高级网页设计\web-project`; that path is stale. The checkout here is `D:\yy-wbe-project\web-project`.
 - Keep assets local: vendored libraries live under `cdn/` and iconfont assets under `font/`. Do not switch pages to remote CDNs.
 - Many filenames and directories are Chinese. Use absolute, quoted paths and PowerShell `-LiteralPath`.
@@ -16,6 +16,17 @@
 ## Conventions
 
 - Prefix new custom CSS classes, ids, and JS variables with `yy_`. Leave third-party names (`.iconfont`, `.icon-*`, `fa-*`, `data-lucide`) unchanged. Existing shared classes in `index.html` (`.module-card`, `.module-number`, `.module-link`) are reused as-is.
+- Every newly created HTML page must carry a file header comment right after `<!DOCTYPE html>` recording four fields: 作者（固定为 `杨阳`）、建立时间（`YYYY-MM-DD`）、使用大模型（执行本次生成时的模型名）、功能名称（该页面的中文简称）。 Keep the placeholder values accurate rather than generic:
+
+  ```html
+  <!--
+    作者：杨阳
+    建立时间：2026-11-04
+    使用大模型：<模型名>
+    功能名称：<页面中文简称>
+  -->
+  ```
+- In the `<script>` part of a page, every function defined must be preceded by a one-line Chinese comment describing its main behavior, e.g. `// 功能：切换导航栏高亮并同步更新页面标题`。 Do not leave bare functions without such a comment.
 - Before executing each user request, append a record (time, model, prompt) to `yy_prompt.md`; never overwrite previous entries.
 - Keep page copy and docs in Chinese to match existing pages.
 - Substantial feature work follows the documented flow: `spec.md` -> `plans.md` -> implement and verify -> `review-report*.md` -> manual check -> commit; update `retrospective.md` when closing a round.
@@ -25,5 +36,5 @@
 ## Git and submission
 
 - Do not assume a clean tree: the root currently has uncommitted changes in `font/` and `四级项目/` plus untracked pages. Stage only intended files and ask before committing unrelated or binary files.
-- To submit root changes, follow `.trae\skills\submit-project\SKILL.md` (Gitee `yy-web-project`, `main`). For the class submission inside `web-project/`, follow `.opencode\skill\web-project\SKILL.md` (Gitee `web-project`, `master`).
+- To submit root changes, follow `.trae\skills\submit-project\SKILL.md` (Gitee `yy-web-project`, `main`). For GitHub, follow `.trae\skills\submit-github\SKILL.md` (remote `github`, SSH over 443 via `git@ssh.github.com`). For the class submission inside `web-project/`, follow `.opencode\skill\web-project\SKILL.md` (Gitee `web-project`, `master`).
 - PowerShell 5.1: no `&&` and no bash heredoc. Use `;`, `if ($?)`, and multiple `git commit -m` flags.
