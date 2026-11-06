@@ -193,3 +193,28 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 好的，执行吧
 
+
+## 2026-11-06 15:25:14
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 打开 swiper/demo/257-effect-creative.html，读懂 creativeEffect 的 transform 写法，为演示四新增第 7 个按钮「creative 电影墙」，上一张缩小左移带角度、下一张放大右移进场
+
+
+## 2026-11-06 15:30:46
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： prev / next 的 transform 各控制什么？
+
+
+## 2026-11-06 15:34:19
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 两件事：① 为光影展添加第六件展品爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航），图片用 AI 生成（横版 16:9），slide 结构完整；② 挑一个课堂上没讲过的 Swiper 能力加上去：keyboard / mousewheel / zoom / parallax，任选其一
+
+
+## 2026-11-06 15:48:30
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 将爱达魔都号图片换成我这张图片
+
+
+## 2026-11-06 15:54:02
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 好的，提交推送吧
+
