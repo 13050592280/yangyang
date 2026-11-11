@@ -128,6 +128,17 @@
   }
   .yy_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
 
+  /* ── 实测截图 ── */
+  figure.yy_shot{
+    margin:14px 0 0;padding:10px;background:#fff;border:1px solid var(--yy_line);
+    border-radius:12px;box-shadow:0 4px 12px rgba(15,43,91,.08);
+  }
+  figure.yy_shot img{display:block;width:100%;height:auto;border-radius:6px}
+  figure.yy_shot figcaption{
+    margin-top:8px;font-size:12.5px;color:var(--yy_grey);text-align:center;
+    letter-spacing:.4px;
+  }
+
   @media (max-width:640px){
     body{padding:20px 12px 40px}
     .yy_task{padding:18px 16px}
@@ -219,6 +230,10 @@
   <span class="yy_k">prev</span>: { <span class="yy_k">shadow</span>: <span class="yy_n">true</span>, <span class="yy_k">translate</span>: [<span class="yy_s">'-45%'</span>, <span class="yy_n">0</span>, <span class="yy_n">-220</span>], <span class="yy_k">rotate</span>: [<span class="yy_n">0</span>, <span class="yy_n">22</span>, <span class="yy_n">0</span>], <span class="yy_k">scale</span>: <span class="yy_n">0.8</span> },
   <span class="yy_k">next</span>: { <span class="yy_k">shadow</span>: <span class="yy_n">true</span>, <span class="yy_k">translate</span>: [<span class="yy_s">'62%'</span>, <span class="yy_n">0</span>, <span class="yy_n">-180</span>], <span class="yy_k">scale</span>: <span class="yy_n">0.86</span> }
 }</pre>
+      <figure class="yy_shot">
+        <img src="prompts-img/swiper-demo4.png" alt="演示四 creative 电影墙实测截图">
+        <figcaption>▶ 实测截图：7 个切换按钮（creative 高亮选中）、当前 slide 显示下一张图片，非激活卡片以 3D 形式停在两侧</figcaption>
+      </figure>
     </div>
 
     <div class="yy_round">
