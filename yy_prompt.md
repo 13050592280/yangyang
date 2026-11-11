@@ -218,3 +218,13 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 好的，提交推送吧
 
+
+## 2026-11-11 13:29:13
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 在swiper-task.html页面下方加入yy_prompt.md入口，方便查看提示词
+
+
+## 2026-11-11 13:31:59
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 好的，提交并推送吧
+
