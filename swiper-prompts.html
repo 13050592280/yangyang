@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  建立时间：2026-11-11
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：Swiper 课堂任务提示词记录与迭代分析
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提示词记录与迭代分析 · Swiper 课堂任务</title>
+<style>
+  :root{
+    --yy_ink:#0f2b5b;
+    --yy_ink_soft:#334e7d;
+    --yy_blue:#1d5bbf;
+    --yy_line:#dbe4ff;
+    --yy_bg:#f4f7fd;
+    --yy_card:#ffffff;
+    --yy_grey:#5b6478;
+    --yy_mark:#b4232c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:36px 18px 60px;
+    font-family:"Microsoft YaHei","PingFang SC",Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1000px 420px at 50% -140px,#dfe9ff 0%,rgba(223,233,255,0) 70%),
+      var(--yy_bg);
+    color:#22314a;
+    line-height:1.75;
+  }
+  .yy_wrap{max-width:980px;margin:0 auto}
+
+  /* ── 页头 ── */
+  .yy_head{
+    background:linear-gradient(135deg,#0f2b5b,#1d5bbf 60%,#3b82f6);
+    color:#fff;border-radius:18px;padding:26px 30px;
+    box-shadow:0 16px 34px rgba(15,43,91,.22);
+  }
+  .yy_head h1{margin:0 0 6px;font-size:25px;letter-spacing:.5px}
+  .yy_head p{margin:0;font-size:14px;color:#d7e4ff}
+  .yy_head .yy_badge{
+    display:inline-block;margin-bottom:12px;padding:3px 12px;border-radius:999px;
+    background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    font-size:12.5px;letter-spacing:1px;
+  }
+
+  /* ── 任务卡 ── */
+  .yy_task{
+    background:var(--yy_card);border:1px solid var(--yy_line);border-radius:16px;
+    padding:24px 26px;margin-top:22px;box-shadow:0 6px 18px rgba(15,43,91,.06);
+  }
+  .yy_task__head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:2px solid #eef3ff;padding-bottom:12px;margin-bottom:16px}
+  .yy_task__no{
+    font-size:12px;letter-spacing:1.5px;color:#fff;background:var(--yy_ink);
+    border-radius:6px;padding:2px 9px;font-weight:bold;
+  }
+  .yy_task__head h2{margin:0;font-size:19px;color:var(--yy_ink)}
+  .yy_task__star{color:#e0a600;font-size:13px;letter-spacing:2px}
+
+  .yy_label{
+    display:inline-block;font-size:12.5px;font-weight:bold;color:var(--yy_blue);
+    background:#eef4ff;border:1px solid #d8e5ff;border-radius:999px;
+    padding:1px 11px;margin-bottom:8px;
+  }
+  .yy_round{margin:16px 0}
+  .yy_round:first-of-type{margin-top:4px}
+
+  .yy_prompt{
+    margin:0;padding:14px 16px;border-radius:10px;
+    background:#f7faff;border:1px solid #e2ebff;border-left:4px solid var(--yy_blue);
+    font-size:14px;color:#22314a;white-space:pre-wrap;word-break:break-word;
+  }
+  .yy_prompt--fix{border-left-color:#e0a600;background:#fffdf5;border-color:#f3e5bd}
+
+  pre.yy_code{
+    margin:10px 0 0;padding:14px 16px;border-radius:10px;overflow-x:auto;
+    background:#0f1b2e;color:#dbe7ff;font-size:13px;line-height:1.7;
+    font-family:Consolas,"Courier New",monospace;
+  }
+  pre.yy_code .yy_k{color:#8fc1ff}
+  pre.yy_code .yy_s{color:#9ee493}
+  pre.yy_code .yy_n{color:#ffc978}
+  pre.yy_code .yy_c{color:#7f8ea8}
+
+  .yy_flow{
+    display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+    font-size:13px;color:var(--yy_grey);margin:10px 0 0;
+  }
+  .yy_flow span{
+    background:#f1f5ff;border:1px solid #dde7ff;border-radius:8px;padding:3px 10px;color:var(--yy_ink_soft);
+  }
+  .yy_flow i{color:#a9b6cf;font-style:normal}
+
+  /* ── 对比表 ── */
+  table.yy_diff{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+  table.yy_diff th,table.yy_diff td{border:1px solid #e3ebff;padding:9px 11px;text-align:left;vertical-align:top}
+  table.yy_diff thead th{background:#eef4ff;color:var(--yy_ink);font-size:13px;white-space:nowrap}
+  table.yy_diff tbody tr:nth-child(even){background:#fafcff}
+  .yy_ok{color:#177245;font-weight:bold}
+  .yy_bad{color:var(--yy_mark);font-weight:bold}
+
+  /* ── 分析块 ── */
+  .yy_note{
+    margin-top:16px;padding:14px 16px;border-radius:12px;
+    background:#f5f9f6;border:1px solid #d6e9dd;
+  }
+  .yy_note h3{margin:0 0 8px;font-size:14.5px;color:#177245}
+  .yy_note p{margin:0 0 8px;font-size:14px;color:#2a3b51}
+  .yy_note p:last-child{margin-bottom:0}
+  .yy_note strong{color:#0f2b5b}
+
+  /* ── 总结 ── */
+  .yy_sum{background:linear-gradient(135deg,#0f2b5b,#173f80);color:#dfe9ff;border-radius:16px;padding:24px 26px;margin-top:22px}
+  .yy_sum h2{margin:0 0 14px;font-size:19px;color:#fff}
+  .yy_sum ol{margin:0;padding-left:20px;font-size:14px}
+  .yy_sum li{margin-bottom:10px}
+  .yy_sum li:last-child{margin-bottom:0}
+  .yy_sum b{color:#ffd98a}
+
+  .yy_back{text-align:center;margin-top:28px}
+  .yy_back a{
+    display:inline-block;text-decoration:none;color:var(--yy_ink);font-size:14.5px;font-weight:bold;
+    background:#fff;border:1px solid var(--yy_line);border-radius:999px;padding:10px 26px;
+    transition:transform .2s,box-shadow .2s;
+  }
+  .yy_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
+
+  @media (max-width:640px){
+    body{padding:20px 12px 40px}
+    .yy_task{padding:18px 16px}
+    .yy_head{padding:20px}
+    table.yy_diff{font-size:12.5px}
+    table.yy_diff th,table.yy_diff td{padding:7px 8px}
+  }
+</style>
+</head>
+<body>
+<div class="yy_wrap">
+
+  <div class="yy_head">
+    <span class="yy_badge">PROMPT LOG · 仅三个任务</span>
+    <h1>提示词记录与迭代分析</h1>
+    <p>Swiper 课堂任务 · 大国重器光影展 · 这里只收任务一、二、三的提示词原文、AI 输出与迭代说明</p>
+  </div>
+
+  <!-- ══════════ 任务一 ══════════ -->
+  <section class="yy_task">
+    <div class="yy_task__head">
+      <span class="yy_task__no">任务一</span>
+      <h2>提示词工程师：让 AI 听懂需求</h2>
+      <span class="yy_task__star">★★</span>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 1 轮提示词</span>
+      <p class="yy_prompt">在 swiper-task.html 里，生成 new Swiper('#wySw4', { }) 里面的配置对象。要求开启无缝循环，自动轮播时长 3.2 秒，添加可点击的圆点分页器，切换动画初始效果设置为 cube。只输出大括号内的配置代码，不需要引入 js、不需要外层 new Swiper，不要多余解释。</p>
+      <pre class="yy_code"><span class="yy_k">loop</span>: <span class="yy_n">true</span>,
+<span class="yy_k">effect</span>: <span class="yy_s">'cube'</span>,
+<span class="yy_k">speed</span>: <span class="yy_n">800</span>,
+<span class="yy_k">autoplay</span>: {
+  <span class="yy_k">delay</span>: <span class="yy_n">3200</span>,
+  <span class="yy_k">disableOnInteraction</span>: <span class="yy_n">false</span>
+},
+<span class="yy_k">pagination</span>: {
+  <span class="yy_k">el</span>: <span class="yy_s">'#wyPag4'</span>,
+  <span class="yy_k">clickable</span>: <span class="yy_n">true</span>
+}</pre>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 2 轮提示词</span>
+      <p class="yy_prompt">在 swiper-task.html 里，生成 new Swiper('#wySw4', { }) 里面的配置对象。要求开启无缝循环，自动轮播时长 3.2 秒，<b>并且用户手动滑动、点击操作之后，自动轮播不会停止</b>。添加可点击的圆点分页器，切换动画初始效果设置为 cube。只输出大括号内的配置代码，不需要引入 js、不需要外层 new Swiper，不要多余解释。</p>
+      <p class="yy_flow">
+        <span>新增一句约束</span><i>→</i>
+        <span>其余措辞完全不动</span><i>→</i>
+        <span>AI 输出结构不变</span>
+      </p>
+    </div>
+
+    <table class="yy_diff">
+      <thead>
+        <tr><th>需求点</th><th>第 1 轮是否写明</th><th>第 2 轮是否写明</th><th>落到代码上</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>无缝循环</td><td class="yy_ok">写明</td><td class="yy_ok">写明</td><td><code>loop: true</code></td></tr>
+        <tr><td>自动轮播 3.2 秒</td><td class="yy_ok">写明</td><td class="yy_ok">写明</td><td><code>delay: 3200</code></td></tr>
+        <tr><td>手动操作后不停</td><td class="yy_bad">漏写</td><td class="yy_ok">补上</td><td><code>disableOnInteraction: false</code></td></tr>
+        <tr><td>圆点可点击</td><td class="yy_ok">写明</td><td class="yy_ok">写明</td><td><code>pagination.clickable</code></td></tr>
+        <tr><td>初始 cube</td><td class="yy_ok">写明</td><td class="yy_ok">写明</td><td><code>effect: 'cube'</code></td></tr>
+        <tr><td>切换速度</td><td class="yy_bad">未提</td><td class="yy_bad">未提</td><td>模型自补 <code>speed: 800</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="yy_note">
+      <h3>迭代分析</h3>
+      <p><strong>第一轮漏掉的是"手动操作后自动轮播不停止"。</strong>提示词只说了"自动轮播时长 3.2 秒"，没说被打断之后怎么办。第一轮的答案恰好带上了 <code>disableOnInteraction: false</code>，但这是模型的默认写法，不是需求驱动的结果——换一个模型或换个问法就可能省略该字段，此时 Swiper 的默认行为会在用户拖动后停掉自动播放，需求就静默失败了。</p>
+      <p><strong>第二轮的做法不是重写，而是精准补一句。</strong>原句"自动轮播时长 3.2 秒"后面追加"并且用户手动滑动、点击操作之后，自动轮播不会停止"，把隐性默认变成显性约束；其余四句一字不改，所以第二轮输出与第一轮结构完全一致，不会引入新变量，便于定位"这一句到底改变了什么"。</p>
+      <p><strong>仍然存在的漏洞：没给参数白名单。</strong><code>speed: 800</code> 是我没要求、AI 自行补的。凡是提示词没约束的参数，模型都会替你决定。要完全可控，应加一句"只允许出现 loop / effect / autoplay / pagination 四个键"。</p>
+      <p><strong>验证方式：</strong>把配置粘进 <code>new Swiper('#wySw4', { ... })</code> 后逐项实测——自动切换间隔约 3.2 秒；按住拖动松手后自动播放继续推进；四个圆点可点击跳转；刷新后首屏为 cube 的 3D 翻转。</p>
+    </div>
+  </section>
+
+  <!-- ══════════ 任务二 ══════════ -->
+  <section class="yy_task">
+    <div class="yy_task__head">
+      <span class="yy_task__no">任务二</span>
+      <h2>creative 仿写：课堂没讲，AI 教你</h2>
+      <span class="yy_task__star">★★</span>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 1 轮提示词</span>
+      <p class="yy_prompt">请打开 swiper/demo/257-effect-creative.html，配合 AI 读懂 creativeEffect 的 transform 写法，为演示四新增第 7 个按钮「creative 电影墙」。
+效果要求：上一张缩小左移并带角度、下一张放大右移进场（参数自定，但要"像电影选片墙"）。</p>
+      <pre class="yy_code"><span class="yy_k">creativeEffect</span>: {
+  <span class="yy_k">prev</span>: { <span class="yy_k">shadow</span>: <span class="yy_n">true</span>, <span class="yy_k">translate</span>: [<span class="yy_s">'-45%'</span>, <span class="yy_n">0</span>, <span class="yy_n">-220</span>], <span class="yy_k">rotate</span>: [<span class="yy_n">0</span>, <span class="yy_n">22</span>, <span class="yy_n">0</span>], <span class="yy_k">scale</span>: <span class="yy_n">0.8</span> },
+  <span class="yy_k">next</span>: { <span class="yy_k">shadow</span>: <span class="yy_n">true</span>, <span class="yy_k">translate</span>: [<span class="yy_s">'62%'</span>, <span class="yy_n">0</span>, <span class="yy_n">-180</span>], <span class="yy_k">scale</span>: <span class="yy_n">0.86</span> }
+}</pre>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 2 轮提示词（追问）</span>
+      <p class="yy_prompt">prev / next 的 transform 各控制什么？</p>
+      <p class="yy_flow">
+        <span>先让它做出来</span><i>→</i>
+        <span>再让它讲清楚</span><i>→</i>
+        <span>用自己的话复述</span>
+      </p>
+    </div>
+
+    <div class="yy_note">
+      <h3>迭代分析</h3>
+      <p><strong>第一轮把"感觉"翻译成参数。</strong>"像电影选片墙"是视觉描述，模型无法直接执行，真正起作用的是我同时给出的官方示例路径——它提供 <code>prev/next</code> 的字段格式（<code>translate</code> 用百分号 + 像素、<code>rotate</code> 用角度），我只需要把"缩小左移带角度""放大右移进场"分别映射到 <code>prev</code> 和 <code>next</code>，数值自己调。</p>
+      <p><strong>第二轮换了一种迭代方向：不是改代码，而是追问语义。</strong>任务一迭代的是"需求→代码"，这里迭代的是"代码→理解"。追问之后才弄清：<code>prev</code> 管的是索引小于当前项的那张（已滑过、留在左侧），<code>next</code> 管的是索引大于当前项的那张（还没进来、停在右侧）；所谓"新图放大进场"其实是 <code>next</code> 的反向过程，也就是从 <code>next</code> 的位置回到正位。</p>
+      <p><strong>关键坑：</strong><code>translate</code> 里的百分号是相对<strong>幻灯片自身尺寸</strong>，不是相对容器；<code>z</code> 轴只能用像素。所以同一个 <code>'-45%'</code> 在宽屏和窄屏下视觉位移不同，但"移出比例"是一致的，这正是选片墙效果能自适应宽度的原因。</p>
+      <p><strong>验证方式：</strong>点第 7 个按钮后读实例的 <code>effect</code> 是否为 <code>creative</code>；检查非激活幻灯片的内联样式是否含 <code>matrix3d</code>（rotateY 与 translateZ 生效）；再切回 slide，确认 <code>matrix</code> 恢复且自动播放仍在运行。</p>
+    </div>
+  </section>
+
+  <!-- ══════════ 任务三 ══════════ -->
+  <section class="yy_task">
+    <div class="yy_task__head">
+      <span class="yy_task__no">任务三</span>
+      <h2>综合创作 + 技术答辩：超纲加分项</h2>
+      <span class="yy_task__star">★★★</span>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 1 轮提示词</span>
+      <p class="yy_prompt">两件事：① 为光影展添加第六件展品爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航），图片用 AI 生成（横版 16:9），slide 结构完整；② 挑一个课堂上没讲过的 Swiper 能力加上去：keyboard 键盘控制 / mousewheel 滚轮 / zoom 双击缩放 / parallax 视差，任选其一</p>
+      <pre class="yy_code"><span class="yy_k">keyboard</span>: {
+  <span class="yy_k">enabled</span>: <span class="yy_n">true</span>,          <span class="yy_c">// 开启键盘控制</span>
+  <span class="yy_k">onlyInViewport</span>: <span class="yy_n">true</span>,   <span class="yy_c">// 仅在轮播处于视口内时响应</span>
+  <span class="yy_k">pageUpDown</span>: <span class="yy_n">false</span>      <span class="yy_c">// 不抢占 PageUp / PageDown</span>
+}</pre>
+    </div>
+
+    <div class="yy_round">
+      <span class="yy_label">第 2 轮提示词（素材替换）</span>
+      <p class="yy_prompt yy_prompt--fix">将爱达魔都号图片换成我这张图片</p>
+      <p class="yy_flow">
+        <span>首轮靠文字描述氛围</span><i>→</i>
+        <span>验收不通过</span><i>→</i>
+        <span>直接给素材替换</span>
+      </p>
+    </div>
+
+    <div class="yy_note">
+      <h3>迭代分析</h3>
+      <p><strong>提示词从"生成代码"升级为"生成交付物"。</strong>任务三一句里塞了四层要求：素材（AI 生成 16:9）、内容（船名与首航时间要准确）、结构（slide 结构完整）、能力（自选一个未讲 API）。这比任务一的单点参数复杂，但也更依赖验收标准——所以我给的是"四个演示台都要有第 6 张 slide"，而不是"加一张图"。</p>
+      <p><strong>第二轮暴露了文生图的边界。</strong>图片类需求首轮只能用文字描述氛围（"金色时刻、深蓝海面、船艏清晰"），生成结果是否满足"像首艘国产大型邮轮"无法靠提示词保证，只能人工比对。迭代方式因此变成"直接给素材"，把生成的 2730×1536 PNG 转成 JPG 覆盖同名文件——因为 HTML 里引用的是固定文件名，替换素材不需要改任何代码，这也是当初坚持用语义化文件名的收益。</p>
+      <p><strong>为什么选 keyboard 而不是另外三个：</strong>mousewheel 会抢占页面滚动，zoom 需要额外的容器与手势提示，parallax 需要多层视差素材；keyboard 只需一个配置对象、零额外 DOM，还额外加了 <code>onlyInViewport</code> 与 <code>pageUpDown: false</code> 两个防护，避免滚出屏幕后仍响应方向键、避免和整页翻屏快捷键打架。</p>
+      <p><strong>验证方式：</strong>四个轮播的 <code>slides.length</code> 均为 6；<code>aida_modu.jpg</code> 请求成功且 <code>naturalWidth</code> 正确；分页器圆点数同步为 6；在视口内按 ← → 索引确实前进；控制台无 JS 报错。</p>
+    </div>
+  </section>
+
+  <!-- ══════════ 横向总结 ══════════ -->
+  <section class="yy_sum">
+    <h2>三个任务提示词的迭代主线</h2>
+    <ol>
+      <li><b>任务一：把隐含默认写成明文。</b>第一轮四句需求都写了，唯独"被打断后是否继续"是空白，模型用默认值替我做主。第二轮只补这一句，其余不动——迭代的最小单位应该是"一条约束"，不是"整段重写"。</li>
+      <li><b>任务二：从"能做"到"能讲"。</b>代码跑通不等于掌握，追问 <code>prev/next</code> 的语义后才知道参数为什么这么填。对没讲过的 API，正确的迭代是"示例 + 追问"，而不是让 AI 一次性写完。</li>
+      <li><b>任务三：从"代码"到"交付物"。</b>需求变成多目标（素材 + 内容 + 结构 + 能力）后，必须同时给出验收判据；素材类需求首轮无法精确控制，迭代手段是替换资源而不是重写提示词。</li>
+    </ol>
+    <p style="margin:14px 0 0;font-size:13.5px;color:#b9cbea">共三条通用结论：未写进提示词的约束，等于交给模型随机决定；每条需求都要配一条可实测的判据；第二轮的补充应指向第一轮的具体缺口。</p>
+  </section>
+
+  <div class="yy_back"><a href="swiper-task.html">← 返回 Swiper 课堂任务页</a></div>
+
+</div>
+</body>
+</html>
