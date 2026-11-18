@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  学号：24002120323
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：移动端美食卡片滑动切换
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f3ede4">
+    <meta name="description" content="杨阳的《高级网页设计》练习：移动端触摸手势美食卡片">
+    <title>移动端手势 · 美食卡片 | 高级网页设计练习</title>
+    <style>
+        :root {
+            --yy_bg: #f3ede4;
+            --yy_ink: #241c16;
+            --yy_muted: #87796b;
+            --yy_hint: #b3392c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 15% 8%, #fffaf2 0, transparent 55%),
+                var(--yy_bg);
+            color: var(--yy_ink);
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .yy_page {
+            width: 100%;
+            max-width: 430px;
+            padding: 28px 18px 34px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .yy_header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .yy_header h1 {
+            font-size: 21px;
+            letter-spacing: 1px;
+        }
+
+        .yy_header p {
+            font-size: 12px;
+            color: var(--yy_muted);
+            letter-spacing: 0.5px;
+        }
+
+        /* 卡片视口：横向手势交给 JS，纵向滚动交还页面 */
+        .yy_stage {
+            position: relative;
+            overflow: hidden;
+            border-radius: 26px;
+            touch-action: pan-y;
+            box-shadow: 0 20px 40px -18px rgba(60, 38, 20, 0.45);
+        }
+
+        .yy_track {
+            display: flex;
+            transition: transform 0.3s ease;
+            will-change: transform;
+        }
+
+        .yy_card {
+            flex: 0 0 100%;
+            height: clamp(370px, 60vh, 450px);
+            padding: 26px 24px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .yy_card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 38%, rgba(28, 14, 6, 0.62));
+            pointer-events: none;
+        }
+
+        .yy_card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .yy_card--1 {
+            background: linear-gradient(145deg, #ff9d5c 0%, #e04f36 55%, #8f1d1a 100%);
+        }
+
+        .yy_card--2 {
+            background: linear-gradient(145deg, #b9d98a 0%, #6aa84f 52%, #2f5d3a 100%);
+        }
+
+        .yy_card--3 {
+            background: linear-gradient(145deg, #f0b26a 0%, #a9622c 55%, #4a2412 100%);
+        }
+
+        .yy_card--4 {
+            background: linear-gradient(145deg, #ffe08a 0%, #f2a93b 55%, #c2601b 100%);
+        }
+
+        .yy_card_index {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            opacity: 0.85;
+        }
+
+        .yy_card_name {
+            font-size: 27px;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+
+        .yy_card_desc {
+            font-size: 14px;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .yy_card_tag {
+            align-self: flex-start;
+            margin-top: 16px;
+            padding: 5px 13px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            background: rgba(255, 255, 255, 0.16);
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .yy_meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--yy_muted);
+        }
+
+        .yy_counter {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 1px;
+        }
+
+        .yy_hint {
+            min-height: 20px;
+            font-size: 13px;
+            color: var(--yy_hint);
+            letter-spacing: 0.5px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .yy_hint.is-show {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_page">
+        <header class="yy_header">
+            <h1>今日菜单</h1>
+            <p>左右滑动切菜</p>
+        </header>
+
+        <div class="yy_stage" id="yy_stage">
+            <div class="yy_track" id="yy_track">
+                <article class="yy_card yy_card--1">
+                    <span class="yy_card_index">01</span>
+                    <h2 class="yy_card_name">番茄牛腩面</h2>
+                    <p class="yy_card_desc">牛腩慢炖三小时，吸饱番茄的酸甜浓汤，配一撮现擀细面。</p>
+                    <span class="yy_card_tag">热汤 · 主食</span>
+                </article>
+                <article class="yy_card yy_card--2">
+                    <span class="yy_card_index">02</span>
+                    <h2 class="yy_card_name">抹茶千层</h2>
+                    <p class="yy_card_desc">二十层薄饼皮夹着抹茶奶油，茶香清苦，入口即化。</p>
+                    <span class="yy_card_tag">甜品 · 冷食</span>
+                </article>
+                <article class="yy_card yy_card--3">
+                    <span class="yy_card_index">03</span>
+                    <h2 class="yy_card_name">炭烤和牛堡</h2>
+                    <p class="yy_card_desc">炭火直烤和牛饼，车打芝士融化在焦脆面包之间，酸黄瓜解腻。</p>
+                    <span class="yy_card_tag">烧烤 · 咸口</span>
+                </article>
+                <article class="yy_card yy_card--4">
+                    <span class="yy_card_index">04</span>
+                    <h2 class="yy_card_name">椰香芒果糯米</h2>
+                    <p class="yy_card_desc">糯米用椰浆浸润蒸熟，配上当季芒果，甜糯中带一点咸香。</p>
+                    <span class="yy_card_tag">甜品 · 南洋</span>
+                </article>
+            </div>
+        </div>
+
+        <div class="yy_meta">
+            <span class="yy_hint" id="yy_hint" aria-live="polite"></span>
+            <span class="yy_counter" id="yy_counter">第 1/4 张</span>
+        </div>
+    </div>
+
+    <script>
+        // 功能：保存当前卡片序号、触摸起点与上一次切换时间
+        var yy_index = 0;
+        var yy_startX = 0;
+        var yy_startY = 0;
+        var yy_lastSwitchAt = 0;
+
+        var yy_track = document.getElementById("yy_track");
+        var yy_stage = document.getElementById("yy_stage");
+        var yy_counter = document.getElementById("yy_counter");
+        var yy_hint = document.getElementById("yy_hint");
+        var yy_cards = yy_track.children;
+        var yy_total = yy_cards.length;
+        var yy_hintTimer = null;
+
+        // 功能：把卡片轨道平移到指定序号，并同步底部页码文字
+        function yy_goTo(index) {
+            yy_index = index;
+            yy_track.style.transform = "translateX(" + (-index * 100) + "%)";
+            yy_counter.textContent = "第 " + (index + 1) + "/" + yy_total + " 张";
+        }
+
+        // 功能：在页码左侧短暂显示提示文字，1.2 秒后自动淡出
+        function yy_showHint(text) {
+            yy_hint.textContent = text;
+            yy_hint.classList.add("is-show");
+            clearTimeout(yy_hintTimer);
+            yy_hintTimer = setTimeout(function () {
+                yy_hint.classList.remove("is-show");
+            }, 1200);
+        }
+
+        // 功能：记录手指按下时的横向与纵向起点坐标
+        function yy_onTouchStart(event) {
+            var yy_touch = event.touches[0];
+            yy_startX = yy_touch.clientX;
+            yy_startY = yy_touch.clientY;
+        }
+
+        // 功能：根据抬手时 changedTouches 的横向位移判断左滑或右滑并切换卡片
+        function yy_onTouchEnd(event) {
+            var yy_touch = event.changedTouches[0];
+            var yy_dx = yy_touch.clientX - yy_startX;
+            var yy_dy = yy_touch.clientY - yy_startY;
+
+            // 位移不足 40px 或纵向位移更大时视为误触，不切换
+            if (Math.abs(yy_dx) < 40 || Math.abs(yy_dx) <= Math.abs(yy_dy)) {
+                return;
+            }
+
+            // 先处理边界：即使刚切换过也要给出提示，提示本身不切换卡片
+            var yy_toNext = yy_dx < 0;
+            if (yy_toNext && yy_index === yy_total - 1) {
+                yy_showHint("已经是最后一张");
+                return;
+            }
+            if (!yy_toNext && yy_index === 0) {
+                yy_showHint("已经是第一张");
+                return;
+            }
+
+            // 300ms 冷却内忽略后续滑动，避免一次连滑跳过两张
+            var yy_now = Date.now();
+            if (yy_now - yy_lastSwitchAt < 300) {
+                return;
+            }
+
+            yy_lastSwitchAt = yy_now;
+            yy_goTo(yy_index + (yy_toNext ? 1 : -1));
+        }
+
+        yy_stage.addEventListener("touchstart", yy_onTouchStart, { passive: true });
+        yy_stage.addEventListener("touchend", yy_onTouchEnd, { passive: true });
+    </script>
+</body>
+
+</html>

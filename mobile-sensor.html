@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  学号：24002120323
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：摇一摇抽今日菜谱
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f6efe4">
+    <meta name="description" content="杨阳的《高级网页设计》练习：摇一摇抽今日菜谱，含设备不支持时的降级方案">
+    <title>摇一摇抽菜谱 | 高级网页设计练习</title>
+    <style>
+        :root {
+            --yy_bg: #f6efe4;
+            --yy_panel: #fffaf2;
+            --yy_ink: #2b2019;
+            --yy_muted: #8d7d6c;
+            --yy_accent: #c4542b;
+            --yy_line: #e7dbc9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background:
+                radial-gradient(circle at 80% 0, #ffe9cf 0, transparent 55%),
+                var(--yy_bg);
+            color: var(--yy_ink);
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .yy_page {
+            width: 100%;
+            max-width: 430px;
+            padding: 30px 18px 40px;
+        }
+
+        .yy_header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .yy_header h1 {
+            font-size: 21px;
+            letter-spacing: 1px;
+        }
+
+        .yy_header p {
+            font-size: 12px;
+            color: var(--yy_muted);
+            letter-spacing: 1px;
+        }
+
+        .yy_panel {
+            background: var(--yy_panel);
+            border: 1px solid var(--yy_line);
+            border-radius: 24px;
+            padding: 26px 20px 24px;
+            box-shadow: 0 18px 38px -26px rgba(90, 58, 30, 0.55);
+            text-align: center;
+        }
+
+        .yy_title {
+            font-size: 19px;
+            letter-spacing: 0.5px;
+        }
+
+        .yy_sub {
+            margin-top: 8px;
+            font-size: 12.5px;
+            color: var(--yy_muted);
+        }
+
+        /* 手机图标左右摆动，暗示“摇一摇” */
+        .yy_phone {
+            display: block;
+            margin: 18px auto 6px;
+            font-size: 42px;
+            line-height: 1;
+            animation: yy_sway 2.4s ease-in-out infinite;
+        }
+
+        @keyframes yy_sway {
+            0%, 100% { transform: rotate(-9deg); }
+            50% { transform: rotate(9deg); }
+        }
+
+        .yy_result {
+            margin-top: 10px;
+            padding: 26px 20px 24px;
+            border-radius: 20px;
+            background: linear-gradient(150deg, #ffe5c4 0%, #f8c9a2 55%, #efa27a 100%);
+            color: #4a2a16;
+        }
+
+        .yy_result.is-pop {
+            animation: yy_pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+        }
+
+        @keyframes yy_pop {
+            0% { transform: scale(0.72) rotate(-2deg); opacity: 0.2; }
+            60% { transform: scale(1.05) rotate(1deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+
+        .yy_emoji {
+            display: block;
+            font-size: 52px;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .yy_name {
+            font-size: 24px;
+            letter-spacing: 1px;
+        }
+
+        .yy_desc {
+            margin-top: 10px;
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: #6d4326;
+        }
+
+        .yy_fallback {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            padding: 16px 14px;
+            border: 1px dashed var(--yy_accent);
+            border-radius: 16px;
+            background: #fff4ec;
+        }
+
+        .yy_fallback.is-show {
+            display: flex;
+        }
+
+        .yy_fallback_text {
+            font-size: 13.5px;
+            color: var(--yy_accent);
+            letter-spacing: 0.5px;
+        }
+
+        .yy_btn {
+            padding: 10px 26px;
+            border: none;
+            border-radius: 999px;
+            background: var(--yy_accent);
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: 1px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .yy_btn:active {
+            transform: scale(0.97);
+        }
+
+        .yy_note {
+            margin-top: 22px;
+            padding: 0 4px;
+        }
+
+        .yy_note h2 {
+            font-size: 14px;
+            color: var(--yy_accent);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .yy_note p {
+            font-size: 12.5px;
+            line-height: 2;
+            color: var(--yy_muted);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_page">
+        <header class="yy_header">
+            <h1>今日吃什么</h1>
+            <p>SHAKE &amp; EAT</p>
+        </header>
+
+        <section class="yy_panel">
+            <p class="yy_title">摇一摇手机，抽今日菜谱</p>
+            <p class="yy_sub">晃两下，今天的饭交给运气决定</p>
+            <span class="yy_phone" aria-hidden="true">📱</span>
+
+            <div class="yy_result" id="yy_result">
+                <span class="yy_emoji" id="yy_emoji">🍽️</span>
+                <h2 class="yy_name" id="yy_name">今日菜谱</h2>
+                <p class="yy_desc" id="yy_desc">用力摇一摇手机，结果马上揭晓</p>
+            </div>
+
+            <div class="yy_fallback" id="yy_fallback">
+                <p class="yy_fallback_text">当前设备不支持，请用手机打开</p>
+                <button class="yy_btn" id="yy_btn" type="button">点我抽一次</button>
+            </div>
+        </section>
+
+        <section class="yy_note">
+            <h2>为什么必须做降级？</h2>
+            <p>devicemotion 不是所有环境都能用：桌面浏览器通常根本不派发该事件；部分安卓机型传感器缺失或浏览器权限被关闭时，事件会来但 accelerationIncludingGravity 为 null；iOS 13 起还需要用户在点击手势里授予运动权限。只要其中任一环节失效，页面就会“摇半天没反应”，看起来像坏掉了。所以这里做了双保险：3 秒内收不到有效数据就提示“当前设备不支持”，同时给出“点我抽一次”按钮，让不支持传感器的用户也能完成抽菜谱这件事。</p>
+        </section>
+    </div>
+
+    <script>
+        // 菜谱数据：每次摇动从中随机抽一条
+        var yy_dishes = [
+            { emoji: "🍜", name: "番茄牛腩面", desc: "牛腩慢炖三小时，吸饱番茄的酸甜浓汤。" },
+            { emoji: "🍰", name: "抹茶千层", desc: "二十层薄饼夹抹茶奶油，清苦回甘。" },
+            { emoji: "🍔", name: "炭烤和牛堡", desc: "炭火直烤和牛饼，车打芝士融化拉丝。" },
+            { emoji: "🥭", name: "椰香芒果糯米饭", desc: "椰浆糯米配当季芒果，甜糯里带一点咸香。" },
+            { emoji: "🍲", name: "冬阴功汤", desc: "香茅南姜打底，酸辣醒神，配米饭刚好。" },
+            { emoji: "🍱", name: "照烧鸡腿饭", desc: "鸡腿刷照烧汁烤到微焦，再窝一颗温泉蛋。" }
+        ];
+
+        var yy_result = document.getElementById("yy_result");
+        var yy_emoji = document.getElementById("yy_emoji");
+        var yy_name = document.getElementById("yy_name");
+        var yy_desc = document.getElementById("yy_desc");
+        var yy_fallback = document.getElementById("yy_fallback");
+        var yy_btn = document.getElementById("yy_btn");
+
+        // 摇动阈值、冷却时间与数据监控状态
+        var yy_threshold = 18;
+        var yy_cooldown = 1500;
+        var yy_cooldownUntil = 0;
+        var yy_lastIndex = -1;
+        var yy_watchTimer = null;
+
+        // 功能：显示“设备不支持”提示与降级按钮
+        function yy_showFallback() {
+            yy_fallback.classList.add("is-show");
+        }
+
+        // 功能：收到有效运动数据后隐藏降级提示
+        function yy_hideFallback() {
+            yy_fallback.classList.remove("is-show");
+        }
+
+        // 功能：随机抽一道菜并播放弹出动画（force 为真时跳过摇动冷却）
+        function yy_draw(force) {
+            var yy_now = Date.now();
+            if (!force && yy_now < yy_cooldownUntil) {
+                return;
+            }
+            yy_cooldownUntil = yy_now + yy_cooldown;
+
+            var yy_index = Math.floor(Math.random() * yy_dishes.length);
+            // 避免连续两次抽到同一道菜
+            if (yy_index === yy_lastIndex && yy_dishes.length > 1) {
+                yy_index = (yy_index + 1) % yy_dishes.length;
+            }
+            yy_lastIndex = yy_index;
+
+            var yy_dish = yy_dishes[yy_index];
+            yy_emoji.textContent = yy_dish.emoji;
+            yy_name.textContent = yy_dish.name;
+            yy_desc.textContent = yy_dish.desc;
+
+            // 先移除动画类并强制回流，保证连续抽取时动画每次都重播
+            yy_result.classList.remove("is-pop");
+            void yy_result.offsetWidth;
+            yy_result.classList.add("is-pop");
+        }
+
+        // 功能：启动“无有效数据”监控，3 秒内仍收不到数据就显示降级提示
+        function yy_watchNoData() {
+            if (yy_watchTimer) {
+                return;
+            }
+            yy_watchTimer = setTimeout(function () {
+                yy_watchTimer = null;
+                yy_showFallback();
+            }, 3000);
+        }
+
+        // 功能：用 accelerationIncludingGravity 计算合成加速度，超过阈值即抽菜谱
+        function yy_onMotion(event) {
+            var yy_acc = event.accelerationIncludingGravity;
+            var yy_ax = yy_acc ? yy_acc.x : null;
+            var yy_ay = yy_acc ? yy_acc.y : null;
+            var yy_az = yy_acc ? yy_acc.z : null;
+
+            // 桌面浏览器会派发事件但数据为空对象，必须视为“没有数据”
+            var yy_valid = typeof yy_ax === "number" || typeof yy_ay === "number" || typeof yy_az === "number";
+            if (!yy_valid) {
+                yy_watchNoData();
+                return;
+            }
+
+            // 只要收到有效数据就收起降级提示，并取消无数据监控
+            clearTimeout(yy_watchTimer);
+            yy_watchTimer = null;
+            yy_hideFallback();
+
+            var yy_total = Math.sqrt((yy_ax || 0) * (yy_ax || 0) + (yy_ay || 0) * (yy_ay || 0) + (yy_az || 0) * (yy_az || 0));
+
+            if (yy_total < yy_threshold) {
+                return;
+            }
+            yy_draw(false);
+        }
+
+        // 功能：iOS 13+ 在用户手势中申请运动传感器权限
+        function yy_requestPermission() {
+            if (typeof DeviceMotionEvent.requestPermission !== "function") {
+                return;
+            }
+            DeviceMotionEvent.requestPermission().then(function (yy_state) {
+                if (yy_state !== "granted") {
+                    yy_showFallback();
+                }
+            }).catch(function () {
+                yy_showFallback();
+            });
+        }
+
+        // 功能：初始化传感器监听，不支持时直接降级并启动超时监控
+        function yy_init() {
+            if (typeof DeviceMotionEvent === "undefined") {
+                yy_showFallback();
+                return;
+            }
+            window.addEventListener("devicemotion", yy_onMotion, { passive: true });
+
+            // iOS 需要在点击手势里申请权限
+            if (typeof DeviceMotionEvent.requestPermission === "function") {
+                document.addEventListener("click", yy_requestPermission, { once: true });
+                document.addEventListener("touchend", yy_requestPermission, { once: true });
+            }
+
+            // 3 秒内始终收不到数据，说明设备或权限有问题，按不支持处理
+            yy_watchNoData();
+        }
+
+        // 功能：降级按钮点击时无视冷却直接抽一次
+        yy_btn.addEventListener("click", function () {
+            yy_draw(true);
+        });
+
+        yy_init();
+    </script>
+</body>
+
+</html>

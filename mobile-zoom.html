@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  学号：24002120323
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：移动端图片查看器（双指缩放 / 单指拖动 / 双击切换）
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#141210">
+    <meta name="description" content="杨阳的《高级网页设计》练习：移动端图片查看器，双指缩放、拖动与双击切换">
+    <title>移动端图片查看器 | 高级网页设计练习</title>
+    <style>
+        :root {
+            --yy_bg: #141210;
+            --yy_panel: #1f1c19;
+            --yy_ink: #f5efe6;
+            --yy_muted: #a89c8d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 0, #2a2622 0, var(--yy_bg) 60%);
+            color: var(--yy_ink);
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .yy_page {
+            width: 100%;
+            max-width: 430px;
+            padding: 24px 18px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .yy_header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .yy_header h1 {
+            font-size: 20px;
+            letter-spacing: 1px;
+        }
+
+        .yy_header p {
+            font-size: 12px;
+            color: var(--yy_muted);
+        }
+
+        /* 图片容器：裁剪溢出、禁用浏览器手势与文字选择 */
+        .yy_viewer {
+            position: relative;
+            overflow: hidden;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+            height: clamp(400px, 66vh, 560px);
+            border-radius: 20px;
+            background: var(--yy_panel);
+            box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.9);
+        }
+
+        .yy_photo {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transform-origin: center center;
+            will-change: transform;
+            pointer-events: none;
+            -webkit-user-drag: none;
+        }
+
+        .yy_photo.is-animating {
+            transition: transform 0.25s ease;
+        }
+
+        .yy_badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 5px 11px;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 12px;
+            letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .yy_footer {
+            margin-top: 14px;
+            font-size: 12.5px;
+            color: var(--yy_muted);
+            line-height: 1.9;
+            text-align: center;
+        }
+
+        .yy_tip {
+            position: fixed;
+            left: 50%;
+            bottom: 26px;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: rgba(37, 32, 27, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: var(--yy_ink);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+            transition: opacity 0.4s ease;
+        }
+
+        .yy_tip.is-hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_page">
+        <header class="yy_header">
+            <h1>图片查看器</h1>
+            <p>夜巷 · 双击试试</p>
+        </header>
+
+        <div class="yy_viewer" id="yy_viewer">
+            <img class="yy_photo" id="yy_photo" draggable="false" alt="夜晚的日式小巷"
+                src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cinematic%20photo%20of%20a%20quiet%20Japanese%20alley%20at%20night%2C%20glowing%20lanterns%2C%20wet%20cobblestone%2C%20ultra%20detailed&image_size=portrait_4_3">
+            <span class="yy_badge" id="yy_badge">1×</span>
+        </div>
+
+        <p class="yy_footer">双指缩放（1～4 倍） · 放大后单指拖动 · 双击在 1× / 2× 之间切换</p>
+    </div>
+
+    <div class="yy_tip" id="yy_tip">双指缩放请用手机打开</div>
+
+    <script>
+        // 当前缩放倍数与平移量（相对图片自身中心）
+        var yy_scale = 1;
+        var yy_tx = 0;
+        var yy_ty = 0;
+
+        var yy_viewer = document.getElementById("yy_viewer");
+        var yy_photo = document.getElementById("yy_photo");
+        var yy_badge = document.getElementById("yy_badge");
+        var yy_tip = document.getElementById("yy_tip");
+
+        // 手势状态：'' 空闲 / 'drag' 单指拖动 / 'pinch' 双指缩放
+        var yy_mode = "";
+        var yy_startX = 0;
+        var yy_startY = 0;
+        var yy_baseTx = 0;
+        var yy_baseTy = 0;
+        var yy_moved = false;
+        var yy_touchStartAt = 0;
+        var yy_lastTapAt = 0;
+
+        // 双指起始数据
+        var yy_pinchStartDist = 0;
+        var yy_pinchStartScale = 1;
+        var yy_pinchStartMid = { x: 0, y: 0 };
+        var yy_pinchStartTx = 0;
+        var yy_pinchStartTy = 0;
+
+        // 图片在 1 倍时实际显示的宽高（object-fit: contain 后的内容尺寸）
+        var yy_contentW = 0;
+        var yy_contentH = 0;
+        var yy_animTimer = null;
+
+        // 功能：计算两指之间的直线距离
+        function yy_distance(touchA, touchB) {
+            var yy_dx = touchA.clientX - touchB.clientX;
+            var yy_dy = touchA.clientY - touchB.clientY;
+            return Math.sqrt(yy_dx * yy_dx + yy_dy * yy_dy);
+        }
+
+        // 功能：把两指中点换算成相对容器左上角的坐标
+        function yy_midpoint(touchA, touchB) {
+            var yy_rect = yy_viewer.getBoundingClientRect();
+            return {
+                x: (touchA.clientX + touchB.clientX) / 2 - yy_rect.left,
+                y: (touchA.clientY + touchB.clientY) / 2 - yy_rect.top
+            };
+        }
+
+        // 功能：按 contain 规则算出图片 1 倍时在容器里的实际显示宽高
+        function yy_measureContent() {
+            var yy_vw = yy_viewer.clientWidth;
+            var yy_vh = yy_viewer.clientHeight;
+            var yy_nw = yy_photo.naturalWidth;
+            var yy_nh = yy_photo.naturalHeight;
+            if (!yy_nw || !yy_nh) {
+                yy_contentW = yy_vw;
+                yy_contentH = yy_vh;
+                return;
+            }
+            var yy_ratio = yy_nw / yy_nh;
+            if (yy_vw / yy_vh > yy_ratio) {
+                yy_contentH = yy_vh;
+                yy_contentW = yy_vh * yy_ratio;
+            } else {
+                yy_contentW = yy_vw;
+                yy_contentH = yy_vw / yy_ratio;
+            }
+        }
+
+        // 功能：把换算后的平移量限制在边界内，避免图片滑出容器留下空白
+        function yy_clamp(scale, tx, ty) {
+            var yy_maxX = Math.max(0, (yy_contentW * scale - yy_viewer.clientWidth) / 2);
+            var yy_maxY = Math.max(0, (yy_contentH * scale - yy_viewer.clientHeight) / 2);
+            return {
+                x: Math.min(yy_maxX, Math.max(-yy_maxX, tx)),
+                y: Math.min(yy_maxY, Math.max(-yy_maxY, ty))
+            };
+        }
+
+        // 功能：把当前缩放和平移写入 transform，并同步右上角倍率
+        function yy_apply(animate) {
+            if (animate) {
+                yy_photo.classList.add("is-animating");
+                clearTimeout(yy_animTimer);
+                yy_animTimer = setTimeout(function () {
+                    yy_photo.classList.remove("is-animating");
+                }, 260);
+            } else {
+                yy_photo.classList.remove("is-animating");
+            }
+            yy_photo.style.transform = "translate(" + yy_tx + "px," + yy_ty + "px) scale(" + yy_scale + ")";
+            yy_badge.textContent = Math.round(yy_scale * 100) / 100 + "×";
+        }
+
+        // 功能：记录单指起点或双指起始距离、中点与基准缩放
+        function yy_onTouchStart(event) {
+            // 手指按下立即取消残留过渡，避免动画和手势抢同一个 transform
+            yy_photo.classList.remove("is-animating");
+            clearTimeout(yy_animTimer);
+
+            if (event.touches.length === 1) {
+                yy_mode = "drag";
+                yy_startX = event.touches[0].clientX;
+                yy_startY = event.touches[0].clientY;
+                yy_baseTx = yy_tx;
+                yy_baseTy = yy_ty;
+                yy_moved = false;
+                yy_touchStartAt = Date.now();
+            } else if (event.touches.length === 2) {
+                yy_mode = "pinch";
+                yy_pinchStartDist = Math.max(10, yy_distance(event.touches[0], event.touches[1]));
+                yy_pinchStartScale = yy_scale;
+                yy_pinchStartMid = yy_midpoint(event.touches[0], event.touches[1]);
+                yy_pinchStartTx = yy_tx;
+                yy_pinchStartTy = yy_ty;
+                yy_moved = true;
+            }
+        }
+
+        // 功能：双指按距离比例缩放并以中点为基准，单指在放大后拖动图片
+        function yy_onTouchMove(event) {
+            event.preventDefault();
+
+            if (yy_mode === "pinch" && event.touches.length === 2) {
+                var yy_dist = Math.max(10, yy_distance(event.touches[0], event.touches[1]));
+                var yy_mid = yy_midpoint(event.touches[0], event.touches[1]);
+                var yy_next = Math.min(4, Math.max(1, yy_pinchStartScale * yy_dist / yy_pinchStartDist));
+                var yy_ratio = yy_next / yy_pinchStartScale;
+                var yy_cx = yy_viewer.clientWidth / 2;
+                var yy_cy = yy_viewer.clientHeight / 2;
+
+                // 基准点公式：让起始中点下的画面内容在缩放后仍停在当前中点
+                yy_tx = yy_mid.x - yy_cx - yy_ratio * (yy_pinchStartMid.x - yy_cx - yy_pinchStartTx);
+                yy_ty = yy_mid.y - yy_cy - yy_ratio * (yy_pinchStartMid.y - yy_cy - yy_pinchStartTy);
+                yy_scale = yy_next;
+                yy_apply(false);
+            } else if (yy_mode === "drag" && event.touches.length === 1) {
+                var yy_dx = event.touches[0].clientX - yy_startX;
+                var yy_dy = event.touches[0].clientY - yy_startY;
+                if (Math.abs(yy_dx) > 6 || Math.abs(yy_dy) > 6) {
+                    yy_moved = true;
+                }
+                // 只有放大后才允许拖动，1 倍时保持居中
+                if (yy_scale > 1) {
+                    yy_tx = yy_baseTx + yy_dx;
+                    yy_ty = yy_baseTy + yy_dy;
+                    yy_apply(false);
+                }
+            }
+        }
+
+        // 功能：双指变单指时重置拖动基准，全部抬起时判断双击或回弹边界
+        function yy_onTouchEnd(event) {
+            if (yy_mode === "pinch" && event.touches.length === 1) {
+                yy_mode = "drag";
+                yy_startX = event.touches[0].clientX;
+                yy_startY = event.touches[0].clientY;
+                yy_baseTx = yy_tx;
+                yy_baseTy = yy_ty;
+                yy_moved = true;
+                return;
+            }
+
+            if (event.touches.length > 0) {
+                return;
+            }
+
+            // 轻点且位移很小才计入双击判定
+            if (yy_mode === "drag" && !yy_moved && Date.now() - yy_touchStartAt < 250) {
+                var yy_now = Date.now();
+                if (yy_now - yy_lastTapAt < 300) {
+                    yy_lastTapAt = 0;
+                    yy_toggleZoom(event.changedTouches[0]);
+                    return;
+                }
+                yy_lastTapAt = yy_now;
+            }
+
+            yy_mode = "";
+            yy_settle();
+        }
+
+        // 功能：双击在 1 倍和 2 倍之间切换，以点击位置为缩放基准
+        function yy_toggleZoom(touch) {
+            if (yy_scale > 1.05) {
+                yy_scale = 1;
+                yy_tx = 0;
+                yy_ty = 0;
+            } else {
+                var yy_rect = yy_viewer.getBoundingClientRect();
+                var yy_px = touch.clientX - yy_rect.left;
+                var yy_py = touch.clientY - yy_rect.top;
+                var yy_cx = yy_viewer.clientWidth / 2;
+                var yy_cy = yy_viewer.clientHeight / 2;
+                var yy_ratio = 2 / yy_scale;
+
+                // 与双指缩放同一套基准点公式，保证点击处的内容不位移
+                yy_tx = yy_px - yy_cx - yy_ratio * (yy_px - yy_cx - yy_tx);
+                yy_ty = yy_py - yy_cy - yy_ratio * (yy_py - yy_cy - yy_ty);
+                yy_scale = 2;
+
+                var yy_limited = yy_clamp(yy_scale, yy_tx, yy_ty);
+                yy_tx = yy_limited.x;
+                yy_ty = yy_limited.y;
+            }
+            yy_apply(true);
+        }
+
+        // 功能：手势结束时把缩放限制在 1～4 倍，并把平移收回到边界内
+        function yy_settle() {
+            yy_scale = Math.min(4, Math.max(1, yy_scale));
+            if (yy_scale === 1) {
+                yy_tx = 0;
+                yy_ty = 0;
+            } else {
+                var yy_limited = yy_clamp(yy_scale, yy_tx, yy_ty);
+                yy_tx = yy_limited.x;
+                yy_ty = yy_limited.y;
+            }
+            yy_apply(true);
+        }
+
+        yy_viewer.addEventListener("touchstart", yy_onTouchStart, { passive: true });
+        yy_viewer.addEventListener("touchmove", yy_onTouchMove, { passive: false });
+        yy_viewer.addEventListener("touchend", yy_onTouchEnd, { passive: true });
+        yy_viewer.addEventListener("touchcancel", yy_onTouchEnd, { passive: true });
+
+        // 功能：图片加载完成后测量内容尺寸，并重算边界
+        yy_photo.addEventListener("load", function () {
+            yy_measureContent();
+            yy_settle();
+        });
+
+        // 功能：窗口尺寸变化时重新测量内容尺寸并修正平移
+        window.addEventListener("resize", function () {
+            yy_measureContent();
+            yy_settle();
+        });
+
+        // 功能：页面打开时显示提示，4 秒后自动淡出
+        setTimeout(function () {
+            yy_tip.classList.add("is-hide");
+        }, 4000);
+
+        yy_measureContent();
+    </script>
+</body>
+
+</html>
