@@ -298,3 +298,8 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 最后确定一下这三个页面是否在index.html里面，确定完之后将index.html上传到github
 
+
+## 2026-11-18 14:31:05
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： `D:\WXWork\1688857613629327\Cache\Video\2026-11\video(50).mp4`将这个视频插入到摇一摇页面下方，要求可以正常播放，并更新到GitHub ，给我提交之后的链接
+
