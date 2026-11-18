@@ -288,3 +288,13 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 将index.html上传到我的github ,并给我发布链接
 
+
+## 2026-11-18 14:03:26
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 再完善一下这个页面，添加倾斜视差功能
+
+
+## 2026-11-18 14:07:14
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 最后确定一下这三个页面是否在index.html里面，确定完之后将index.html上传到github
+

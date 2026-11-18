@@ -43,9 +43,45 @@
         }
 
         .yy_page {
+            position: relative;
+            z-index: 1;
             width: 100%;
             max-width: 430px;
             padding: 30px 18px 40px;
+        }
+
+        /* 倾斜视差：深度越大的图层，随手机倾斜位移越明显 */
+        .yy_parallax {
+            transform: translate3d(
+                calc(var(--yy_tilt_x, 0) * var(--yy_depth, 0) * 1px),
+                calc(var(--yy_tilt_y, 0) * var(--yy_depth, 0) * 1px),
+                0
+            );
+            transition: transform 0.1s ease-out;
+        }
+
+        .yy_glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .yy_glow-a {
+            top: -70px;
+            right: -60px;
+            background: #ffd9ab;
+            --yy_depth: 26;
+        }
+
+        .yy_glow-b {
+            bottom: -90px;
+            left: -70px;
+            background: #ffc6a4;
+            --yy_depth: -18;
         }
 
         .yy_header {
@@ -87,9 +123,15 @@
         }
 
         /* 手机图标左右摆动，暗示“摇一摇” */
+        .yy_phone-wrap {
+            display: flex;
+            justify-content: center;
+            margin: 18px 0 6px;
+            --yy_depth: 18;
+        }
+
         .yy_phone {
             display: block;
-            margin: 18px auto 6px;
             font-size: 42px;
             line-height: 1;
             animation: yy_sway 2.4s ease-in-out infinite;
@@ -98,6 +140,10 @@
         @keyframes yy_sway {
             0%, 100% { transform: rotate(-9deg); }
             50% { transform: rotate(9deg); }
+        }
+
+        .yy_result-wrap {
+            --yy_depth: 10;
         }
 
         .yy_result {
@@ -196,6 +242,9 @@
 </head>
 
 <body>
+    <div class="yy_glow yy_glow-a yy_parallax" aria-hidden="true"></div>
+    <div class="yy_glow yy_glow-b yy_parallax" aria-hidden="true"></div>
+
     <div class="yy_page">
         <header class="yy_header">
             <h1>今日吃什么</h1>
@@ -204,13 +253,18 @@
 
         <section class="yy_panel">
             <p class="yy_title">摇一摇手机，抽今日菜谱</p>
-            <p class="yy_sub">晃两下，今天的饭交给运气决定</p>
-            <span class="yy_phone" aria-hidden="true">📱</span>
+            <p class="yy_sub">晃两下抽菜谱，左右倾斜手机还能看到视差</p>
 
-            <div class="yy_result" id="yy_result">
-                <span class="yy_emoji" id="yy_emoji">🍽️</span>
-                <h2 class="yy_name" id="yy_name">今日菜谱</h2>
-                <p class="yy_desc" id="yy_desc">用力摇一摇手机，结果马上揭晓</p>
+            <div class="yy_phone-wrap yy_parallax">
+                <span class="yy_phone" aria-hidden="true">📱</span>
+            </div>
+
+            <div class="yy_result-wrap yy_parallax">
+                <div class="yy_result" id="yy_result">
+                    <span class="yy_emoji" id="yy_emoji">🍽️</span>
+                    <h2 class="yy_name" id="yy_name">今日菜谱</h2>
+                    <p class="yy_desc" id="yy_desc">用力摇一摇手机，结果马上揭晓</p>
+                </div>
             </div>
 
             <div class="yy_fallback" id="yy_fallback">
@@ -324,22 +378,45 @@
             yy_draw(false);
         }
 
-        // 功能：iOS 13+ 在用户手势中申请运动传感器权限
-        function yy_requestPermission() {
-            if (typeof DeviceMotionEvent.requestPermission !== "function") {
+        // 功能：根据手机左右/前后倾斜角换算视差偏移，驱动各图层产生位移
+        function yy_onOrientation(event) {
+            var yy_gamma = event.gamma;
+            var yy_beta = event.beta;
+            if (typeof yy_gamma !== "number" && typeof yy_beta !== "number") {
                 return;
             }
-            DeviceMotionEvent.requestPermission().then(function (yy_state) {
-                if (yy_state !== "granted") {
+            var yy_maxTilt = 25;
+            var yy_tiltX = Math.max(-1, Math.min(1, (yy_gamma || 0) / yy_maxTilt));
+            // 竖屏持机时 beta 约为 45°，以它为基准，只取偏离量
+            var yy_tiltY = Math.max(-1, Math.min(1, ((yy_beta || 45) - 45) / yy_maxTilt));
+            var yy_root = document.documentElement;
+            yy_root.style.setProperty("--yy_tilt_x", yy_tiltX.toFixed(3));
+            yy_root.style.setProperty("--yy_tilt_y", yy_tiltY.toFixed(3));
+        }
+
+        // 功能：iOS 13+ 在用户手势中申请运动与方向传感器权限
+        function yy_requestPermission() {
+            if (typeof DeviceMotionEvent !== "undefined" && typeof DeviceMotionEvent.requestPermission === "function") {
+                DeviceMotionEvent.requestPermission().then(function (yy_state) {
+                    if (yy_state !== "granted") {
+                        yy_showFallback();
+                    }
+                }).catch(function () {
                     yy_showFallback();
-                }
-            }).catch(function () {
-                yy_showFallback();
-            });
+                });
+            }
+            if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+                DeviceOrientationEvent.requestPermission().catch(function () {});
+            }
         }
 
         // 功能：初始化传感器监听，不支持时直接降级并启动超时监控
         function yy_init() {
+            // 方向传感器只负责视差装饰，缺失时静默跳过，不影响摇一摇
+            if (typeof DeviceOrientationEvent !== "undefined") {
+                window.addEventListener("deviceorientation", yy_onOrientation, { passive: true });
+            }
+
             if (typeof DeviceMotionEvent === "undefined") {
                 yy_showFallback();
                 return;
