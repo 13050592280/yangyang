@@ -1,0 +1,99 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 测试截图页面样式
+ */
+
+.yy_tests_grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+.yy_tests_card {
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yy_tests_card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--yy-shadow-hover);
+}
+
+.yy_tests_shot {
+  display: block;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 160, 165, 0.16);
+  background: var(--yy-paper);
+}
+
+.yy_tests_shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.4s ease;
+}
+
+.yy_tests_shot:hover img {
+  transform: scale(1.02);
+}
+
+.yy_tests_caption {
+  padding-top: 16px;
+}
+
+.yy_tests_head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.yy_tests_title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--yy-ink);
+}
+
+.yy_tests_tag {
+  flex: none;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4f9d8a;
+  background: var(--yy-mint-soft);
+}
+
+.yy_tests_desc {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--yy-ink-light);
+}
+
+.yy_tests_meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(120, 160, 165, 0.22);
+  font-size: 12px;
+  font-family: Consolas, "Courier New", monospace;
+  color: var(--yy-ink-light);
+  word-break: break-all;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .yy_tests_grid {
+    grid-template-columns: 1fr;
+  }
+}

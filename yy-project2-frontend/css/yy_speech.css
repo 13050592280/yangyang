@@ -1,0 +1,267 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 语音识别页面样式
+ */
+
+.yy_speech_layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  max-width: 1080px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.yy_speech_panel {
+  padding: 24px;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.yy_speech_panel_title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--yy-ink);
+  margin-bottom: 16px;
+  padding-left: 10px;
+  border-left: 4px solid var(--yy-lavender);
+  line-height: 1.2;
+}
+
+.yy_speech_panel_title_flush {
+  margin-bottom: 0;
+}
+
+/* ---------- 上传区 ---------- */
+.yy_speech_drop {
+  position: relative;
+  display: block;
+  min-height: 260px;
+  border-radius: 20px;
+  border: 2px dashed rgba(185, 167, 227, 0.75);
+  background: rgba(236, 230, 251, 0.35);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+
+.yy_speech_drop:hover,
+.yy_speech_drop.yy_is_dragover {
+  border-color: var(--yy-lavender);
+  background: rgba(236, 230, 251, 0.6);
+  transform: translateY(-2px);
+}
+
+.yy_speech_input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.yy_speech_drop_inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.yy_speech_drop_icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 26px;
+  color: #8c73c9;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 18px rgba(185, 167, 227, 0.3);
+}
+
+.yy_speech_drop_text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--yy-ink);
+}
+
+.yy_speech_drop_hint {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_speech_player {
+  position: relative;
+  z-index: 1;
+  display: none;
+  width: calc(100% - 40px);
+  margin: 20px;
+  align-self: center;
+}
+
+.yy_speech_player.yy_is_visible {
+  display: block;
+}
+
+.yy_speech_drop.yy_has_audio {
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yy_speech_fileinfo {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--yy-ink-light);
+  word-break: break-all;
+}
+
+.yy_speech_btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 13px 20px;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--yy-lavender), var(--yy-sky));
+  box-shadow: 0 10px 22px rgba(185, 167, 227, 0.35);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.yy_speech_btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(185, 167, 227, 0.45);
+}
+
+.yy_speech_btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.yy_speech_tip {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--yy-ink-light);
+  text-align: center;
+}
+
+.yy_speech_tip_error {
+  color: #d98a6f;
+}
+
+/* ---------- 结果区 ---------- */
+.yy_speech_result_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.yy_speech_badge {
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8c73c9;
+  background: var(--yy-lavender-soft);
+}
+
+.yy_speech_badge.yy_is_loading {
+  color: #5b96c4;
+  background: var(--yy-sky-soft);
+}
+
+.yy_speech_badge.yy_is_error {
+  color: #b0664f;
+  background: var(--yy-peach-soft);
+}
+
+.yy_speech_result {
+  min-height: 260px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(253, 252, 248, 0.9);
+  border: 1px solid rgba(120, 160, 165, 0.16);
+}
+
+.yy_speech_result_placeholder {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--yy-ink-light);
+}
+
+.yy_speech_text {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--yy-ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.yy_speech_result_footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.yy_speech_meta {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+  word-break: break-all;
+}
+
+.yy_speech_copy {
+  flex: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(185, 167, 227, 0.6);
+  background: rgba(236, 230, 251, 0.6);
+  color: #8c73c9;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.yy_speech_copy:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(185, 167, 227, 0.3);
+}
+
+.yy_speech_copy:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .yy_speech_layout {
+    grid-template-columns: 1fr;
+  }
+
+  .yy_speech_result {
+    min-height: 200px;
+  }
+}

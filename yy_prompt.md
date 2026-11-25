@@ -318,3 +318,13 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 好的，提交 yy_prompt.md 并推送
 
+
+## 2026-11-25 14:56:36
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 将index.html提交到github
+
+
+## 2026-11-25 14:58:44
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 只提交 frontend 目录下的必要文件
+

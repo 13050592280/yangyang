@@ -1,0 +1,310 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-20 | 大模型：Tencent Hunyuan Hy
+ */
+:root {
+  --yy-bg-deep: #060912;
+  --yy-primary: #38e8c8;
+  --yy-primary-dim: rgba(56, 232, 200, 0.14);
+  --yy-accent: #7c8cff;
+  --yy-text: #e8edf7;
+  --yy-text-dim: #93a0bb;
+  --yy-card: rgba(18, 24, 44, 0.68);
+  --yy-border: rgba(140, 160, 220, 0.16);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body.yy_body {
+  font-family: "Segoe UI", "Microsoft YaHei", -apple-system, sans-serif;
+  color: var(--yy-text);
+  background: radial-gradient(circle at 20% 10%, #16224a 0%, var(--yy-bg-deep) 55%),
+              radial-gradient(circle at 85% 85%, #1a1538 0%, transparent 55%);
+  background-attachment: fixed;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+canvas.yy_canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.yy_page {
+  position: relative;
+  z-index: 1;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 48px 28px 32px;
+}
+
+.yy_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--yy-border);
+}
+
+.yy_brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.yy_brand_mark {
+  width: 62px;
+  height: 62px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #06121a;
+  background: linear-gradient(135deg, var(--yy-primary), #a6fff0);
+  box-shadow: 0 0 28px rgba(56, 232, 200, 0.45);
+}
+
+.yy_title {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ffffff, var(--yy-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.yy_subtitle {
+  color: var(--yy-text-dim);
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.yy_meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.yy_meta_item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--yy-border);
+  border-radius: 999px;
+  background: rgba(12, 18, 34, 0.55);
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.yy_meta_label {
+  color: var(--yy-primary);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.yy_intro {
+  margin-top: 40px;
+}
+
+.yy_intro_card {
+  position: relative;
+  overflow: hidden;
+  padding: 36px 38px;
+  border: 1px solid var(--yy-border);
+  border-radius: 22px;
+  background: var(--yy-card);
+  backdrop-filter: blur(14px);
+}
+
+.yy_glow::before {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  top: -120px;
+  right: -60px;
+  background: radial-gradient(circle, rgba(56, 232, 200, 0.22), transparent 70%);
+  pointer-events: none;
+}
+
+.yy_intro_head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.yy_tag {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--yy-primary);
+  background: var(--yy-primary-dim);
+  border: 1px solid rgba(56, 232, 200, 0.3);
+}
+
+.yy_tag_alt {
+  color: #b9c4ff;
+  background: rgba(124, 140, 255, 0.12);
+  border-color: rgba(124, 140, 255, 0.28);
+}
+
+.yy_intro_title {
+  font-size: 25px;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.yy_intro_desc {
+  color: var(--yy-text-dim);
+  font-size: 15px;
+  max-width: 760px;
+}
+
+.yy_stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 42px;
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--yy-border);
+}
+
+.yy_stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.yy_stat_num {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yy-primary);
+}
+
+.yy_stat_label {
+  font-size: 12px;
+  color: var(--yy-text-dim);
+}
+
+.yy_main {
+  margin-top: 42px;
+}
+
+.yy_section_title {
+  margin-bottom: 20px;
+}
+
+.yy_section_title h2 {
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+.yy_section_title p {
+  color: var(--yy-text-dim);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.yy_nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.yy_link_card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  border: 1px solid var(--yy-border);
+  border-radius: 16px;
+  background: rgba(14, 20, 38, 0.6);
+  color: var(--yy-text);
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.yy_link_card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(56, 232, 200, 0.55);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 0 20px rgba(56, 232, 200, 0.12);
+}
+
+.yy_link_icon {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  font-size: 22px;
+  color: var(--yy-primary);
+  background: var(--yy-primary-dim);
+}
+
+.yy_link_body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.yy_link_title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.yy_link_desc {
+  font-size: 12px;
+  color: var(--yy-text-dim);
+  margin-top: 2px;
+}
+
+.yy_link_arrow {
+  color: var(--yy-primary);
+  font-size: 20px;
+  transition: transform 0.25s ease;
+}
+
+.yy_link_card:hover .yy_link_arrow {
+  transform: translateX(5px);
+}
+
+.yy_footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 52px;
+  padding-top: 20px;
+  border-top: 1px solid var(--yy-border);
+  font-size: 12px;
+  color: var(--yy-text-dim);
+}
+
+@media (max-width: 640px) {
+  .yy_page { padding: 28px 18px; }
+  .yy_title { font-size: 24px; }
+  .yy_intro_card { padding: 26px 22px; }
+  .yy_intro_title { font-size: 20px; }
+  .yy_stats { gap: 24px; }
+}

@@ -1,0 +1,172 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-20 | 大模型：Tencent Hunyuan Hy
+ * 图文列表页专属样式 · 小清新风格
+ */
+.yy_api_bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 12px;
+  padding: 16px 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.yy_api_label {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_api_link {
+  color: #8c73c9;
+  font-size: 14px;
+  font-family: Consolas, "Courier New", monospace;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(185, 167, 227, 0.7);
+  word-break: break-all;
+}
+
+.yy_api_link:hover {
+  color: var(--yy-lavender);
+}
+
+.yy_api_method {
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8c73c9;
+  background: var(--yy-lavender-soft);
+}
+
+.yy_api_count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--yy-ink-light);
+}
+
+.yy_section_head_spaced {
+  margin-top: 34px;
+}
+
+.yy_gallery_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+  gap: 22px;
+}
+
+.yy_loading {
+  grid-column: 1 / -1;
+  padding: 40px;
+  text-align: center;
+  color: var(--yy-ink-light);
+}
+
+.yy_gallery_item {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: var(--yy-shadow);
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+
+.yy_gallery_item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--yy-shadow-hover);
+}
+
+.yy_gallery_img_wrap {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--yy-mint-soft), var(--yy-lavender-soft));
+}
+
+.yy_gallery_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.yy_gallery_item:hover .yy_gallery_img {
+  transform: scale(1.06);
+}
+
+.yy_gallery_body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 22px 22px;
+}
+
+.yy_gallery_category {
+  align-self: flex-start;
+  padding: 4px 13px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8c73c9;
+  background: var(--yy-lavender-soft);
+}
+
+.yy_gallery_title {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.5;
+  color: var(--yy-ink);
+}
+
+.yy_gallery_desc {
+  font-size: 13px;
+  color: var(--yy-ink-light);
+  line-height: 1.7;
+  flex: 1;
+}
+
+.yy_gallery_time {
+  padding-top: 12px;
+  border-top: 1px dashed rgba(120, 160, 165, 0.25);
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_error_tip {
+  display: none;
+  margin-top: 18px;
+  padding: 15px 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  color: #c96f55;
+  background: var(--yy-peach-soft);
+  border: 1px solid rgba(255, 185, 163, 0.6);
+}
+
+.yy_error_tip.yy_is_visible {
+  display: block;
+  animation: yy_fade_up 0.5s ease forwards;
+}
+
+@media (max-width: 640px) {
+  .yy_gallery_grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .yy_gallery_body { padding: 14px; }
+  .yy_gallery_title { font-size: 14px; }
+  .yy_gallery_desc {
+    font-size: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

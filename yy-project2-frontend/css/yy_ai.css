@@ -1,0 +1,328 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 智能问答页面样式 · 延续小清新风格
+ */
+
+.yy_ai_card {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+}
+
+/* ---------- 卡片头部 ---------- */
+.yy_ai_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed rgba(120, 160, 165, 0.25);
+}
+
+.yy_ai_identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.yy_ai_avatar {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--yy-mint), var(--yy-lavender));
+  box-shadow: 0 8px 20px rgba(127, 212, 193, 0.4);
+  transform: rotate(-6deg);
+}
+
+.yy_ai_name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--yy-ink);
+}
+
+.yy_ai_status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--yy-ink-light);
+  margin-top: 3px;
+}
+
+.yy_ai_dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--yy-mint);
+  box-shadow: 0 0 0 4px rgba(127, 212, 193, 0.25);
+  animation: yy_ai_pulse 2s ease-in-out infinite;
+}
+
+.yy_ai_clear {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 160, 165, 0.25);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--yy-ink-light);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+}
+
+.yy_ai_clear:hover {
+  color: #d98a6f;
+  border-color: rgba(255, 185, 163, 0.7);
+  transform: translateY(-2px);
+}
+
+/* ---------- 模型服务商切换 ---------- */
+.yy_ai_head_tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.yy_provider_label {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_provider_select {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 160, 165, 0.25);
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--yy-ink);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.yy_provider_select:hover {
+  border-color: rgba(127, 212, 193, 0.7);
+}
+
+.yy_provider_select:focus {
+  border-color: var(--yy-mint);
+  box-shadow: 0 0 0 3px rgba(127, 212, 193, 0.18);
+}
+
+/* ---------- 消息区 ---------- */
+.yy_ai_messages {
+  height: 430px;
+  overflow-y: auto;
+  padding: 22px 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+.yy_ai_messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.yy_ai_messages::-webkit-scrollbar-thumb {
+  background: rgba(127, 212, 193, 0.45);
+  border-radius: 999px;
+}
+
+.yy_ai_row {
+  display: flex;
+  animation: yy_ai_in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.yy_ai_row_bot {
+  justify-content: flex-start;
+}
+
+.yy_ai_row_user {
+  justify-content: flex-end;
+}
+
+.yy_ai_bubble {
+  max-width: 76%;
+  padding: 13px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  box-shadow: 0 8px 20px rgba(120, 160, 165, 0.12);
+}
+
+.yy_ai_bubble_bot {
+  background: var(--yy-mint-soft);
+  color: #3f5b57;
+  border-bottom-left-radius: 6px;
+}
+
+.yy_ai_bubble_user {
+  background: linear-gradient(135deg, var(--yy-mint), var(--yy-sky));
+  color: #fff;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 10px 24px rgba(127, 212, 193, 0.35);
+}
+
+.yy_ai_bubble_error {
+  background: var(--yy-peach-soft);
+  color: #b0664f;
+  border-bottom-left-radius: 6px;
+}
+
+/* ---------- 输入中动画 ---------- */
+.yy_ai_typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 16px 18px;
+}
+
+.yy_ai_typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--yy-mint);
+  animation: yy_ai_bounce 1.2s ease-in-out infinite;
+}
+
+.yy_ai_typing span:nth-child(2) { animation-delay: 0.15s; }
+.yy_ai_typing span:nth-child(3) { animation-delay: 0.3s; }
+
+/* ---------- 快捷提问 ---------- */
+.yy_ai_suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 2px 16px;
+}
+
+.yy_ai_suggest_item {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(127, 212, 193, 0.5);
+  background: rgba(217, 245, 236, 0.55);
+  color: #4f9d8a;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.yy_ai_suggest_item:hover {
+  transform: translateY(-2px);
+  background: var(--yy-mint-soft, #d9f5ec);
+  box-shadow: 0 8px 18px rgba(127, 212, 193, 0.28);
+}
+
+/* ---------- 输入区 ---------- */
+.yy_ai_composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 22px;
+  background: rgba(253, 252, 248, 0.9);
+  border: 1px solid rgba(120, 160, 165, 0.18);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.yy_ai_composer:focus-within {
+  border-color: rgba(127, 212, 193, 0.85);
+  box-shadow: 0 0 0 4px rgba(127, 212, 193, 0.16);
+}
+
+.yy_ai_input {
+  flex: 1;
+  min-height: 44px;
+  max-height: 140px;
+  padding: 10px 6px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--yy-ink);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.yy_ai_input::placeholder {
+  color: #aab8bd;
+}
+
+.yy_ai_send {
+  flex: none;
+  padding: 12px 26px;
+  border: none;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--yy-mint), var(--yy-sky));
+  box-shadow: 0 10px 22px rgba(127, 212, 193, 0.4);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.yy_ai_send:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(127, 212, 193, 0.5);
+}
+
+.yy_ai_send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.yy_ai_tip {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_ai_tip_error {
+  color: #d98a6f;
+}
+
+/* ---------- 动画 ---------- */
+@keyframes yy_ai_in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes yy_ai_bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+
+@keyframes yy_ai_pulse {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(127, 212, 193, 0.25); }
+  50% { box-shadow: 0 0 0 8px rgba(127, 212, 193, 0.08); }
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 640px) {
+  .yy_ai_card { padding: 18px 14px; }
+  .yy_ai_messages { height: 60vh; min-height: 340px; }
+  .yy_ai_bubble { max-width: 88%; font-size: 13px; }
+  .yy_ai_send { padding: 12px 18px; }
+}

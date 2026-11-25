@@ -1,0 +1,242 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 知识库页面布局样式（聊天组件复用 yy_ai.css）
+ */
+
+.yy_knowledge_layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 22px;
+  max-width: 1120px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.yy_knowledge_layout .yy_ai_card {
+  max-width: none;
+  margin: 0;
+}
+
+.yy_knowledge_avatar {
+  background: linear-gradient(135deg, var(--yy-sky), var(--yy-lavender));
+  box-shadow: 0 8px 20px rgba(143, 199, 237, 0.45);
+}
+
+/* ---------- 左侧管理栏 ---------- */
+.yy_knowledge_manage {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.yy_knowledge_panel {
+  padding: 20px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.yy_knowledge_panel_title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--yy-ink);
+  margin-bottom: 14px;
+  padding-left: 10px;
+  border-left: 4px solid var(--yy-mint);
+  line-height: 1.2;
+}
+
+.yy_knowledge_panel_title_flush {
+  margin-bottom: 0;
+}
+
+.yy_knowledge_file {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px dashed rgba(127, 212, 193, 0.7);
+  background: rgba(217, 245, 236, 0.35);
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--yy-ink);
+  cursor: pointer;
+}
+
+.yy_knowledge_file::file-selector-button {
+  margin-right: 10px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 999px;
+  background: var(--yy-mint);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.yy_knowledge_btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--yy-mint), var(--yy-sky));
+  box-shadow: 0 10px 22px rgba(127, 212, 193, 0.35);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.yy_knowledge_btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(127, 212, 193, 0.45);
+}
+
+.yy_knowledge_btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.yy_knowledge_hint {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--yy-ink-light);
+}
+
+.yy_knowledge_upload_tip {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #4f9d8a;
+  word-break: break-all;
+}
+
+.yy_knowledge_upload_tip_error {
+  color: #d98a6f;
+}
+
+/* ---------- 文件列表 ---------- */
+.yy_knowledge_list_head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.yy_knowledge_count {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+  flex: none;
+}
+
+.yy_knowledge_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.yy_knowledge_list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.yy_knowledge_list::-webkit-scrollbar-thumb {
+  background: rgba(127, 212, 193, 0.45);
+  border-radius: 999px;
+}
+
+.yy_knowledge_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(253, 252, 248, 0.9);
+  border: 1px solid rgba(120, 160, 165, 0.16);
+}
+
+.yy_knowledge_item_body {
+  min-width: 0;
+  flex: 1;
+}
+
+.yy_knowledge_item_name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--yy-ink);
+  word-break: break-all;
+}
+
+.yy_knowledge_item_meta {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--yy-ink-light);
+}
+
+.yy_knowledge_del {
+  flex: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 185, 163, 0.6);
+  background: var(--yy-peach-soft);
+  color: #b0664f;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.yy_knowledge_del:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(255, 185, 163, 0.35);
+}
+
+.yy_knowledge_empty {
+  padding: 18px 6px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+/* ---------- 引用来源 ---------- */
+.yy_knowledge_refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(120, 160, 165, 0.3);
+}
+
+.yy_knowledge_ref {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(127, 212, 193, 0.5);
+  font-size: 11px;
+  color: #4f9d8a;
+  line-height: 1.5;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 960px) {
+  .yy_knowledge_layout {
+    grid-template-columns: 1fr;
+  }
+
+  .yy_knowledge_layout .yy_ai_messages {
+    height: 52vh;
+    min-height: 320px;
+  }
+}

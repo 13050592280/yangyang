@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+  姓名：【杨阳】 | 学号：【24002120323】
+  时间：2026-11-20 | 大模型：Tencent Hunyuan Hy
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据库连接测试 · yy CampusMart</title>
+  <link rel="stylesheet" href="css/yy_index.css">
+  <link rel="stylesheet" href="css/yy_database.css">
+</head>
+<body class="yy_body">
+  <canvas id="yy_petal_canvas" class="yy_petal_canvas" aria-hidden="true"></canvas>
+  <div class="yy_blob yy_blob_one" aria-hidden="true"></div>
+  <div class="yy_blob yy_blob_two" aria-hidden="true"></div>
+  <div class="yy_blob yy_blob_three" aria-hidden="true"></div>
+
+  <div class="yy_shell">
+    <header class="yy_topbar">
+      <div class="yy_logo">
+        <div class="yy_logo_mark">yy</div>
+        <div>
+          <div class="yy_logo_name">yy CampusMart</div>
+          <div class="yy_logo_sub">校园二手集市 · 让闲置流转起来</div>
+        </div>
+      </div>
+      <div class="yy_badges">
+        <a class="yy_badge" href="index.html"><span class="yy_badge_value">← 返回首页</span></a>
+      </div>
+    </header>
+
+    <section class="yy_hero yy_hero_inner">
+      <span class="yy_hero_eyebrow">Database Connection</span>
+      <h1 class="yy_hero_title" data-yy-text="数据库连接测试" data-yy-accent="数据库连接">数据库连接测试</h1>
+      <p class="yy_hero_desc">输入用户名与密码，轻轻一点，验证与 MySQL 的连接状态。</p>
+    </section>
+
+    <div class="yy_wave_divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+        <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.55)"></path>
+      </svg>
+    </div>
+
+    <section class="yy_section">
+      <div class="yy_section_head">
+        <span class="yy_section_kicker">Connection Form</span>
+        <h2>连接参数</h2>
+        <p>用户名与密码默认为课程环境配置，可自行修改后测试</p>
+      </div>
+
+      <form class="yy_card yy_db_card" id="yy_db_form" novalidate>
+        <div class="yy_form_row">
+          <label class="yy_form_label" for="yy_db_username">用户名</label>
+          <input class="yy_form_input" type="text" id="yy_db_username" name="yy_db_username" value="root" autocomplete="off">
+        </div>
+        <div class="yy_form_row">
+          <label class="yy_form_label" for="yy_db_password">密码</label>
+          <input class="yy_form_input" type="password" id="yy_db_password" name="yy_db_password" value="0000" autocomplete="off">
+        </div>
+        <div class="yy_form_actions">
+          <button class="yy_btn" type="submit" id="yy_db_submit">测试连接</button>
+          <span class="yy_hint">连接由后端接口 /api/database/connect 发起</span>
+        </div>
+        <div class="yy_result" id="yy_db_result" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+
+    <footer class="yy_footer">
+      <div>© 2026 杨阳 · yy CampusMart 校园二手集市</div>
+      <div>用原生三件套用心打造 <span class="yy_footer_heart">♥</span> 无任何第三方库 / 框架 / CDN</div>
+    </footer>
+  </div>
+
+  <script src="js/yy_index.js"></script>
+  <script src="js/yy_database.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 在线客服页面布局样式（聊天组件复用 yy_ai.css）
+ */
+
+.yy_service_layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 22px;
+  max-width: 1080px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.yy_service_layout .yy_ai_card {
+  max-width: none;
+  margin: 0;
+}
+
+.yy_service_avatar {
+  background: linear-gradient(135deg, var(--yy-peach), var(--yy-mint));
+  box-shadow: 0 8px 20px rgba(255, 185, 163, 0.45);
+}
+
+/* ---------- 右侧信息栏 ---------- */
+.yy_service_aside {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 24px;
+}
+
+.yy_service_panel {
+  padding: 20px 20px 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.96);
+  box-shadow: var(--yy-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.yy_service_panel_title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--yy-ink);
+  margin-bottom: 14px;
+  padding-left: 10px;
+  border-left: 4px solid var(--yy-mint);
+  line-height: 1.2;
+}
+
+.yy_service_row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(120, 160, 165, 0.2);
+  font-size: 13px;
+}
+
+.yy_service_row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.yy_service_row_label {
+  color: var(--yy-ink-light);
+  flex: none;
+}
+
+.yy_service_row_value {
+  color: var(--yy-ink);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- 常见问题 ---------- */
+.yy_service_faq_list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yy_service_faq {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(127, 212, 193, 0.45);
+  background: rgba(217, 245, 236, 0.5);
+  color: #3f6d63;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.yy_service_faq:hover {
+  transform: translateX(4px);
+  background: var(--yy-mint-soft);
+  box-shadow: 0 8px 18px rgba(127, 212, 193, 0.28);
+}
+
+.yy_service_panel_hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--yy-ink-light);
+  text-align: center;
+}
+
+/* ---------- 人工客服 ---------- */
+.yy_service_panel_contact {
+  background: linear-gradient(150deg, rgba(255, 234, 223, 0.85), rgba(255, 255, 255, 0.88));
+}
+
+.yy_service_contact_text {
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--yy-ink-light);
+  margin-bottom: 12px;
+}
+
+.yy_service_contact_line {
+  padding: 8px 12px;
+  margin-top: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  font-weight: 600;
+  color: #b0664f;
+  word-break: break-all;
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .yy_service_layout {
+    grid-template-columns: 1fr;
+  }
+
+  .yy_service_aside {
+    position: static;
+  }
+
+  .yy_service_layout .yy_ai_messages {
+    height: 52vh;
+    min-height: 320px;
+  }
+}

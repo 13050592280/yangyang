@@ -1,0 +1,110 @@
+/**
+ * 姓名：【杨阳】 | 学号：【24002120323】 | 时间：2026-11-20 | 大模型：Tencent Hunyuan Hy
+ * 数据库连接页专属样式 · 小清新风格
+ */
+.yy_db_card {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px 42px;
+}
+
+.yy_form_row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.yy_form_label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--yy-ink);
+}
+
+.yy_form_input {
+  width: 100%;
+  padding: 13px 18px;
+  border: 1px solid rgba(127, 212, 193, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--yy-ink);
+  font-size: 15px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.yy_form_input:focus {
+  border-color: var(--yy-mint);
+  box-shadow: 0 0 0 4px rgba(127, 212, 193, 0.18);
+  transform: translateY(-2px);
+}
+
+.yy_form_actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.yy_btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(120deg, var(--yy-mint), var(--yy-sky));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(127, 212, 193, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, opacity 0.25s ease;
+}
+
+.yy_btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 28px rgba(127, 212, 193, 0.45);
+}
+
+.yy_btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.yy_hint {
+  font-size: 12px;
+  color: var(--yy-ink-light);
+}
+
+.yy_result {
+  display: none;
+  margin-top: 24px;
+  padding: 15px 20px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.6;
+  word-break: break-all;
+}
+
+.yy_result.yy_is_visible {
+  display: block;
+  animation: yy_fade_up 0.5s ease forwards;
+}
+
+.yy_result.yy_is_success {
+  color: #3f8f79;
+  background: var(--yy-mint-soft);
+  border: 1px solid rgba(127, 212, 193, 0.5);
+}
+
+.yy_result.yy_is_error {
+  color: #c96f55;
+  background: var(--yy-peach-soft);
+  border: 1px solid rgba(255, 185, 163, 0.6);
+}
+
+@media (max-width: 640px) {
+  .yy_db_card { padding: 28px 24px; }
+}

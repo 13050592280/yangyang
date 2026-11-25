@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--
+  姓名：【杨阳】 | 学号：【24002120323】
+  时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>语音识别 · 中华美食街</title>
+  <link rel="stylesheet" href="css/yy_index.css">
+  <link rel="stylesheet" href="css/yy_speech.css">
+</head>
+<body class="yy_body">
+  <canvas id="yy_petal_canvas" class="yy_petal_canvas" aria-hidden="true"></canvas>
+  <div class="yy_blob yy_blob_one" aria-hidden="true"></div>
+  <div class="yy_blob yy_blob_two" aria-hidden="true"></div>
+  <div class="yy_blob yy_blob_three" aria-hidden="true"></div>
+
+  <div class="yy_shell">
+    <header class="yy_topbar">
+      <div class="yy_logo">
+        <div class="yy_logo_mark">yy</div>
+        <div>
+          <div class="yy_logo_name">yy CampusMart</div>
+          <div class="yy_logo_sub">校园二手集市 · 让闲置流转起来</div>
+        </div>
+      </div>
+      <div class="yy_badges">
+        <a class="yy_badge" href="index.html"><span class="yy_badge_value">← 返回首页</span></a>
+      </div>
+    </header>
+
+    <section class="yy_hero yy_hero_inner">
+      <span class="yy_hero_eyebrow">Speech Recognition</span>
+      <h1 class="yy_hero_title" data-yy-text="语音识别" data-yy-accent="语音">语音识别</h1>
+      <p class="yy_hero_desc">上传一段语音，七牛云 Qwen-Audio ASR 模型将其转写为文字。</p>
+    </section>
+
+    <div class="yy_wave_divider" aria-hidden="true">
+      <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+        <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" fill="rgba(255,255,255,0.55)"></path>
+      </svg>
+    </div>
+
+    <section class="yy_section">
+      <div class="yy_api_bar">
+        <span class="yy_api_label">后端接口</span>
+        <a class="yy_api_link" id="yy_speech_api_link" href="/api/speech/recognize" target="_blank">/api/speech/recognize</a>
+        <span class="yy_api_method">POST</span>
+        <span class="yy_api_count">模型 qwen-audio-3.0-asr-flash</span>
+      </div>
+
+      <div class="yy_speech_layout">
+        <div class="yy_speech_panel">
+          <h3 class="yy_speech_panel_title">上传语音</h3>
+
+          <div class="yy_speech_drop" id="yy_speech_drop" role="button" tabindex="0">
+            <input class="yy_speech_input" id="yy_speech_input" type="file"
+                   accept=".wav,.mp3,.m4a,.aac,.ogg,.webm,.amr">
+            <div class="yy_speech_drop_inner" id="yy_speech_drop_inner">
+              <span class="yy_speech_drop_icon">♫</span>
+              <span class="yy_speech_drop_text">点击选择语音文件，或把文件拖到这里</span>
+              <span class="yy_speech_drop_hint">支持 wav / mp3 / m4a / aac / ogg / webm / amr，不超过 20MB</span>
+            </div>
+            <audio class="yy_speech_player" id="yy_speech_player" controls></audio>
+          </div>
+
+          <div class="yy_speech_fileinfo" id="yy_speech_filename">尚未选择语音</div>
+
+          <button class="yy_speech_btn" id="yy_speech_btn" type="button" disabled>开始识别</button>
+          <p class="yy_speech_tip" id="yy_speech_tip">音频仅用于本次识别请求，不会保存到服务器</p>
+        </div>
+
+        <div class="yy_speech_panel">
+          <div class="yy_speech_result_head">
+            <h3 class="yy_speech_panel_title yy_speech_panel_title_flush">识别文字</h3>
+            <span class="yy_speech_badge" id="yy_speech_badge">等待上传</span>
+          </div>
+
+          <div class="yy_speech_result" id="yy_speech_result">
+            <p class="yy_speech_result_placeholder">上传语音并点击「开始识别」，这里会显示识别出的文字。</p>
+          </div>
+
+          <div class="yy_speech_result_footer">
+            <div class="yy_speech_meta" id="yy_speech_meta"></div>
+            <button class="yy_speech_copy" id="yy_speech_copy" type="button" disabled>复制文字</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="yy_footer">
+      <div>© 2026 杨阳 · yy CampusMart 校园二手集市</div>
+      <div>用原生三件套用心打造 <span class="yy_footer_heart">♥</span> 无任何第三方库 / 框架 / CDN</div>
+    </footer>
+  </div>
+
+  <script src="js/yy_index.js"></script>
+  <script src="js/yy_speech.js"></script>
+</body>
+</html>
