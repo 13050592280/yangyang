@@ -328,3 +328,8 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 只提交 frontend 目录下的必要文件
 
+
+## 2026-11-25 15:12:14
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 给我检查一下我的yy-wbe-project文件里有哪些网页没有上传到index.html里，一并更新入口并提交
+
