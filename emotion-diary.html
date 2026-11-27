@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  学号：24002120323
+  建立时间：2026-11-27
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：情绪日记 · 正念解析（对话版）
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f6f4ee">
+    <meta name="description" content="情绪日记结构化解析：以对话方式写下情绪日记，抽取结构化情绪 JSON，并给出正念场景建议。">
+    <title>情绪日记 · 正念解析</title>
+    <style>
+        :root {
+            --yy_bg: #f6f4ee;
+            --yy_card: #fffdf8;
+            --yy_ink: #2f332e;
+            --yy_muted: #8a8f86;
+            --yy_line: #e8e3d8;
+            --yy_accent: #7f9378;
+            --yy_accent_deep: #5f7a5c;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 85% 0, #eef2e8 0, transparent 42%),
+                radial-gradient(circle at 0 60%, #f3ece0 0, transparent 46%),
+                var(--yy_bg);
+            color: var(--yy_ink);
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .yy_page {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 48px 22px 68px;
+        }
+
+        .yy_eyebrow {
+            display: inline-block;
+            font-size: 11.5px;
+            letter-spacing: 3px;
+            color: var(--yy_accent_deep);
+            margin-bottom: 12px;
+        }
+
+        .yy_title {
+            margin: 0;
+            font-size: 36px;
+            line-height: 1.35;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .yy_subtitle {
+            margin: 12px 0 0;
+            max-width: 540px;
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: var(--yy_muted);
+        }
+
+        .yy_chat {
+            display: flex;
+            flex-direction: column;
+            margin-top: 28px;
+            padding: 16px 16px 14px;
+            background: var(--yy_card);
+            border: 1px solid var(--yy_line);
+            border-radius: 26px;
+            box-shadow: 0 28px 56px -44px rgba(58, 68, 54, 0.65);
+        }
+
+        .yy_messages {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-height: 340px;
+            max-height: 58vh;
+            overflow-y: auto;
+            padding: 8px 6px 16px;
+            scroll-behavior: smooth;
+        }
+
+        .yy_msg {
+            max-width: 88%;
+            font-size: 14px;
+            line-height: 1.9;
+            word-break: break-word;
+        }
+
+        .yy_msg_user {
+            align-self: flex-end;
+            padding: 11px 16px;
+            border-radius: 18px 18px 4px 18px;
+            background: #3a3f44;
+            color: #f9f8f4;
+            white-space: pre-wrap;
+        }
+
+        .yy_msg_assistant {
+            align-self: flex-start;
+            padding: 16px 18px;
+            border: 1px solid var(--yy_line);
+            border-radius: 4px 18px 18px 18px;
+            background: #fbf8f1;
+        }
+
+        .yy_greeting {
+            color: #5d645a;
+        }
+
+        .yy_result_head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .yy_emotion_tag {
+            padding: 5px 14px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            letter-spacing: 1px;
+        }
+
+        .yy_intensity_text {
+            font-size: 12px;
+            color: var(--yy_muted);
+        }
+
+        .yy_bar {
+            height: 7px;
+            margin: 12px 0 18px;
+            border-radius: 999px;
+            background: #efeae0;
+            overflow: hidden;
+        }
+
+        .yy_bar_fill {
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            transition: width 0.6s ease;
+        }
+
+        .yy_row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .yy_row_label {
+            font-size: 11.5px;
+            letter-spacing: 1px;
+            color: var(--yy_muted);
+        }
+
+        .yy_chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .yy_chip {
+            padding: 4px 11px;
+            border-radius: 999px;
+            background: #f2eee5;
+            color: #4a5046;
+            font-size: 12.5px;
+        }
+
+        .yy_chip_muted {
+            padding: 4px 11px;
+            border-radius: 999px;
+            border: 1px dashed var(--yy_line);
+            color: var(--yy_muted);
+            font-size: 12.5px;
+        }
+
+        .yy_scene {
+            margin: 4px 0 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: #f7f4ec;
+            font-size: 13px;
+            color: #4d534a;
+        }
+
+        .yy_scene strong {
+            font-weight: 600;
+        }
+
+        .yy_summary {
+            margin: 0;
+            padding-top: 12px;
+            border-top: 1px dashed var(--yy_line);
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: #4d534a;
+        }
+
+        /* 等待模型时的三个跳点 */
+        .yy_typing {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 14px 18px;
+        }
+
+        .yy_typing span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #b9b5aa;
+            animation: yy_blink 1.2s infinite ease-in-out;
+        }
+
+        .yy_typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .yy_typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes yy_blink {
+            0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+            40% { opacity: 1; transform: translateY(-2px); }
+        }
+
+        .yy_composer {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding-top: 14px;
+            border-top: 1px dashed var(--yy_line);
+        }
+
+        .yy_textarea {
+            flex: 1;
+            min-height: 48px;
+            max-height: 132px;
+            padding: 12px 16px;
+            border: 1px solid var(--yy_line);
+            border-radius: 18px;
+            background: #fffdf8;
+            color: var(--yy_ink);
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1.7;
+            resize: none;
+            outline: none;
+        }
+
+        .yy_textarea:focus {
+            border-color: var(--yy_accent);
+            box-shadow: 0 0 0 3px rgba(127, 147, 120, 0.14);
+        }
+
+        .yy_submit {
+            flex: none;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 999px;
+            background: #3a3f44;
+            color: #f9f8f4;
+            font-family: inherit;
+            font-size: 14px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .yy_submit:hover {
+            background: #4a5056;
+        }
+
+        .yy_submit:active {
+            transform: scale(0.98);
+        }
+
+        .yy_submit:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .yy_hint {
+            margin-top: 10px;
+            font-size: 11.5px;
+            letter-spacing: 0.5px;
+            color: var(--yy_muted);
+            text-align: center;
+        }
+
+        .yy_history {
+            margin-top: 34px;
+        }
+
+        .yy_history_head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .yy_history_head h2 {
+            margin: 0;
+            font-size: 17px;
+            letter-spacing: 1px;
+        }
+
+        .yy_history_head span {
+            font-size: 12px;
+            color: var(--yy_muted);
+        }
+
+        .yy_history_list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .yy_history_item {
+            padding: 14px 16px;
+            background: rgba(255, 253, 248, 0.78);
+            border: 1px solid var(--yy_line);
+            border-radius: 18px;
+        }
+
+        .yy_history_top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .yy_history_time {
+            font-size: 11.5px;
+            color: var(--yy_muted);
+        }
+
+        .yy_history_tag {
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .yy_history_summary {
+            margin: 0;
+            font-size: 13.5px;
+            line-height: 1.8;
+            color: #4d534a;
+        }
+
+        .yy_history_empty {
+            padding: 18px 0;
+            margin: 0;
+            text-align: center;
+            font-size: 13px;
+            color: var(--yy_muted);
+        }
+
+        @media (max-width: 640px) {
+            .yy_page {
+                padding: 32px 14px 52px;
+            }
+
+            .yy_title {
+                font-size: 28px;
+            }
+
+            .yy_chat {
+                padding: 12px 12px 12px;
+                border-radius: 22px;
+            }
+
+            .yy_messages {
+                min-height: 300px;
+                max-height: 56vh;
+            }
+
+            .yy_msg {
+                max-width: 94%;
+            }
+
+            .yy_submit {
+                padding: 12px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_page">
+        <header class="yy_header">
+            <span class="yy_eyebrow">EMOTION DIARY</span>
+            <h1 class="yy_title">情绪日记 · 正念解析</h1>
+            <p class="yy_subtitle">像聊天一样写下此刻的心情，我会解析出主导情绪与身体感受，并给出适合的正念场景。仅做信息抽取，不做心理诊断。</p>
+        </header>
+
+        <section class="yy_chat">
+            <div class="yy_messages" id="yy_messages">
+                <div class="yy_msg yy_msg_assistant yy_greeting">
+                    你好，我是今天的正念小助手。可以和我聊聊此刻的心情，比如“明天要考试，我很紧张，躺很久睡不着”。
+                </div>
+            </div>
+
+            <div class="yy_composer">
+                <textarea class="yy_textarea" id="yy_diary" placeholder="写下此刻的情绪，Enter 发送，Shift + Enter 换行"></textarea>
+                <button class="yy_submit" id="yy_submit" type="button">发送</button>
+            </div>
+            <p class="yy_hint">仅做信息抽取，不做心理诊断 · 历史记录保存在本机浏览器</p>
+        </section>
+
+        <section class="yy_history">
+            <div class="yy_history_head">
+                <h2>最近记录</h2>
+                <span>最多保存 10 条</span>
+            </div>
+            <div class="yy_history_list" id="yy_history_list"></div>
+            <p class="yy_history_empty" id="yy_history_empty">还没有记录，写下第一篇情绪日记吧。</p>
+        </section>
+    </div>
+
+    <script>
+        var yy_api = "http://127.0.0.1:8325/api/ai/chat";
+        var yy_storageKey = "yy_emotion_records";
+        var yy_maxRecords = 10;
+
+        // 功能：系统提示词，约束模型只输出符合 Schema 的 JSON
+        var yy_systemPrompt = "你是情绪日记结构化抽取器，严格遵守下面JSON Schema，只输出纯JSON字符串，禁止任何解释、前言、markdown、注释、多余文字。\n" +
+            "JSON Schema：\n" +
+            "{\"type\":\"object\",\"required\":[\"main_emotion\",\"emotion_intensity\",\"secondary_emotion_list\",\"physical_symptom_list\",\"cognitive_feature_list\",\"user_demand\",\"recommend_scene\",\"summary\"],\"properties\":{\"main_emotion\":{\"type\":\"string\",\"enum\":[\"anxious\",\"tired\",\"irritable\",\"sad\",\"calm\"]},\"emotion_intensity\":{\"type\":\"number\",\"minimum\":0,\"maximum\":1},\"secondary_emotion_list\":{\"type\":\"array\",\"items\":{\"type\":\"string\",\"enum\":[\"anxious\",\"tired\",\"irritable\",\"sad\",\"calm\"]}},\"physical_symptom_list\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"cognitive_feature_list\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"user_demand\":{\"type\":\"string\",\"enum\":[\"sleep_aid\",\"stress_relief\",\"focus_train\",\"mood_calm\",\"rest\"]},\"recommend_scene\":{\"type\":\"string\",\"enum\":[\"body_scan\",\"breath_meditation\",\"sleep_story\",\"short_rest\"]},\"summary\":{\"type\":\"string\"}}}\n" +
+            "规则：\n" +
+            "1.main_emotion只能选枚举 [anxious, tired, irritable, sad, calm]其中一个；\n" +
+            "2.emotion_intensity是0-1浮点数；\n" +
+            "3.secondary_emotion_list元素只能来自情绪枚举，无次要情绪返回空数组；\n" +
+            "4.user_demand只能从[sleep_aid, stress_relief, focus_train, mood_calm, rest]选一个；\n" +
+            "5.recommend_scene只能从[body_scan, breath_meditation, sleep_story, short_rest]选一个；\n" +
+            "6.physical_symptom_list、cognitive_feature_list提取原文，没有返回[]；\n" +
+            "7.summary简短中文概括日记；\n" +
+            "8.绝对不能输出JSON以外任何字符。";
+
+        var yy_emotionMap = {
+            anxious: { label: "焦虑", color: "#9c6a35", bg: "#f6ead8" },
+            tired: { label: "疲惫", color: "#5f7396", bg: "#e8edf5" },
+            irritable: { label: "烦躁", color: "#a75b45", bg: "#f7e6df" },
+            sad: { label: "低落", color: "#5c6b96", bg: "#e9ecf6" },
+            calm: { label: "平静", color: "#5f7a5c", bg: "#e8efe4" }
+        };
+
+        var yy_sceneMap = {
+            body_scan: "身体扫描",
+            breath_meditation: "呼吸冥想",
+            sleep_story: "睡眠故事",
+            short_rest: "短时休息"
+        };
+
+        var yy_messagesEl = document.getElementById("yy_messages");
+        var yy_diaryEl = document.getElementById("yy_diary");
+        var yy_submitEl = document.getElementById("yy_submit");
+        var yy_historyListEl = document.getElementById("yy_history_list");
+        var yy_historyEmptyEl = document.getElementById("yy_history_empty");
+
+        // 对话上下文：只保存成功往返的 user / assistant 消息
+        var yy_conversation = [];
+
+        // 功能：根据情绪枚举返回中文名称与配色
+        function yy_emotionMeta(yy_key) {
+            return yy_emotionMap[yy_key] || { label: yy_key, color: "#5f7a5c", bg: "#e8efe4" };
+        }
+
+        // 功能：滚动消息区域到底部
+        function yy_scrollToBottom() {
+            requestAnimationFrame(function () {
+                yy_messagesEl.scrollTop = yy_messagesEl.scrollHeight;
+            });
+        }
+
+        // 功能：添加一条用户消息气泡
+        function yy_addUserBubble(yy_text) {
+            var yy_bubble = document.createElement("div");
+            yy_bubble.className = "yy_msg yy_msg_user";
+            yy_bubble.textContent = yy_text;
+            yy_messagesEl.appendChild(yy_bubble);
+            yy_scrollToBottom();
+        }
+
+        // 功能：添加“正在解析”的等待气泡
+        function yy_addTyping() {
+            var yy_bubble = document.createElement("div");
+            yy_bubble.className = "yy_msg yy_msg_assistant yy_typing";
+            yy_bubble.innerHTML = "<span></span><span></span><span></span>";
+            yy_messagesEl.appendChild(yy_bubble);
+            yy_scrollToBottom();
+            return yy_bubble;
+        }
+
+        // 功能：把字符串数组渲染成标签，空数组显示未提及
+        function yy_renderChips(yy_container, yy_values, yy_isEmotion) {
+            if (!yy_values || !yy_values.length) {
+                var yy_empty = document.createElement("span");
+                yy_empty.className = "yy_chip_muted";
+                yy_empty.textContent = "未提及";
+                yy_container.appendChild(yy_empty);
+                return;
+            }
+
+            yy_values.forEach(function (yy_value) {
+                var yy_chip = document.createElement("span");
+                yy_chip.className = "yy_chip";
+                yy_chip.textContent = yy_isEmotion ? yy_emotionMeta(yy_value).label : yy_value;
+                yy_container.appendChild(yy_chip);
+            });
+        }
+
+        // 功能：生成带标签的一组情绪标签行
+        function yy_createRow(yy_label, yy_values, yy_isEmotion) {
+            var yy_row = document.createElement("div");
+            yy_row.className = "yy_row";
+
+            var yy_labelEl = document.createElement("span");
+            yy_labelEl.className = "yy_row_label";
+            yy_labelEl.textContent = yy_label;
+
+            var yy_chips = document.createElement("div");
+            yy_chips.className = "yy_chips";
+            yy_renderChips(yy_chips, yy_values, yy_isEmotion);
+
+            yy_row.appendChild(yy_labelEl);
+            yy_row.appendChild(yy_chips);
+            return yy_row;
+        }
+
+        // 功能：添加一条助手解析结果气泡
+        function yy_addResultBubble(yy_data) {
+            var yy_meta = yy_emotionMeta(yy_data.main_emotion);
+
+            var yy_bubble = document.createElement("div");
+            yy_bubble.className = "yy_msg yy_msg_assistant yy_result";
+
+            var yy_head = document.createElement("div");
+            yy_head.className = "yy_result_head";
+
+            var yy_tag = document.createElement("span");
+            yy_tag.className = "yy_emotion_tag";
+            yy_tag.textContent = yy_meta.label;
+            yy_tag.style.color = yy_meta.color;
+            yy_tag.style.background = yy_meta.bg;
+
+            var yy_intensity = document.createElement("span");
+            yy_intensity.className = "yy_intensity_text";
+            yy_intensity.textContent = "情绪强度 " + Number(yy_data.emotion_intensity).toFixed(2);
+
+            yy_head.appendChild(yy_tag);
+            yy_head.appendChild(yy_intensity);
+
+            var yy_bar = document.createElement("div");
+            yy_bar.className = "yy_bar";
+            var yy_barFill = document.createElement("div");
+            yy_barFill.className = "yy_bar_fill";
+            yy_barFill.style.width = Math.round(Number(yy_data.emotion_intensity) * 100) + "%";
+            yy_barFill.style.background = yy_meta.color;
+            yy_bar.appendChild(yy_barFill);
+
+            var yy_scene = document.createElement("div");
+            yy_scene.className = "yy_scene";
+            yy_scene.innerHTML = "推荐正念场景 · <strong></strong>";
+            yy_scene.querySelector("strong").textContent = yy_sceneMap[yy_data.recommend_scene] || yy_data.recommend_scene;
+
+            var yy_summary = document.createElement("p");
+            yy_summary.className = "yy_summary";
+            yy_summary.textContent = yy_data.summary;
+
+            yy_bubble.appendChild(yy_head);
+            yy_bubble.appendChild(yy_bar);
+            yy_bubble.appendChild(yy_createRow("次要情绪", yy_data.secondary_emotion_list, true));
+            yy_bubble.appendChild(yy_createRow("躯体感受", yy_data.physical_symptom_list, false));
+            yy_bubble.appendChild(yy_createRow("思维特征", yy_data.cognitive_feature_list, false));
+            yy_bubble.appendChild(yy_scene);
+            yy_bubble.appendChild(yy_summary);
+
+            yy_messagesEl.appendChild(yy_bubble);
+            yy_scrollToBottom();
+        }
+
+        // 功能：从 localStorage 读取历史记录，失败时返回空数组
+        function yy_readRecords() {
+            try {
+                var yy_raw = localStorage.getItem(yy_storageKey);
+                var yy_list = yy_raw ? JSON.parse(yy_raw) : [];
+                return Array.isArray(yy_list) ? yy_list : [];
+            } catch (yy_error) {
+                return [];
+            }
+        }
+
+        // 功能：保存一条解析记录，最多保留 10 条
+        function yy_saveRecord(yy_text, yy_data) {
+            var yy_list = yy_readRecords();
+            yy_list.unshift({
+                time: new Date().toLocaleString("zh-CN", { hour12: false }),
+                text: yy_text,
+                data: yy_data
+            });
+
+            try {
+                localStorage.setItem(yy_storageKey, JSON.stringify(yy_list.slice(0, yy_maxRecords)));
+            } catch (yy_error) {
+                console.error("[历史记录保存失败]", yy_error);
+            }
+        }
+
+        // 功能：渲染本地历史记录列表
+        function yy_renderHistory() {
+            var yy_list = yy_readRecords();
+            yy_historyListEl.innerHTML = "";
+            yy_historyEmptyEl.hidden = yy_list.length > 0;
+
+            yy_list.forEach(function (yy_record) {
+                var yy_meta = yy_emotionMeta(yy_record.data.main_emotion);
+
+                var yy_item = document.createElement("article");
+                yy_item.className = "yy_history_item";
+
+                var yy_top = document.createElement("div");
+                yy_top.className = "yy_history_top";
+
+                var yy_time = document.createElement("span");
+                yy_time.className = "yy_history_time";
+                yy_time.textContent = yy_record.time;
+
+                var yy_tag = document.createElement("span");
+                yy_tag.className = "yy_history_tag";
+                yy_tag.textContent = yy_meta.label;
+                yy_tag.style.color = yy_meta.color;
+                yy_tag.style.background = yy_meta.bg;
+
+                var yy_summary = document.createElement("p");
+                yy_summary.className = "yy_history_summary";
+                yy_summary.textContent = yy_record.data.summary;
+
+                yy_top.appendChild(yy_time);
+                yy_top.appendChild(yy_tag);
+                yy_item.appendChild(yy_top);
+                yy_item.appendChild(yy_summary);
+                yy_historyListEl.appendChild(yy_item);
+            });
+        }
+
+        // 功能：切换发送按钮的解析中状态
+        function yy_setLoading(yy_loading) {
+            yy_submitEl.disabled = yy_loading;
+            yy_submitEl.textContent = yy_loading ? "解析中…" : "发送";
+        }
+
+        // 功能：把当前对话与本次输入组装成 messages 数组
+        function yy_buildMessages(yy_text) {
+            return [{ role: "system", content: yy_systemPrompt }]
+                .concat(yy_conversation)
+                .concat([{ role: "user", content: yy_text }]);
+        }
+
+        // 功能：发送一条情绪日记，成功后追加解析气泡并保存历史
+        function yy_send() {
+            var yy_text = yy_diaryEl.value.trim();
+
+            if (!yy_text) {
+                alert("请先写下此刻的情绪日记");
+                return;
+            }
+
+            if (yy_submitEl.disabled) {
+                return;
+            }
+
+            var yy_payload = { messages: yy_buildMessages(yy_text) };
+            console.log("[请求参数]", yy_payload);
+
+            yy_addUserBubble(yy_text);
+            yy_diaryEl.value = "";
+            yy_setLoading(true);
+            var yy_typing = yy_addTyping();
+
+            fetch(yy_api, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(yy_payload)
+            })
+                .then(function (yy_res) {
+                    return yy_res.json();
+                })
+                .then(function (yy_res) {
+                    console.log("[接口响应]", yy_res);
+
+                    if (yy_res.code !== 0) {
+                        throw new Error(yy_res.msg || "解析失败");
+                    }
+
+                    yy_typing.remove();
+                    yy_addResultBubble(yy_res.data);
+
+                    yy_conversation.push({ role: "user", content: yy_text });
+                    yy_conversation.push({ role: "assistant", content: JSON.stringify(yy_res.data) });
+
+                    yy_saveRecord(yy_text, yy_res.data);
+                    yy_renderHistory();
+                })
+                .catch(function (yy_error) {
+                    console.error("[解析失败]", yy_error);
+                    yy_typing.remove();
+
+                    var yy_message = yy_error && yy_error.message ? yy_error.message : "网络异常，请稍后重试";
+                    if (yy_message === "Failed to fetch") {
+                        yy_message = "无法连接解析服务，请先在本地启动 backend（node app.js），再通过 http://127.0.0.1:8325 访问";
+                    }
+
+                    alert("解析失败：" + yy_message);
+                })
+                .finally(function () {
+                    yy_setLoading(false);
+                    yy_diaryEl.focus();
+                });
+        }
+
+        // 功能：绑定发送按钮与键盘事件，并初始化历史记录
+        function yy_init() {
+            yy_submitEl.addEventListener("click", yy_send);
+
+            yy_diaryEl.addEventListener("keydown", function (yy_event) {
+                if (yy_event.key === "Enter" && !yy_event.shiftKey) {
+                    yy_event.preventDefault();
+                    yy_send();
+                }
+            });
+
+            yy_renderHistory();
+            yy_diaryEl.focus();
+        }
+
+        yy_init();
+    </script>
+</body>
+
+</html>
