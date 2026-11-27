@@ -368,3 +368,8 @@
 - 模型： DeepSeek-V4.1-Flash
 - 提示词： 好的，提交并推送吧
 
+
+## 2026-11-27 15:38:35
+- 模型： DeepSeek-V4.1-Flash
+- 提示词： 将我的yy_prompt.md添加到index.html里，并提交
+
