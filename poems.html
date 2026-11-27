@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<!--
+  作者：杨阳
+  学号：24002120323
+  建立时间：2026-11-26
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：诗词卡片（上图下文）
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f6f2ea">
+    <meta name="description" content="杨阳的《高级网页设计》练习：从本地 3004 端口读取诗词数据，渲染上图下文的卡片列表">
+    <title>诗词卡片 · 上图下文</title>
+    <style>
+        :root {
+            --yy_bg: #f6f2ea;
+            --yy_paper: #fffdf9;
+            --yy_ink: #221d17;
+            --yy_muted: #87796a;
+            --yy_accent: #9a5b3d;
+            --yy_line: #e6dccb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 12% 0, #f1e3cf 0, transparent 45%),
+                radial-gradient(circle at 92% 18%, #efe8db 0, transparent 40%),
+                var(--yy_bg);
+            color: var(--yy_ink);
+            font-family: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .yy_page {
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 48px 22px 60px;
+        }
+
+        .yy_header {
+            margin-bottom: 30px;
+        }
+
+        .yy_eyebrow {
+            display: inline-block;
+            font-size: 12px;
+            letter-spacing: 3px;
+            color: var(--yy_accent);
+            border: 1px solid var(--yy_accent);
+            border-radius: 999px;
+            padding: 5px 14px;
+            margin-bottom: 16px;
+        }
+
+        .yy_title {
+            font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+            font-size: 38px;
+            letter-spacing: 4px;
+            line-height: 1.3;
+        }
+
+        .yy_subtitle {
+            margin-top: 12px;
+            max-width: 560px;
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: var(--yy_muted);
+        }
+
+        .yy_status {
+            margin: 40px 0;
+            padding: 22px 20px;
+            border: 1px dashed var(--yy_line);
+            border-radius: 16px;
+            background: rgba(255, 253, 249, 0.7);
+            font-size: 14px;
+            color: var(--yy_muted);
+            text-align: center;
+        }
+
+        .yy_status code {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: #2f2822;
+            color: #f6f2ea;
+            font-size: 12.5px;
+            letter-spacing: 0.5px;
+        }
+
+        .yy_grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 26px;
+        }
+
+        /* 上图下文的卡片：图片在上，标题与正文在下 */
+        .yy_card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--yy_paper);
+            border: 1px solid var(--yy_line);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -32px rgba(74, 50, 30, 0.7);
+            opacity: 0;
+            transform: translateY(14px);
+            animation: yy_rise 0.5s ease forwards;
+            animation-delay: var(--yy_delay, 0ms);
+        }
+
+        @keyframes yy_rise {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .yy_figure {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background: linear-gradient(140deg, #e9dcc8, #d8bda2 55%, #c9a585);
+        }
+
+        .yy_figure_img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .yy_card:hover .yy_figure_img {
+            transform: scale(1.04);
+        }
+
+        .yy_figure_img.yy_is_broken {
+            display: none;
+        }
+
+        .yy_body {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 20px 22px 24px;
+        }
+
+        .yy_poem_title {
+            font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+            font-size: 20px;
+            letter-spacing: 2px;
+        }
+
+        .yy_poem_content {
+            font-size: 14px;
+            line-height: 2;
+            color: var(--yy_muted);
+        }
+
+        .yy_footer {
+            margin-top: 42px;
+            text-align: center;
+            font-size: 12px;
+            letter-spacing: 1px;
+            color: var(--yy_muted);
+        }
+
+        @media (max-width: 640px) {
+            .yy_page {
+                padding: 34px 16px 48px;
+            }
+
+            .yy_title {
+                font-size: 28px;
+                letter-spacing: 3px;
+            }
+
+            .yy_grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="yy_page">
+        <header class="yy_header">
+            <span class="yy_eyebrow">POEMS · 上图下文</span>
+            <h1 class="yy_title">诗里有画</h1>
+            <p class="yy_subtitle">卡片数据来自本地 3004 端口的数据服务，图片在上、标题与诗句在下。运行前先在 db 目录执行 node server.js。</p>
+        </header>
+
+        <div class="yy_status" id="yy_status">正在读取诗词数据…</div>
+        <div class="yy_grid" id="yy_grid"></div>
+
+        <footer class="yy_footer">数据来源：db/db.json · poems</footer>
+    </div>
+
+    <script>
+        var yy_api = "http://localhost:3004/api/poems";
+        var yy_grid = document.getElementById("yy_grid");
+        var yy_status = document.getElementById("yy_status");
+
+        // 功能：图片加载失败时隐藏图片，露出卡片自带的渐变底色
+        function yy_onImageError(yy_event) {
+            yy_event.target.classList.add("yy_is_broken");
+        }
+
+        // 功能：把诗词数据渲染成上图下文的卡片列表
+        function yy_render(yy_list) {
+            var yy_fragment = document.createDocumentFragment();
+
+            yy_list.forEach(function (yy_poem, yy_index) {
+                var yy_card = document.createElement("article");
+                yy_card.className = "yy_card";
+                yy_card.style.setProperty("--yy_delay", (yy_index * 80) + "ms");
+
+                var yy_figure = document.createElement("div");
+                yy_figure.className = "yy_figure";
+
+                var yy_img = document.createElement("img");
+                yy_img.className = "yy_figure_img";
+                // Gitee 图床有防盗链，去掉 Referer 才能稳定加载
+                yy_img.referrerPolicy = "no-referrer";
+                yy_img.src = yy_poem.pic;
+                yy_img.alt = yy_poem.title + " 配图";
+                yy_img.loading = "lazy";
+                yy_img.addEventListener("error", yy_onImageError);
+                yy_figure.appendChild(yy_img);
+
+                var yy_body = document.createElement("div");
+                yy_body.className = "yy_body";
+
+                var yy_h2 = document.createElement("h2");
+                yy_h2.className = "yy_poem_title";
+                yy_h2.textContent = yy_poem.title;
+
+                var yy_p = document.createElement("p");
+                yy_p.className = "yy_poem_content";
+                yy_p.textContent = yy_poem.content;
+
+                yy_body.appendChild(yy_h2);
+                yy_body.appendChild(yy_p);
+                yy_card.appendChild(yy_figure);
+                yy_card.appendChild(yy_body);
+                yy_fragment.appendChild(yy_card);
+            });
+
+            yy_grid.innerHTML = "";
+            yy_grid.appendChild(yy_fragment);
+            yy_status.hidden = true;
+        }
+
+        // 功能：接口不可用时给出启动本地数据服务的提示
+        function yy_showError() {
+            yy_status.hidden = false;
+            yy_status.innerHTML = "没有取到诗词数据，请先启动本地数据服务：<br><code>cd db &amp;&amp; node server.js</code>";
+        }
+
+        // 功能：请求 3004 端口的诗词接口，成功渲染、失败提示
+        function yy_loadPoems() {
+            fetch(yy_api)
+                .then(function (yy_res) {
+                    if (!yy_res.ok) {
+                        throw new Error("HTTP " + yy_res.status);
+                    }
+                    return yy_res.json();
+                })
+                .then(function (yy_list) {
+                    yy_render(yy_list);
+                })
+                .catch(function () {
+                    yy_showError();
+                });
+        }
+
+        yy_loadPoems();
+    </script>
+</body>
+
+</html>
