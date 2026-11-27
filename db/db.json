@@ -1,23 +1,66 @@
 {
   "poems": [
-  {
-    "content": "你看是不是变了！",
-    "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/6.jpg",
-    "title": "短歌行"
-  },
-  {
-    "content": "雨前初见花间蕊，雨后全无叶底花。",
-    "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/2.jpg",
-    "title": "雨晴"
-  },
-  {
-    "content": "花近高楼伤客心，万方多难此登临。",
-    "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/3.jpg",
-    "title": "脊楼"
-  },
-  {
-    "content": "纤云弄巧，飞星传恨，银汉迢迢暗度。",
-    "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/4.jpg",
-    "title": "鹊桥仙·纤云弄巧"
-  }
-]}
+    {
+      "content": "你看是不是变了！",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/6.jpg",
+      "title": "短歌行"
+    },
+    {
+      "content": "雨前初见花间蕊，雨后全无叶底花。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/2.jpg",
+      "title": "雨晴"
+    },
+    {
+      "content": "花近高楼伤客心，万方多难此登临。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/3.jpg",
+      "title": "脊楼"
+    },
+    {
+      "content": "纤云弄巧，飞星传恨，银汉迢迢暗度。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/4.jpg",
+      "title": "鹊桥仙·纤云弄巧"
+    },
+    {
+      "content": "白日依山尽，黄河入海流。欲穷千里目，更上一层楼。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/1.jpg",
+      "title": "登鹳雀楼"
+    },
+    {
+      "content": "红豆生南国，春来发几枝。愿君多采撷，此物最相思。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/5.jpg",
+      "title": "相思"
+    }
+  ],
+  "authors": [
+    {
+      "name": "曹操",
+      "dynasty": "东汉",
+      "intro": "建安文学的代表人物，作品气魄雄浑，代表作《短歌行》。"
+    },
+    {
+      "name": "王驾",
+      "dynasty": "唐代",
+      "intro": "晚唐诗人，擅长写景，代表作《雨晴》。"
+    },
+    {
+      "name": "杜甫",
+      "dynasty": "唐代",
+      "intro": "被尊为“诗圣”，诗风沉郁顿挫，代表作《登楼》。"
+    },
+    {
+      "name": "秦观",
+      "dynasty": "北宋",
+      "intro": "婉约派词人，语言清丽，代表作《鹊桥仙》。"
+    },
+    {
+      "name": "王之涣",
+      "dynasty": "唐代",
+      "intro": "边塞诗人，作品意境开阔，代表作《登鹳雀楼》。"
+    },
+    {
+      "name": "王维",
+      "dynasty": "唐代",
+      "intro": "山水田园诗人，诗中有画，代表作《相思》。"
+    }
+  ]
+}

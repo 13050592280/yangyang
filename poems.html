@@ -78,6 +78,88 @@
             color: var(--yy_muted);
         }
 
+        .yy_toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .yy_search {
+            flex: 1;
+            min-width: 0;
+            padding: 12px 18px;
+            border: 1px solid var(--yy_line);
+            border-radius: 999px;
+            background: var(--yy_paper);
+            color: var(--yy_ink);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .yy_search:focus {
+            border-color: var(--yy_accent);
+            box-shadow: 0 0 0 3px rgba(154, 91, 61, 0.12);
+        }
+
+        .yy_sort {
+            padding: 12px 20px;
+            border: 1px solid var(--yy_line);
+            border-radius: 999px;
+            background: var(--yy_paper);
+            color: var(--yy_ink);
+            font-family: inherit;
+            font-size: 13.5px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .yy_sort.yy_is_active {
+            background: var(--yy_accent);
+            border-color: var(--yy_accent);
+            color: #fff;
+        }
+
+        .yy_authors {
+            margin-bottom: 28px;
+            padding: 18px 20px;
+            background: rgba(255, 253, 249, 0.8);
+            border: 1px solid var(--yy_line);
+            border-radius: 16px;
+        }
+
+        .yy_authors_title {
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--yy_accent);
+            margin-bottom: 12px;
+        }
+
+        .yy_authors_list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .yy_author {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #f3ebdd;
+            border: 1px solid var(--yy_line);
+            font-size: 13px;
+            color: var(--yy_ink);
+        }
+
+        .yy_author_dynasty {
+            font-style: normal;
+            font-size: 12px;
+            color: var(--yy_muted);
+        }
+
         .yy_status {
             margin: 40px 0;
             padding: 22px 20px;
@@ -198,8 +280,18 @@
         <header class="yy_header">
             <span class="yy_eyebrow">POEMS · 上图下文</span>
             <h1 class="yy_title">诗里有画</h1>
-            <p class="yy_subtitle">卡片数据来自本地 3004 端口的数据服务，图片在上、标题与诗句在下。运行前先在 db 目录执行 node server.js。</p>
+            <p class="yy_subtitle">卡片与诗人数据来自本地 3004 端口的 /api/poems 与 /api/authors，用 Promise.all 同时取回。运行前先在 db 目录执行 node server.js。</p>
         </header>
+
+        <div class="yy_toolbar">
+            <input class="yy_search" id="yy_search" type="search" placeholder="搜索标题或诗句" aria-label="搜索诗词">
+            <button class="yy_sort" id="yy_sort" type="button" aria-pressed="false">按标题长度排序</button>
+        </div>
+
+        <section class="yy_authors" id="yy_authors" hidden>
+            <h2 class="yy_authors_title">诗人</h2>
+            <div class="yy_authors_list" id="yy_authors_list"></div>
+        </section>
 
         <div class="yy_status" id="yy_status">正在读取诗词数据…</div>
         <div class="yy_grid" id="yy_grid"></div>
@@ -208,9 +300,17 @@
     </div>
 
     <script>
-        var yy_api = "http://localhost:3004/api/poems";
+        var yy_apiPoems = "http://localhost:3004/api/poems";
+        var yy_apiAuthors = "http://localhost:3004/api/authors";
         var yy_grid = document.getElementById("yy_grid");
         var yy_status = document.getElementById("yy_status");
+        var yy_authors = document.getElementById("yy_authors");
+        var yy_authorsList = document.getElementById("yy_authors_list");
+        var yy_search = document.getElementById("yy_search");
+        var yy_sort = document.getElementById("yy_sort");
+        var yy_allPoems = [];
+        var yy_loaded = false;
+        var yy_sortByLength = false;
 
         // 功能：图片加载失败时隐藏图片，露出卡片自带的渐变底色
         function yy_onImageError(yy_event) {
@@ -268,24 +368,94 @@
             yy_status.innerHTML = "没有取到诗词数据，请先启动本地数据服务：<br><code>cd db &amp;&amp; node server.js</code>";
         }
 
-        // 功能：请求 3004 端口的诗词接口，成功渲染、失败提示
-        function yy_loadPoems() {
-            fetch(yy_api)
-                .then(function (yy_res) {
-                    if (!yy_res.ok) {
-                        throw new Error("HTTP " + yy_res.status);
-                    }
-                    return yy_res.json();
-                })
-                .then(function (yy_list) {
-                    yy_render(yy_list);
+        // 功能：请求 JSON 接口，状态异常时抛出错误
+        function yy_fetchJson(yy_url) {
+            return fetch(yy_url).then(function (yy_res) {
+                if (!yy_res.ok) {
+                    throw new Error("HTTP " + yy_res.status);
+                }
+                return yy_res.json();
+            });
+        }
+
+        // 功能：把诗人列表渲染成标签
+        function yy_renderAuthors(yy_list) {
+            yy_authorsList.innerHTML = "";
+
+            yy_list.forEach(function (yy_author) {
+                var yy_chip = document.createElement("span");
+                yy_chip.className = "yy_author";
+                yy_chip.title = yy_author.intro;
+                yy_chip.textContent = yy_author.name;
+
+                var yy_dynasty = document.createElement("em");
+                yy_dynasty.className = "yy_author_dynasty";
+                yy_dynasty.textContent = yy_author.dynasty;
+                yy_chip.appendChild(yy_dynasty);
+
+                yy_authorsList.appendChild(yy_chip);
+            });
+
+            yy_authors.hidden = false;
+        }
+
+        // 功能：按关键字过滤并可选按标题长度排序，然后刷新卡片列表
+        function yy_applyView() {
+            if (!yy_loaded) {
+                return;
+            }
+
+            var yy_keyword = yy_search.value.trim();
+            var yy_list = yy_allPoems.filter(function (yy_poem) {
+                return yy_poem.title.indexOf(yy_keyword) >= 0 || yy_poem.content.indexOf(yy_keyword) >= 0;
+            });
+
+            if (yy_sortByLength) {
+                yy_list.sort(function (yy_a, yy_b) {
+                    return yy_a.title.length - yy_b.title.length;
+                });
+            }
+
+            if (!yy_list.length) {
+                yy_grid.innerHTML = "";
+                yy_status.hidden = false;
+                yy_status.textContent = "没有匹配的诗词，换个关键字试试。";
+                return;
+            }
+
+            yy_render(yy_list);
+        }
+
+        // 功能：切换“按标题长度排序”开关并刷新列表
+        function yy_toggleSort() {
+            yy_sortByLength = !yy_sortByLength;
+            yy_sort.classList.toggle("yy_is_active", yy_sortByLength);
+            yy_sort.setAttribute("aria-pressed", yy_sortByLength ? "true" : "false");
+            yy_applyView();
+        }
+
+        // 功能：绑定搜索框输入与排序按钮事件
+        function yy_bindToolbar() {
+            yy_search.addEventListener("input", yy_applyView);
+            yy_sort.addEventListener("click", yy_toggleSort);
+        }
+
+        // 功能：用 Promise.all 同时请求诗词与诗人两份数据
+        function yy_loadData() {
+            Promise.all([yy_fetchJson(yy_apiPoems), yy_fetchJson(yy_apiAuthors)])
+                .then(function (yy_result) {
+                    yy_allPoems = yy_result[0];
+                    yy_loaded = true;
+                    yy_renderAuthors(yy_result[1]);
+                    yy_applyView();
                 })
                 .catch(function () {
                     yy_showError();
                 });
         }
 
-        yy_loadPoems();
+        yy_bindToolbar();
+        yy_loadData();
     </script>
 </body>
 

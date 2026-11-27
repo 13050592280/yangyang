@@ -27,6 +27,15 @@ app.get('/api/poems', (req, res) => {
   })
 })
 
+app.get('/api/authors', (req, res) => {
+  const dbPath = path.join(__dirname, 'db.json')
+  fs.readFile(dbPath, 'utf8', (err, data) => {
+    if(err) return res.status(500).json({err:'读取失败'})
+    const json = JSON.parse(data)
+    res.json(json.authors)
+  })
+})
+
 app.listen(port, ()=>{
   console.log(`数据服务器已启动：http://localhost:3004/api/poems`)
 })
